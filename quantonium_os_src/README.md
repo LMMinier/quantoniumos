@@ -14,10 +14,10 @@ quantonium_os_src/
 │   └── quantonium_desktop.py      # Main desktop with Q logo launcher
 ├── apps/
 │   ├── __init__.py
-│   ├── quantum_simulator/          # Quantum circuit simulator
+│   ├── symbolic_simulator/          # Quantum circuit simulator
 │   │   ├── __init__.py
 │   │   └── main.py
-│   ├── quantum_crypto/             # QKD & RFT encryption
+│   ├── quantum_inspired_crypto/             # QKD & RFT encryption
 │   │   ├── __init__.py
 │   │   └── main.py
 │   ├── q_notes/                    # Note taking app

@@ -415,5 +415,5 @@ def complex_function(self, param1, param2):
 Check out these existing applications for reference:
 
 - **Simple App**: `os/apps/q_notes/` - Basic text editor
-- **Complex App**: `os/apps/quantum_simulator/` - Full-featured simulator
+- **Complex App**: `os/apps/symbolic_simulator/` - Full-featured simulator
 - **RFT Integration**: `os/apps/visualizers/` - Heavy RFT usage

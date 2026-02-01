@@ -90,11 +90,11 @@ class QuantoniumConfig:
     def _create_default_app_registry(self) -> Dict[str, AppConfig]:
         """Create default app registry based on discovered apps"""
         default_apps = {
-            "quantum_crypto": AppConfig(
+            "quantum_inspired_crypto": AppConfig(
                 name="Quantum Crypto",
-                module="apps.quantum_crypto",
+                module="apps.quantum_inspired_crypto",
                 class_name="QuantumCrypto",
-                icon="quantum_crypto.svg",
+                icon="quantum_inspired_crypto.svg",
                 description="Quantum cryptography and QKD protocols"
             ),
             "q_notes": AppConfig(
@@ -111,11 +111,11 @@ class QuantoniumConfig:
                 icon="q_vault.svg",
                 description="Secure quantum storage"
             ),
-            "quantum_simulator": AppConfig(
+            "symbolic_simulator": AppConfig(
                 name="Quantum Simulator",
-                module="apps.quantum_simulator",
+                module="apps.symbolic_simulator",
                 class_name="QuantumSimulator", 
-                icon="quantum_simulator.svg",
+                icon="symbolic_simulator.svg",
                 description="Quantum circuit simulation"
             ),
             "rft_validator": AppConfig(

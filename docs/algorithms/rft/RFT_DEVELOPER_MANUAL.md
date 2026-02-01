@@ -180,7 +180,7 @@ The **Unified Orchestrator** is a C-level supervisor that manages the flow of da
 | :-- | :-- | :-- |
 | Add new RFT variant | `algorithms/rft/variants/*.py`, `rft_kernel.c` | `scripts/irrevocable_truths.py` |
 | Change hybrid routing | `algorithms/rft/compression/rft_hybrid_codec.py` | `scripts/verify_rate_distortion.py` |
-| Modify quantum/topological behavior | `algorithms/rft/quantum/*.py`, `include/rft_kernel.h` | `scripts/verify_soft_vs_hard_braiding.py` |
+| Modify quantum/topological behavior | `algorithms/rft/quantum_inspired/*.py`, `include/rft_kernel.h` | `scripts/verify_soft_vs_hard_braiding.py` |
 | Tune performance | `algorithms/rft/kernels/python_bindings/*.py` | `scripts/verify_scaling_laws.py` |
 | Adjust crypto lattice | `algorithms/rft/crypto/rft_sis/*` | `scripts/verify_performance_and_crypto.py` |
 | Regenerate figures | `scripts/generate_paper_figures.sh` | `generate_figures_only.sh` |
@@ -378,7 +378,7 @@ The high-performance backend (`libquantum_symbolic.so`) implements the RFT varia
 | :-- | :-- | :-- |
 | Add new RFT variant | `algorithms/rft/variants/*.py`, `rft_kernel.c` | `scripts/irrevocable_truths.py` |
 | Change hybrid routing | `algorithms/rft/compression/rft_hybrid_codec.py` | `scripts/verify_rate_distortion.py` |
-| Modify quantum/topological behavior | `algorithms/rft/quantum/*.py`, `include/rft_kernel.h` | `scripts/verify_soft_vs_hard_braiding.py` |
+| Modify quantum/topological behavior | `algorithms/rft/quantum_inspired/*.py`, `include/rft_kernel.h` | `scripts/verify_soft_vs_hard_braiding.py` |
 | Tune performance | `algorithms/rft/kernels/python_bindings/*.py` | `scripts/verify_scaling_laws.py` |
 | Adjust crypto lattice | `algorithms/rft/crypto/rft_sis/*` | `scripts/verify_performance_and_crypto.py` |
 | Regenerate figures | `scripts/generate_paper_figures.sh` | `generate_figures_only.sh` |

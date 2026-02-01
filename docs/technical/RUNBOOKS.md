@@ -136,7 +136,7 @@ echo "==============================="
 
 # 1. Stop running applications
 echo "Stopping QuantoniumOS applications..."
-pkill -f "quantum_simulator.py"
+pkill -f "symbolic_simulator.py"
 pkill -f "launch_q_"
 pkill -f "quantonium_desktop.py"
 
@@ -535,7 +535,7 @@ def create_health_dashboard():
             'orchestrator_engine': check_orchestrator_engine()
         },
         'applications': {
-            'quantum_simulator': check_app_status('quantum_simulator'),
+            'symbolic_simulator': check_app_status('symbolic_simulator'),
             'q_notes': check_app_status('q_notes'),
             'q_vault': check_app_status('q_vault')
         },

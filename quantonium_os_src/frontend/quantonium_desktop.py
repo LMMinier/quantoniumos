@@ -463,17 +463,17 @@ class QuantoniumDesktop(QMainWindow):
             },
             {
                 "name": "Quantum Simulator", 
-                "path": os.path.join(project_root, "src", "apps", "quantum_simulator.py"), 
+                "path": os.path.join(project_root, "src", "apps", "symbolic_simulator.py"), 
                 "category": "SIMULATION",
                 "description": "Quantum circuit modeling",
-                "icon": "quantum_simulator.svg"
+                "icon": "symbolic_simulator.svg"
             },
             {
                 "name": "Quantum Cryptography", 
-                "path": os.path.join(project_root, "src", "apps", "quantum_crypto.py"), 
+                "path": os.path.join(project_root, "src", "apps", "quantum_inspired_crypto.py"), 
                 "category": "SECURITY",
                 "description": "Cryptographic protocols",
-                "icon": "quantum_crypto.svg"
+                "icon": "quantum_inspired_crypto.svg"
             },
             {
                 "name": "System Monitor", 
@@ -665,10 +665,10 @@ class QuantoniumDesktop(QMainWindow):
                 self.launch_q_notes()
             elif "q_vault" in app_path.lower():
                 self.launch_q_vault()
-            elif "quantum_simulator" in app_path.lower():
-                self.launch_quantum_simulator()
-            elif "quantum_crypto" in app_path.lower():
-                self.launch_quantum_crypto()
+            elif "symbolic_simulator" in app_path.lower():
+                self.launch_symbolic_simulator()
+            elif "quantum_inspired_crypto" in app_path.lower():
+                self.launch_quantum_inspired_crypto()
             elif "qshll_system_monitor" in app_path.lower():
                 self.launch_system_monitor()
             elif "qshll_chatbox" in app_path.lower():
@@ -753,14 +753,14 @@ class QuantoniumDesktop(QMainWindow):
             import traceback
             traceback.print_exc()
     
-    def launch_quantum_simulator(self):
+    def launch_symbolic_simulator(self):
         """Launch Quantum Simulator within the OS environment"""
         try:
             print("≡ƒÜÇ Launching Quantum Simulator...")
             
             # Use direct import method since subprocess fails on Windows
             project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-            simulator_path = os.path.join(project_root, "src", "apps", "quantum_simulator.py")
+            simulator_path = os.path.join(project_root, "src", "apps", "symbolic_simulator.py")
             
             print(f"≡ƒôü Loading simulator from: {simulator_path}")
             
@@ -775,33 +775,33 @@ class QuantoniumDesktop(QMainWindow):
                 return
             
             import importlib.util
-            spec = importlib.util.spec_from_file_location("quantum_simulator", simulator_path)
+            spec = importlib.util.spec_from_file_location("symbolic_simulator", simulator_path)
             simulator_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(simulator_module)
             
             print("Γ£à Simulator module loaded successfully")
             
             # Create and show the simulator window
-            self.quantum_simulator_window = simulator_module.RFTQuantumSimulator()
+            self.symbolic_simulator_window = simulator_module.RFTQuantumSimulator()
             
             # Force window to be visible and on top
-            self.quantum_simulator_window.show()
-            self.quantum_simulator_window.raise_()
-            self.quantum_simulator_window.activateWindow()
+            self.symbolic_simulator_window.show()
+            self.symbolic_simulator_window.raise_()
+            self.symbolic_simulator_window.activateWindow()
             
             # Make it stay on top temporarily
             from PyQt5.QtCore import Qt
-            self.quantum_simulator_window.setWindowFlags(
-                self.quantum_simulator_window.windowFlags() | Qt.WindowStaysOnTopHint
+            self.symbolic_simulator_window.setWindowFlags(
+                self.symbolic_simulator_window.windowFlags() | Qt.WindowStaysOnTopHint
             )
-            self.quantum_simulator_window.show()  # Show again after flag change
+            self.symbolic_simulator_window.show()  # Show again after flag change
             
             # Move to center of screen to make sure it's visible
-            screen = self.quantum_simulator_window.screen().geometry()
-            window = self.quantum_simulator_window.geometry()
+            screen = self.symbolic_simulator_window.screen().geometry()
+            window = self.symbolic_simulator_window.geometry()
             x = (screen.width() - window.width()) // 2
             y = (screen.height() - window.height()) // 2
-            self.quantum_simulator_window.move(x, y)
+            self.symbolic_simulator_window.move(x, y)
             
             print("Γ£à Quantum Simulator launched successfully!")
             print(f"≡ƒûÑ∩╕Å Window position: {x}, {y}")
@@ -812,25 +812,25 @@ class QuantoniumDesktop(QMainWindow):
             import traceback
             traceback.print_exc()
     
-    def launch_quantum_crypto(self):
+    def launch_quantum_inspired_crypto(self):
         """Launch Quantum Cryptography within the OS environment"""
         try:
             project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-            crypto_path = os.path.join(project_root, "src", "apps", "quantum_crypto.py")
+            crypto_path = os.path.join(project_root, "src", "apps", "quantum_inspired_crypto.py")
             
-            spec = importlib.util.spec_from_file_location("quantum_crypto", crypto_path)
+            spec = importlib.util.spec_from_file_location("quantum_inspired_crypto", crypto_path)
             crypto_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(crypto_module)
             
             # Find the main class (it's called QuantumCrypto)
             if hasattr(crypto_module, 'QuantumCrypto'):
-                self.quantum_crypto_window = crypto_module.QuantumCrypto()
-                self.quantum_crypto_window.show()
+                self.quantum_inspired_crypto_window = crypto_module.QuantumCrypto()
+                self.quantum_inspired_crypto_window.show()
             else:
                 print("Unknown quantum crypto class structure")
                 return
                 
-            self.quantum_crypto_window.show()
+            self.quantum_inspired_crypto_window.show()
             
         except Exception as e:
             print(f"Error launching Quantum Cryptography: {e}")

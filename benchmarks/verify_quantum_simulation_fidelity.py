@@ -24,8 +24,8 @@ import psutil
 # Add project root
 sys.path.append(os.getcwd())
 
-from algorithms.rft.quantum.quantum_gates import H, X, CNOT, QuantumGate
-from algorithms.rft.quantum.quantum_search import QuantumSearch
+from algorithms.rft.quantum_inspired.quantum_gates import H, X, CNOT, QuantumGate
+from algorithms.rft.quantum_inspired.quantum_search import QuantumSearch
 from algorithms.rft.core.geometric_container import GeometricContainer
 
 def get_memory_mb():

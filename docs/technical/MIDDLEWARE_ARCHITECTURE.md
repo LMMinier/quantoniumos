@@ -1,5 +1,9 @@
 # QuantoniumOS Middleware Transform Architecture
 
+> **RESEARCH DISCLAIMER:** This documentation describes experimental research software.
+> Cryptographic claims are NOT certified. "Quantum-inspired" refers to mathematical
+> structure, NOT proven post-quantum security. Do NOT use for production security.
+
 ## Overview
 
 QuantoniumOS operates on a **middleware transform architecture** that bridges classical binary hardware (0/1) with quantum-inspired wave-space computation. This implements your vision of oscillating waves computing in a transformed space.
@@ -93,7 +97,7 @@ The middleware automatically selects the optimal RFT variant:
 | Data Type | Priority | Selected Transform | Reason |
 |-----------|----------|-------------------|---------|
 | Text | Speed | Original Φ-RFT | Fastest, cleanest |
-| Crypto Keys | Security | Fibonacci Tilt | Post-quantum safe |
+| Crypto Keys | Security | Fibonacci Tilt | Experimental research |
 | Images | Accuracy | Geometric Lattice | Analog-optimized |
 | Generic | Compression | Adaptive Φ | Universal compression |
 

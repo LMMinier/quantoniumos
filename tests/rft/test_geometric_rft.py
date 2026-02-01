@@ -11,7 +11,7 @@ Tests for GeometricContainer and QuantumSearch.
 import unittest
 import numpy as np
 from algorithms.rft.core.geometric_container import GeometricContainer
-from algorithms.rft.quantum.quantum_search import QuantumSearch
+from algorithms.rft.quantum_inspired.quantum_search import QuantumSearch
 
 class TestGeometricRFT(unittest.TestCase):
 

@@ -215,19 +215,19 @@ for n in test_sizes:
         # Initialize the RFT
         rft = CanonicalTrueRFT(n)
         
-        # Perform a simple symbolic operation
-        if n > 1:
-            engine.add_hyperedge({0, 1})
+        # Test the forward transform with a random signal
+        x = np.random.randn(n) + 1j * np.random.randn(n)
+        y = rft.forward_transform(x)
         
-        # For smaller N, assemble the state to verify correctness
-        if n <= 16:
-            state = engine.assemble_state()
-            expected_dim = 2**n
-            if state.shape[0] != expected_dim:
-                raise RuntimeError(f'State dimension {state.shape[0]} does not match expected {expected_dim}')
-        else:
-            # For larger N, just confirm the engine was created without crashing
-            pass
+        # Verify output dimension matches input
+        if y.shape[0] != n:
+            raise RuntimeError(f'Output dimension {y.shape[0]} does not match input {n}')
+        
+        # Verify unitarity via round-trip
+        x_reconstructed = rft.inverse_transform(y)
+        error = np.linalg.norm(x - x_reconstructed) / np.linalg.norm(x)
+        if error > 1e-10:
+            raise RuntimeError(f'Round-trip error {error} exceeds threshold')
 
         print(f'✓')
     except Exception as e:

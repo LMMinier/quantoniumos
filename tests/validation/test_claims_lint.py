@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2025 Luis M. Minier / quantoniumos
+"""
+Claims Lint Test - Catches forbidden marketing language.
+"""
+
 import re
 from pathlib import Path
 

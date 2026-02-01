@@ -1,8 +1,39 @@
 # QuantoniumOS Complete Code Inventory
 
-> **Generated:** December 19, 2025  
-> **Total Files:** 730+ source files across 5 languages  
-> **Coverage:** 100% of functional code
+> **Generated:** January 31, 2026  
+> **Total Files:** 486 Python files, 199 Markdown docs, 13 LaTeX papers  
+> **Coverage:** 100% of functional code  
+> **Branch:** main (single canonical branch)
+
+---
+
+## Repository Audit Summary
+
+### File Counts by Type
+| Type | Count | Description |
+|:-----|------:|:------------|
+| Python (.py) | 486 | Core algorithms, tests, benchmarks, tools |
+| Markdown (.md) | 199 | Documentation, reports, guides |
+| LaTeX (.tex) | 13 | Research papers, technical specs |
+| C++/HPP | ~119 | Native acceleration engines |
+| Verilog/SV | ~22 | Hardware RTL designs |
+| Shell Scripts | ~21 | Build and automation |
+
+### License Structure
+| License | Applies To |
+|:--------|:-----------|
+| AGPL-3.0-or-later | All files NOT listed in CLAIMS_PRACTICING_FILES.txt |
+| LICENSE-CLAIMS-NC.md | Files practicing USPTO 19/169,399 claims (research-only) |
+
+### Key Directories
+| Directory | Purpose | Status |
+|:----------|:--------|:-------|
+| `algorithms/rft/` | Core RFT implementation | ✅ Canonical |
+| `tests/` | Unit and integration tests | ✅ 1800+ assertions |
+| `benchmarks/` | Performance validation | ✅ Classes A-F |
+| `papers/` | Research papers (LaTeX + PDF) | ✅ Your papers only |
+| `hardware/` | RFTPU RTL designs | ✅ Feasibility validated |
+| `docs/` | Technical documentation | ✅ Organized |
 
 ---
 
@@ -175,7 +206,7 @@
 | `legacy_mca.py` | `LegacyMCA` | Old greedy Multi-Component Analysis. Kept for comparison. | **DEPRECATED** - use cascade |
 | `theoretic_hybrid_decomposition.py` | `TheoreticHybridDecomposition` | Mathematical framework proving why cascade works. | Theory/proofs only |
 
-### 1.4 Quantum (`algorithms/rft/quantum/`)
+### 1.4 Quantum (`algorithms/rft/quantum_inspired/`)
 
 **Purpose:** Classical simulation of quantum systems using RFT's algebraic properties.
 
@@ -527,8 +558,8 @@
 |:---|:---|:---|
 | `quantonium_os_src/engine/RFTMW.py` | `MiddlewareTransformEngine`, `QuantumEngine` | **The Middleware.** Binary↔Wave bridge. |
 | `quantonium_os_src/frontend/quantonium_desktop.py` | `QuantoniumDesktop`, `GoldenSpiralLoader` | Desktop shell. |
-| `quantonium_os_src/apps/quantum_simulator/main.py` | `RFTQuantumSimulator` | Quantum simulator. |
-| `quantonium_os_src/apps/quantum_crypto/main.py` | `QuantumCrypto` | Crypto application. |
+| `quantonium_os_src/apps/symbolic_simulator/main.py` | `RFTQuantumSimulator` | Quantum simulator. |
+| `quantonium_os_src/apps/quantum_inspired_crypto/main.py` | `QuantumCrypto` | Crypto application. |
 | `quantonium_os_src/apps/rft_visualizer/main.py` | `RFTVisualizer`, `WaveCanvas` | RFT visualization. |
 | `quantonium_os_src/apps/rft_validator/main.py` | `MainWindow` | Validation tool. |
 | `quantonium_os_src/apps/q_vault/main.py` | `QVault`, `VaultItem` | Encrypted vault. |

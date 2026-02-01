@@ -96,7 +96,7 @@ Structure:
 
 - `frontend/quantonium_desktop.py`: main desktop UI (Q logo launcher).
 - `apps/`: individual PyQt applications:
-  - `quantum_simulator`, `quantum_crypto`, `q_notes`, `q_vault`, `rft_validator`, `rft_visualizer`, `system_monitor`.
+  - `symbolic_simulator`, `quantum_inspired_crypto`, `q_notes`, `q_vault`, `rft_validator`, `rft_visualizer`, `system_monitor`.
 - `engine/`: reserved for future engine integration.
 - `resources/icons/`: UI icons.
 

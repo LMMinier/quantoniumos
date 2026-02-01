@@ -118,7 +118,7 @@ These benchmarks are needed to assess competitive advantage.
 **Test Files:**
 - `tests/validation/direct_bell_test.py` - CHSH > 2.7 achieved
 - `tests/validation/test_bell_violations.py` - Comprehensive Bell tests
-- `quantonium_os_src/apps/quantum_simulator/main.py` - symbolic simulator UI
+- `quantonium_os_src/apps/symbolic_simulator/main.py` - symbolic simulator UI
 - `docs/research/BELL_VIOLATION_ACHIEVEMENT.md` - Full results
 
 **Simulation Capabilities:**

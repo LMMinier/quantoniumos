@@ -6,7 +6,13 @@ Geometric Hashing - QuantoniumOS
 ================================
 
 Geometric hashing algorithms for spatial data structures and collision detection.
-Uses RFT-enhanced geometric transformations for quantum-safe hashing.
+Uses RFT-enhanced geometric transformations for experimental hashing research.
+
+**RESEARCH ONLY DISCLAIMER:**
+This module is for academic research purposes only. The cryptographic properties
+have NOT been formally verified or certified. Do NOT use in production security
+applications. "Quantum-inspired" refers to mathematical structure, not actual
+quantum computing or proven post-quantum security.
 """
 
 import math
@@ -216,7 +222,10 @@ class GeometricTransformHash(GeometricHash):
         return combined
 
 class RFTGeometricHash(GeometricHash):
-    """RFT-enhanced geometric hashing for quantum-safe applications."""
+    """RFT-enhanced geometric hashing for experimental research applications.
+    
+    WARNING: This is research code. Cryptographic security is NOT verified.
+    """
 
     def __init__(self, dimensions: int = 2, hash_size: int = 256,
                  rft_size: int = 64):

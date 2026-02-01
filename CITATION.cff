@@ -5,9 +5,9 @@ message: >
 authors:
   - family-names: Minier
     given-names: Luis M.
-version: 1.0.0-rft-paper
-date-released: 2025-11-25
-repository-code: https://github.com/mandcony/quantoniumos
+version: 2.0.0
+date-released: 2026-01-31
+repository-code: https://github.com/LMMinier/quantoniumos
 doi: 10.5281/zenodo.17712905
 url: https://zenodo.org/records/17712906
 identifiers:
@@ -34,5 +34,12 @@ preferred-citation:
       given-names: Luis M.
   doi: 10.5281/zenodo.17712905
   url: https://zenodo.org/records/17712906
-  version: 1.0.0-rft-paper
-  date-released: 2025-11-25
+  version: 2.0.0
+  date-released: 2026-01-31
+keywords:
+  - signal-processing
+  - golden-ratio
+  - resonant-fourier-transform
+  - quantum-inspired
+  - research-platform
+license: AGPL-3.0-or-later

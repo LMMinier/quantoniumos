@@ -18,7 +18,7 @@ if str(SRC_DIR) not in os.sys.path:
     os.sys.path.insert(0, str(SRC_DIR))
 
 from algorithms.rft.crypto.enhanced_cipher import EnhancedRFTCryptoV2
-from algorithms.rft.quantum.geometric_waveform_hash import GeometricWaveformHash
+from algorithms.rft.quantum_inspired.geometric_waveform_hash import GeometricWaveformHash
 
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"

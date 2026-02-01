@@ -1,5 +1,8 @@
 # API Reference
 
+> **RESEARCH DISCLAIMER:** This API is for experimental research only.
+> Cryptographic features are NOT certified. Do NOT use for production security.
+
 This document provides a comprehensive API reference for QuantoniumOS components.
 
 ## Core RFT API
@@ -161,7 +164,8 @@ class UnitaryRFT:
 
 **Flag Constants**:
 ```python
-RFT_FLAG_QUANTUM_SAFE = 0x01    # Enable quantum-safe mode
+# WARNING: "QUANTUM_SAFE" is legacy naming - crypto is NOT certified
+RFT_FLAG_QUANTUM_SAFE = 0x01    # Experimental crypto mode (RESEARCH ONLY)
 RFT_FLAG_USE_RESONANCE = 0x02   # Use resonance algorithms
 RFT_FLAG_OPTIMIZE_MEMORY = 0x04 # Memory-optimized mode
 RFT_FLAG_DEBUG = 0x08           # Enable debug output

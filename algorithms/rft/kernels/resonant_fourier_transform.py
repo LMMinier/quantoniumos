@@ -1,8 +1,16 @@
 # SPDX-License-Identifier: LicenseRef-QuantoniumOS-Claims-NC
 # Copyright (C) 2026 Luis M. Minier / quantoniumos
 """
-Resonant Fourier Transform (RFT)
-================================
+Resonant Fourier Transform (RFT) - OPERATOR VARIANT (NOT CANONICAL)
+====================================================================
+
+**NOTE:** This is the OPERATOR-BASED eigenbasis variant, NOT the canonical RFT.
+For the canonical (patent-compliant) RFT, use:
+    algorithms/rft/core/resonant_fourier_transform.py
+
+This file implements the eigenbasis of a modeled autocorrelation operator,
+which is a DIFFERENT mathematical object than the canonical golden-ratio basis.
+
 A FIXED, structured unitary transform designed for quasi-periodic signal families.
 
 Key Difference from Per-Signal KLT:

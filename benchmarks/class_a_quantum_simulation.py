@@ -74,7 +74,7 @@ except ImportError:
 # Import Geometric RFT components
 try:
     from algorithms.rft.core.geometric_container import GeometricContainer
-    from algorithms.rft.quantum.quantum_search import QuantumSearch
+    from algorithms.rft.quantum_inspired.quantum_search import QuantumSearch
     GEOMETRIC_RFT_AVAILABLE = True
 except ImportError:
     GEOMETRIC_RFT_AVAILABLE = False
@@ -266,8 +266,9 @@ def run_class_a_benchmark():
     print()
     print("  HONEST FRAMING:")
     print("  • Classical simulators compute EXACT amplitudes (2^n complex numbers)")
-    print("  • QSC compresses SYMBOLIC qubit configurations (different object)")
-    print("  • QSC reaches million-qubit regime where classical is impossible")
+    print("  • QSC compresses SYMBOLIC representations (NOT equivalent to quantum sim)")
+    print("  • QSC O(n) scaling is for structured classical vectors, not true qubits")
+    print("  • 'Million-qubit' is a misnomer - these are classical compressed vectors")
     print()
     
     return {'classical': classical_results, 'qsc': qsc_results}

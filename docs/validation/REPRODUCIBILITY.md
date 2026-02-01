@@ -52,7 +52,7 @@ print(f'Unitary (< 1e-12): {error < 1e-12}')
 # Test vertex-based quantum scaling
 python -c "
 import sys; sys.path.append('src/apps')
-from quantum_simulator import QuantumSimulator
+from symbolic_simulator import QuantumSimulator
 import time
 
 for size in [100, 200, 500, 1000]:

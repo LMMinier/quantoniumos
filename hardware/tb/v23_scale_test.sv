@@ -1,3 +1,11 @@
+// SPDX-License-Identifier: LicenseRef-QuantoniumOS-Claims-NC
+// Copyright (C) 2025-2026 Luis M. Minier / quantoniumos
+// Patent Application: USPTO #19/169,399
+//
+// SPDX-License-Identifier: LicenseRef-QuantoniumOS-Claims-NC
+// Copyright (C) 2025-2026 Luis M. Minier / quantoniumos
+// Patent Application: USPTO #19/169,399
+//
 // Scale test for v2.3 streaming controller
 `timescale 1ns/1ps
 `include "rtl/systolic_array_v23_streaming.sv"

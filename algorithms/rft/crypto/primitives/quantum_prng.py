@@ -5,11 +5,17 @@
 # under LICENSE-CLAIMS-NC.md (research/education only). Commercial
 # rights require a separate patent license from the author.
 """
-Cryptographic Primitives - QuantoniumOS
-======================================
+Cryptographic Primitives - QuantoniumOS (RESEARCH ONLY)
+=======================================================
 
 Core cryptographic building blocks using RFT-enhanced algorithms.
 Provides authenticated encryption, key derivation, and cryptographic hashing.
+
+**CRITICAL DISCLAIMER:**
+This module is for ACADEMIC RESEARCH ONLY. The cryptographic constructions
+have NOT been formally analyzed, peer-reviewed, or certified by any standards
+body. Do NOT use for production security applications. The term "quantum"
+refers to mathematical inspiration, NOT proven post-quantum security.
 """
 
 import os
@@ -41,7 +47,10 @@ class HMACSHA256:
         return hmac.compare_digest(expected, mac)
 
 class RFTEnhancedHMAC:
-    """RFT-enhanced HMAC for quantum-safe cryptography."""
+    """RFT-enhanced HMAC for experimental cryptographic research.
+    
+    WARNING: NOT CERTIFIED. Research use only. Security properties unverified.
+    """
 
     @staticmethod
     def compute(key: bytes, message: bytes) -> bytes:
@@ -142,7 +151,10 @@ class FeistelNetwork:
         return left + right
 
 class RFTEnhancedFeistel:
-    """RFT-enhanced Feistel network for quantum-safe cryptography."""
+    """RFT-enhanced Feistel network for experimental cryptographic research.
+    
+    WARNING: NOT CERTIFIED. Research use only. Security properties unverified.
+    """
 
     def __init__(self, rounds: int = 48, block_size: int = 16):
         """Initialize RFT-enhanced Feistel network."""

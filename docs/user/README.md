@@ -31,7 +31,7 @@ user/
 │   ├── quick_start.md
 │   └── system_overview.md
 ├── applications/
-│   ├── quantum_simulator_guide.md
+│   ├── symbolic_simulator_guide.md
 │   ├── q_vault_guide.md
 │   ├── q_notes_guide.md
 │   └── visualizers_guide.md

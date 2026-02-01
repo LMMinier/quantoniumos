@@ -184,7 +184,7 @@ def load_app(app_path):
 
 #### System Applications
 
-**Quantum Simulator** (`quantum_simulator/`)
+**Quantum Simulator** (`symbolic_simulator/`)
 - **Purpose**: Visual quantum state simulation
 - **Features**: 
   - 1000+ symbolic qubit support (for φ-structured circuits)

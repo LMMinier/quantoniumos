@@ -544,7 +544,7 @@ Status: PASSED with warnings ⚠️
 
 **Application**: Symbolic surrogate simulator with desktop interface
 
-**Location**: `quantonium_os_src/apps/quantum_simulator/main.py`
+**Location**: `quantonium_os_src/apps/symbolic_simulator/main.py`
 
 **Capabilities Verified**:
 

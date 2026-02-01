@@ -28,7 +28,7 @@ except ImportError:
     print("❌ QuTiP not available — skipping QuTiP-specific benchmarks")
 
 from tests.proofs.test_entanglement_protocols import BellTestProtocol
-from algorithms.rft.quantum.quantum_gates import RotationGates
+from algorithms.rft.quantum_inspired.quantum_gates import RotationGates
 from quantonium_os_src.engine.RFTMW import QuantumEngine
 
 

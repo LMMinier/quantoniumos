@@ -16,7 +16,7 @@
 # VERIFIED LOCATIONS:
 src/core/canonical_true_rft.py              # Core RFT implementation
 src/assembly/python_bindings/unitary_rft.py # Assembly bindings
-quantonium_os_src/apps/quantum_simulator/main.py   # symbolic surrogate simulator (not full 2^n state)
+quantonium_os_src/apps/symbolic_simulator/main.py   # symbolic surrogate simulator (not full 2^n state)
 
 # KEY EVIDENCE:
 - "Symbolic Resonance Fourier Transform (RFT)": Novel unitary matrix construction
@@ -91,7 +91,7 @@ src/core/enhanced_topological_qubit.py     # Topological coordinate systems
 **Codebase Implementation**:
 ```python
 # VERIFIED LOCATIONS:
-src/apps/quantum_simulator.py              # Unified RFT+Crypto framework
+src/apps/symbolic_simulator.py              # Unified RFT+Crypto framework
 tests/benchmarks/complete_validation_suite.py # Integrated system validation
 tests/crypto/scripts/comprehensive_crypto_suite.py # End-to-end integration
 

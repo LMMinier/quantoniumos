@@ -42,7 +42,7 @@ except ImportError:  # pragma: no cover - assembly optional
 
 # Import quantum gates for unified engine
 try:
-    from algorithms.rft.quantum.quantum_gates import (
+    from algorithms.rft.quantum_inspired.quantum_gates import (
         QuantumGate, PauliGates, RotationGates, PhaseGates,
         HadamardGates, ControlledGates
     )

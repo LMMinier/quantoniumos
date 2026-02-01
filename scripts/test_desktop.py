@@ -34,8 +34,8 @@ except ImportError as e:
 
 try:
     print("\n✓ Checking app modules...")
-    from quantonium_os_src.apps.quantum_simulator import MainWindow as SimWindow
-    from quantonium_os_src.apps.quantum_crypto import MainWindow as CryptoWindow
+    from quantonium_os_src.apps.symbolic_simulator import MainWindow as SimWindow
+    from quantonium_os_src.apps.quantum_inspired_crypto import MainWindow as CryptoWindow
     from quantonium_os_src.apps.q_notes import MainWindow as NotesWindow
     from quantonium_os_src.apps.q_vault import MainWindow as VaultWindow
     from quantonium_os_src.apps.rft_validator import MainWindow as ValidatorWindow

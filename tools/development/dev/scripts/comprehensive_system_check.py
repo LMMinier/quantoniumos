@@ -124,12 +124,12 @@ def check_simulator_file_structure():
     print("=" * 60)
     
     base_dir = Path(__file__).parent
-    simulator_path = base_dir / "src" / "apps" / "quantum_simulator.py"
+    simulator_path = base_dir / "src" / "apps" / "symbolic_simulator.py"
     
     print(f"Checking: {simulator_path}")
     
     if simulator_path.exists():
-        print("✅ quantum_simulator.py exists")
+        print("✅ symbolic_simulator.py exists")
         
         # Check file size
         size = simulator_path.stat().st_size
@@ -147,7 +147,7 @@ def check_simulator_file_structure():
             print(f"❌ File read error: {e}")
             
     else:
-        print(f"❌ quantum_simulator.py NOT FOUND at {simulator_path}")
+        print(f"❌ symbolic_simulator.py NOT FOUND at {simulator_path}")
 
 def check_simulator_imports():
     print("\n" + "=" * 60)
@@ -155,7 +155,7 @@ def check_simulator_imports():
     print("=" * 60)
     
     base_dir = Path(__file__).parent
-    simulator_path = base_dir / "src" / "apps" / "quantum_simulator.py"
+    simulator_path = base_dir / "src" / "apps" / "symbolic_simulator.py"
     
     if not simulator_path.exists():
         print("❌ Cannot check imports - file doesn't exist")
@@ -168,7 +168,7 @@ def check_simulator_imports():
             sys.path.insert(0, apps_dir)
             
         # Try to load the module
-        spec = importlib.util.spec_from_file_location("quantum_simulator", str(simulator_path))
+        spec = importlib.util.spec_from_file_location("symbolic_simulator", str(simulator_path))
         if spec is None:
             print("❌ Cannot create module spec")
             return
@@ -217,13 +217,13 @@ def check_desktop_launcher():
     if desktop_path.exists():
         print(f"✅ Desktop file found: {desktop_path}")
         
-        # Check the launch_quantum_simulator method
+        # Check the launch_symbolic_simulator method
         try:
             with open(desktop_path, 'r') as f:
                 content = f.read()
                 
-            if 'launch_quantum_simulator' in content:
-                print("✅ launch_quantum_simulator method found")
+            if 'launch_symbolic_simulator' in content:
+                print("✅ launch_symbolic_simulator method found")
                 
                 # Extract the method
                 lines = content.split('\n')
@@ -231,11 +231,11 @@ def check_desktop_launcher():
                 method_lines = []
                 
                 for line in lines:
-                    if 'def launch_quantum_simulator' in line:
+                    if 'def launch_symbolic_simulator' in line:
                         in_method = True
                         method_lines.append(line)
                     elif in_method:
-                        if line.strip().startswith('def ') and 'launch_quantum_simulator' not in line:
+                        if line.strip().startswith('def ') and 'launch_symbolic_simulator' not in line:
                             break
                         method_lines.append(line)
                         
@@ -244,7 +244,7 @@ def check_desktop_launcher():
                     print(f"  {line}")
                     
             else:
-                print("❌ launch_quantum_simulator method NOT found")
+                print("❌ launch_symbolic_simulator method NOT found")
                 
         except Exception as e:
             print(f"❌ Error reading desktop file: {e}")
@@ -257,7 +257,7 @@ def check_subprocess_execution():
     print("=" * 60)
     
     base_dir = Path(__file__).parent
-    simulator_path = base_dir / "src" / "apps" / "quantum_simulator.py"
+    simulator_path = base_dir / "src" / "apps" / "symbolic_simulator.py"
     
     if not simulator_path.exists():
         print("❌ Cannot test subprocess - simulator file missing")

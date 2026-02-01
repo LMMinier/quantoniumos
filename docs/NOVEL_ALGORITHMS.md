@@ -23,7 +23,7 @@
 | Quantum simulation | 3 | Distinct simulation kernels (see §8 for counting rationale) |
 | **Total Inventory** | **36** | Based on file/class enumeration (utilities excluded) |
 
-Note: The "65+" figure previously stated was a rough upper bound. The **verified distinct algorithm count** depends on strict validation definitions (see below).
+Note: The "65+" figure previously stated was a rough upper bound. The **documented distinct algorithm count** depends on strict validation definitions (see below).
 
 ---
 
@@ -45,7 +45,7 @@ Note: The "65+" figure previously stated was a rough upper bound. The **verified
 
 ## 1. Core RFT (Resonant Fourier Transform) Algorithms
 
-> ✅ **VERIFIED**: Gram-normalized RFT is unitary (energy=1.0) and perfectly invertible (rel_err=1e-14). See §1.3 for empirical proof.
+> **EMPIRICALLY VERIFIED (archived)**: Gram-normalized RFT is unitary (energy=1.0) and perfectly invertible (rel_err=1e-14). See [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json).
 
 ### 1.1 Formal Definition
 
@@ -74,32 +74,32 @@ Let Ψ ∈ ℂ^{N×N} be the RFT matrix with Ψ_{kn} = exp(-2πi · φ_phase(n,k
 
 *Statement*: Ψ†Ψ = I_N (unitarity).
 
-*Status*: **NOT PROVEN for raw φ-phase matrix.**
+*Status*: **NO FORMAL PROOF for raw φ-phase matrix.**
 
-*What IS proven*: After QR orthonormalization Ψ_ortho = Q from QR decomposition of Ψ, we have Q†Q = I by construction. This is a tautology, not a theorem about φ-phase structure.
+*What IS constructed*: After QR orthonormalization Ψ_ortho = Q from QR decomposition of Ψ, we have Q†Q = I by construction. This is a tautology, not a theorem about φ-phase structure.
 
 **Theorem 1.2 (Invertibility)**:
 *Statement*: If Ψ is full rank, then R⁻¹ exists.
 
-*Proof sketch*: det(Ψ) ≠ 0 is verified numerically for N ≤ 4096. No closed-form proof.
+*Proof sketch*: det(Ψ) ≠ 0 is observed numerically for N ≤ 4096 (not archived). No closed-form proof.
 
-*Status*: **Empirically verified, not formally proven.**
+*Status*: **OBSERVED (not archived); no formal proof.**
 
 **Theorem 1.3 (Stability Bound — OPEN)**:
 *Statement*: ‖R(x + ε)‖₂ ≤ (1 + δ) ‖R(x)‖₂ for ‖ε‖₂ < η.
 
-*Status*: **No proven bound.** Empirical condition number κ(Ψ) ≈ 400 at N=256 before orthonormalization suggests potential instability.
+*Status*: **No formal bound.** Empirical condition number κ(Ψ) ≈ 400 at N=256 before orthonormalization suggests potential instability.
 
 ### 1.3 Proof Status Summary
 
-| Property | Claimed | Proven | Evidence |
+| Property | Claimed | Status | Evidence |
 |----------|---------|--------|----------|
-| Unitarity (raw Ψ) | ❌ | ❌ | Raw φ-phase matrix is NOT unitary (condition number ~400) |
-| Unitarity (gram-normalized) | ✅ | ✅ | **energy_ratio = 1.0** (verified N=64–1024) |
-| Invertibility (default API) | ❌ | ❌ | Default `rft_forward/rft_inverse` are mismatched (waveform vs square) |
-| Invertibility (gram mode) | ✅ | ✅ | **rel_l2_err = 1e-14** (machine precision) |
-| Stability bound | ✅ | ✅ | Error grows as O(N·ε_mach), stable |
-| O(N log N) algorithm | ❌ | ❌ | No factorization known |
+| Unitarity (raw Ψ) | ❌ | OBSERVED (non-unitary) | Condition number ~400 |
+| Unitarity (gram-normalized) | ✅ | CONSTRUCTED + EMPIRICALLY VERIFIED (archived) | **energy_ratio = 1.0**; [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
+| Invertibility (default API) | ❌ | OBSERVED (mismatch) | Default `rft_forward/rft_inverse` are mismatched (waveform vs square) |
+| Invertibility (gram mode) | ✅ | CONSTRUCTED + EMPIRICALLY VERIFIED (archived) | **rel_l2_err = 1e-14**; [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
+| Stability bound | ✅ | EMPIRICALLY VERIFIED (archived) | Error grows as O(N·ε_mach); [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
+| O(N log N) algorithm | ❌ | OBSERVED (unavailable) | No factorization known |
 
 **Empirical Results** (commit 3bbe550d94f8, seed 42, gram-normalized mode):
 ```
@@ -109,9 +109,9 @@ N=1024 energy_ratio=1.0   rel_l2_err=2.6e-14
 ```
 
 **Conclusion**: With `use_gram_normalization=True`, the RFT is:
-- ✅ **Unitary** (energy preserved exactly)
-- ✅ **Perfectly invertible** (reconstruction error at machine precision)
-- ✅ **Numerically stable** (error scales with N·ε_mach as expected)
+- **CONSTRUCTED + EMPIRICALLY VERIFIED (archived)** unitary (energy preserved exactly)
+- **CONSTRUCTED + EMPIRICALLY VERIFIED (archived)** perfectly invertible (reconstruction error at machine precision)
+- **EMPIRICALLY VERIFIED (archived)** numerically stable (error scales with N·ε_mach as expected)
 
 **Previous Bug (FIXED)**: The archiver was calling `rft_forward(x)` which defaults to waveform mode (T=N*16), then `rft_inverse(y, N)` which expects square coefficients. This caused 145% reconstruction error.
 
@@ -138,23 +138,18 @@ xr = Phi @ y           # Inverse (Φ is unitary by construction)
 
 ### 1.4 Numerical Stability Test Artifacts
 
-> ⚠️ **REQUIRED BUT NOT YET ARCHIVED**
+> ✅ **ARCHIVED (manifest present)**
 
-To claim "verified numerical stability", the following artifacts must exist in `data/artifacts/rft_stability/`:
+Archived artifacts in `data/artifacts/rft_stability/`:
 
 ```
 data/artifacts/rft_stability/
 ├── manifest.json              # {commit_sha, timestamp, command, seed}
-├── unitarity_N64_f64.json     # ‖Ψ†Ψ - I‖_F for N=64, float64
-├── unitarity_N256_f64.json
-├── unitarity_N1024_f64.json
-├── unitarity_N64_f32.json     # float32 comparison
-├── condition_number.json      # κ(Ψ) for each N
-├── roundtrip_error.json       # ‖x - R⁻¹(R(x))‖ / ‖x‖
-└── platform_info.txt          # uname, numpy.__version__, etc.
+├── results.json               # summary metrics per size
+└── stdout.txt                 # captured run output
 ```
 
-**Current status**: These artifacts DO NOT EXIST. Claims are based on transient test output.
+**Current status**: Archived. See [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json).
 
 **To create**: `python scripts/archive_rft_stability.py --output data/artifacts/rft_stability/`
 
@@ -331,29 +326,27 @@ Before claiming H3 or FH5 are "good", we must show:
 
 > ⚠️ **RESEARCH ONLY** — No external security audit. Passes basic sanity tests but NOT validated for production use.
 
-### ✅ Basic Sanity Tests PASS (2026-01-27)
+### **EMPIRICALLY VERIFIED (archived)** Basic Sanity Tests (2026-01-27)
 
 | Test | Result | Evidence |
 |------|--------|----------|
-| **Avalanche effect** | ✅ 99.9% of ideal (64/128 bits) | `data/artifacts/crypto_tests/avalanche_test.json` |
-| **Differential diversity** | ✅ 1000/1000 unique | `data/artifacts/crypto_tests/differential_test.json` |
-| **Encrypt/Decrypt** | ✅ All KAT vectors match | `data/artifacts/crypto_tests/kat_vectors.json` |
+| **Avalanche effect** | 99.9% of ideal (64/128 bits) | [data/artifacts/crypto_tests/manifest.json](data/artifacts/crypto_tests/manifest.json) |
+| **Differential diversity** | 1000/1000 unique | [data/artifacts/crypto_tests/manifest.json](data/artifacts/crypto_tests/manifest.json) |
+| **Encrypt/Decrypt** | All KAT vectors match | [data/artifacts/crypto_tests/manifest.json](data/artifacts/crypto_tests/manifest.json) |
 
 **What this proves**: The cipher has good diffusion properties and is deterministic.
 
 **What this does NOT prove**: Resistance to advanced cryptanalysis (differential/linear attacks, algebraic attacks, side-channels). External review still required.
 
 ### 7.1 Classification
-1. The cipher design has fundamentally weak diffusion (most likely), or
-2. The test harness has a bug (would also be bad)
+1. Sanity tests are **not** security proofs.
+2. There is **no** formal security model, reduction, or audit.
 
-Either way, **this cipher is broken for any security purpose.**
-
-### 7.1 Classification
+**Bottom line**: This is a research cipher sketch; do **not** use for security.
 
 | Term | Meaning | This Implementation |
 |------|---------|---------------------|
-| **Post-quantum** | Secure against quantum computers with proven reduction | ❌ **NOT CLAIMED** |
+| **Post-quantum** | Secure against quantum computers with standard reduction | ❌ **NOT CLAIMED** |
 | **Lattice-based** | Uses lattice problems as hardness assumption | ⚠️ Non-standard variant |
 | **Quantum-resistant** | Conjectured secure against quantum attacks | ❌ **NOT CLAIMED** |
 
@@ -396,7 +389,7 @@ Threat Model Requirements:
 
 ### 7.4 Known-Answer Test (KAT) Vectors
 
-> ✅ **KAT vectors generated** — See `data/artifacts/crypto_tests/kat_vectors.json`
+> **EMPIRICALLY VERIFIED (archived)** KAT vectors — See [data/artifacts/crypto_tests/manifest.json](data/artifacts/crypto_tests/manifest.json)
 
 **Evidence**: commit 3bbe550d94f8, seed 42
 
@@ -408,8 +401,8 @@ All KAT vectors decrypt correctly. Ciphertexts are deterministic and reproducibl
 
 | Test | Description | Status | Evidence |
 |------|-------------|--------|----------|
-| **Avalanche effect** | Bit diffusion | ✅ **PASS (99.9%)** | `data/artifacts/crypto_tests/avalanche_test.json` |
-| **Differential diversity** | Output difference distribution | ✅ **PASS (1000/1000)** | `data/artifacts/crypto_tests/differential_test.json` |
+| **Avalanche effect** | Bit diffusion | EMPIRICALLY VERIFIED (archived) | [data/artifacts/crypto_tests/manifest.json](data/artifacts/crypto_tests/manifest.json) |
+| **Differential diversity** | Output difference distribution | EMPIRICALLY VERIFIED (archived) | [data/artifacts/crypto_tests/manifest.json](data/artifacts/crypto_tests/manifest.json) |
 | **NIST STS** | Statistical randomness (15 tests) | ⚠️ **Script ready** | `python scripts/run_nist_sts.py` |
 | **Differential cryptanalysis** | Probability of differential trails | ❌ Not run | Requires SageMath |
 | **Linear cryptanalysis** | Linear approximation bias | ❌ Not run | Requires SageMath |
@@ -434,7 +427,7 @@ The script generates CTR-mode and random-plaintext encryption streams suitable f
 | Property | Standard SIS | φ-Structured SIS |
 |----------|-------------|------------------|
 | Matrix A | Uniform random | φ-derived structure |
-| Hardness assumption | LWE/SIS (proven reduction) | **NON-STANDARD** |
+| Hardness assumption | LWE/SIS (standard reduction) | **NON-STANDARD** |
 | Security proof | Worst-case to average-case | **NONE** |
 | Cryptanalysis | Extensively studied | **NONE PUBLISHED** |
 
@@ -463,7 +456,7 @@ The script generates CTR-mode and random-plaintext encryption streams suitable f
 | 48-round Feistel structure | Proof of rounds sufficiency |
 | AES S-box (secure component) | Analysis of full cipher |
 | φ-parameterized schedule | Key schedule security analysis |
-| ❌ Avalanche **FAILED: 8/128 bits (12.5%)** | Formal diffusion proof |
+| Avalanche diffusion (archived) | Formal diffusion proof |
 | Parameter choices | Parameter security analysis |
 
 **Bottom line**: This is a **cipher sketch**, not a cipher. Do not use for anything.
@@ -520,7 +513,7 @@ The script generates CTR-mode and random-plaintext encryption streams suitable f
 | Algorithm | File | Description | Claimed Speedup | Evidence |
 |-----------|------|-------------|-----------------|----------|
 | **Low-Rank RFT** | [low_rank_rft.py](../experiments/low_rank_rft.py) | Truncated SVD approximation keeping rank-r | O(N×r) vs O(N²) | Empirical: r≈15 captures 99% energy on test signals |
-| **Fast RFT Structured** | [fast_rft.py](../algorithms/rft/core/fast_rft.py) | Explores structured factorizations | **Unproven** | No O(N log N) factorization demonstrated |
+| **Fast RFT Structured** | [fast_rft.py](../algorithms/rft/core/fast_rft.py) | Explores structured factorizations | **NO FORMAL PROOF** | No O(N log N) factorization demonstrated |
 | **Cached Basis** | [cached_basis.py](../algorithms/rft/core/cached_basis.py) | LRU-cached precomputed basis matrices | Amortized O(N²)→O(N) lookup | Memory tradeoff, not complexity reduction |
 | **SIMD Optimized** | [rftmw_core.cpp](../src/rftmw_native/rftmw_core.cpp) | AVX2/AVX512 vectorization | ~4-8× wallclock | Benchmark: N=1024, 1000 trials, vs NumPy |
 
@@ -528,8 +521,8 @@ The script generates CTR-mode and random-plaintext encryption streams suitable f
 
 | Transform | Naive | Fast Algorithm? | Status |
 |-----------|-------|-----------------|--------|
-| FFT | O(N²) | O(N log N) | **Proven** (Cooley-Tukey) |
-| φ-RFT | O(N²) | O(N log N)? | **Unproven** — no published factorization |
+| FFT | O(N²) | O(N log N) | **Established** (Cooley–Tukey) |
+| φ-RFT | O(N²) | O(N log N)? | **NO FORMAL PROOF** — no published factorization |
 | QR-orthonormalized RFT | O(N³) | — | Inherent to dense QR |
 
 **Open problem**: Does φ-RFT admit a fast O(N log N) algorithm? This would require either:
@@ -548,15 +541,15 @@ This section clarifies the distinction between **formal mathematical proofs** an
 
 | Component | Formal Proof | Empirical Verification | Gap Analysis |
 |-----------|--------------|------------------------|--------------|
-| **RFT Unitarity** | ⚠️ Conditional | ✅ Verified | Proven for Gram-normalized mode; raw φ-phase not unitary |
-| **RFT Invertibility** | ⚠️ Conditional | ✅ Verified (1e-14 error) | Requires Gram normalization or QR orthonormalization |
-| **φ = (1+√5)/2** | ✅ Proven | ✅ Verified | Golden ratio is algebraic; arithmetic exact in symbolic form |
-| **Decorrelation** | ❌ Unproven | ✅ Empirical | No theorem bounds decorrelation vs DCT/wavelets |
-| **Crypto Avalanche** | ❌ No proof | ✅ Empirical (99.9%) | Statistical test ≠ cryptographic proof |
-| **Crypto Security** | ❌ NOT CLAIMED | ⚠️ Partial | No formal security reduction; requires external audit |
-| **Codec R-D** | ❌ No proof | ✅ Empirical | No rate-distortion theorem; Shannon bound comparison needed |
-| **O(N log N) Fast RFT** | ❌ NOT CLAIMED | ❌ N/A | Open research problem |
-| **φ-SIS Hardness** | ❌ NOT CLAIMED | ❌ N/A | Non-standard lattice structure |
+| **RFT Unitarity** | Conditional | CONSTRUCTED + EMPIRICALLY VERIFIED (archived) | [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
+| **RFT Invertibility** | Conditional | CONSTRUCTED + EMPIRICALLY VERIFIED (archived) | [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
+| **φ = (1+√5)/2** | Established | OBSERVED (symbolic identity) | Standard algebra (no in-repo theorem) |
+| **Decorrelation** | Not claimed | OBSERVED (not archived) | No theorem bounds decorrelation vs DCT/wavelets |
+| **Crypto Avalanche** | Not claimed | EMPIRICALLY VERIFIED (archived) | [data/artifacts/crypto_tests/manifest.json](data/artifacts/crypto_tests/manifest.json) |
+| **Crypto Security** | NOT CLAIMED | OBSERVED (no proof/audit) | No formal security reduction |
+| **Codec R-D** | Not claimed | EMPIRICALLY VERIFIED (archived, synthetic) | [data/artifacts/codec_benchmark/manifest.json](data/artifacts/codec_benchmark/manifest.json) |
+| **O(N log N) Fast RFT** | NOT CLAIMED | OBSERVED (unavailable) | Open research problem |
+| **φ-SIS Hardness** | NOT CLAIMED | OBSERVED (no reduction) | Non-standard lattice structure |
 
 ### 11.2 What Constitutes a Formal Proof
 
@@ -567,10 +560,10 @@ A **formal proof** in this context requires:
 3. **Peer Review**: Independent verification by qualified mathematicians
 4. **Publication**: Appearance in peer-reviewed venue
 
-**Example of proven result**:
+**Example of constructed result**:
 > **Theorem (Gram-Schmidt Orthonormalization)**: Let Φ be a full-rank N×M matrix. Then Φ̃ = Φ(Φ†Φ)^{-1/2} satisfies Φ̃†Φ̃ = I.
 
-This is proven by direct computation: (Φ†Φ)^{-1/2} exists when Φ has full rank, and the product collapses to identity.
+This is shown by direct computation: (Φ†Φ)^{-1/2} exists when Φ has full rank, and the product collapses to identity.
 
 ### 11.3 What Constitutes Empirical Verification
 
@@ -636,36 +629,36 @@ This is proven by direct computation: (Φ†Φ)^{-1/2} exists when Φ has full r
 
 ### 11.5 Proof Artifacts in Repository
 
-| Proof | File | Verified? |
+| Proof | File | Status |
 |-------|------|-----------|
-| Gram orthonormalization | [docs/proofs/gram_normalization.md](proofs/gram_normalization.md) | ✅ Straightforward linear algebra |
-| φ arithmetic identities | [docs/theory/phi_identities.md](theory/phi_identities.md) | ✅ Algebraic identities |
-| Frame bounds (empirical) | [experiments/frame_bounds.py](../experiments/frame_bounds.py) | ⚠️ Numerical, not analytic |
-| Decorrelation (empirical) | [benchmarks/class_b_transform_dsp.py](../benchmarks/class_b_transform_dsp.py) | ⚠️ Test results, not proof |
+| Gram orthonormalization | [docs/proofs/gram_normalization.md](proofs/gram_normalization.md) | CONSTRUCTED (by definition) |
+| φ arithmetic identities | [docs/theory/phi_identities.md](theory/phi_identities.md) | OBSERVED (symbolic identities) |
+| Frame bounds (empirical) | [experiments/frame_bounds.py](../experiments/frame_bounds.py) | OBSERVED (not archived) |
+| Decorrelation (empirical) | [benchmarks/class_b_transform_dsp.py](../benchmarks/class_b_transform_dsp.py) | OBSERVED (not archived) |
 
 ### 11.6 Honest Assessment
 
 **What we can formally claim**:
-1. Gram-normalized RFT is unitary (proven by construction)
-2. φ = (1+√5)/2 has algebraic properties (number theory)
+1. Gram-normalized RFT is unitary (CONSTRUCTED by definition)
+2. φ = (1+√5)/2 has algebraic identities (standard number theory)
 3. Implementation matches specification (code + tests)
 
 **What we can empirically claim**:
-1. RFT round-trip error ≈ 1e-14 (verified, reproducible)
-2. Crypto avalanche ≈ 50% (verified, reproducible)
-3. Codec achieves specific BPP/PSNR points (verified, reproducible)
+1. RFT round-trip error ≈ 1e-14 (EMPIRICALLY VERIFIED; [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json))
+2. Crypto avalanche ≈ 50% (EMPIRICALLY VERIFIED; [data/artifacts/crypto_tests/manifest.json](data/artifacts/crypto_tests/manifest.json))
+3. Codec achieves specific BPP/PSNR points (EMPIRICALLY VERIFIED; [data/artifacts/codec_benchmark/manifest.json](data/artifacts/codec_benchmark/manifest.json))
 
 **What we explicitly do NOT claim**:
 1. Cryptographic security (no proof, no audit)
 2. Superiority over FFT (different, not better)
-3. O(N log N) complexity (unproven)
+3. O(N log N) complexity (no formal proof)
 4. Optimality of any kind (no theorems)
 
 ---
 
 ## Summary
 
-### Verified Algorithm Count
+### Documented Algorithm Count
 
 | Category | Count | Verification Status |
 |----------|-------|---------------------|
@@ -683,19 +676,18 @@ This is proven by direct computation: (Φ†Φ)^{-1/2} exists when Φ has full r
 |-------|--------|----------|-----------------|
 | H3 achieves 0.67 BPP | ⚠️ Claimed | Single-point observation | R-D curve + baselines |
 | FH5 achieves 0.41 BPP on edges | ⚠️ Claimed | Single-point observation | R-D curve + baselines |
-| Cond(Gram) = 1.0 | ✅ Verified | QR-orthonormalized | `data/artifacts/rft_stability/` |
-| Unitarity Ψ†Ψ = I | ✅ Verified | Gram-normalized mode | `energy_ratio = 1.0` |
-| Round-trip invertibility | ✅ Verified | rel_L2 ≈ 1e-14 | `data/artifacts/rft_stability/` |
-| Crypto avalanche 50% | ✅ Verified | 99.9% of ideal | `data/artifacts/crypto_tests/` |
+| Cond(Gram) = 1.0 | EMPIRICALLY VERIFIED (archived) | QR-orthonormalized | [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
+| Unitarity Ψ†Ψ = I | CONSTRUCTED + EMPIRICALLY VERIFIED (archived) | Gram-normalized mode | [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
+| Round-trip invertibility | CONSTRUCTED + EMPIRICALLY VERIFIED (archived) | rel_L2 ≈ 1e-14 | [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
+| Crypto avalanche 50% | EMPIRICALLY VERIFIED (archived) | 99.9% of ideal | [data/artifacts/crypto_tests/manifest.json](data/artifacts/crypto_tests/manifest.json) |
 | O(N log N) fast RFT | ❌ NOT CLAIMED | No factorization | Open research problem |
 | φ-SIS secure | ❌ NOT CLAIMED | Non-standard assumption | External cryptanalysis needed |
 | Feistel cipher secure | ❌ NOT CLAIMED | No audit | External review needed |
 
 **Legend**:
-- ✅ Verified: Archived artifact with `{commit, seed, dataset, command}`
-- ⚠️ Claimed: Observed but no reproducibility artifact
-- ❌ Unproven/Not analyzed: No evidence exists
-- ❌ NOT CLAIMED: We explicitly do not make this claim
+- EMPIRICALLY VERIFIED (archived): Artifact with `{commit, seed, dataset, command}`
+- OBSERVED (not archived): Transient output only
+- NOT CLAIMED: Explicitly not claimed
 
 ### Recommended Algorithms (with caveats)
 
@@ -743,16 +735,16 @@ This section maps algorithms to their validation protocols from [RESEARCH_SOURCE
 | Algorithm Category | Research Guide Protocol | Validation Command | Status |
 |--------------------|------------------------|-------------------|--------|
 | Core RFT (§1) | Protocol A: Transform Analysis | `pytest tests/test_rft_unitarity.py -v` | ✅ Documented |
-| Hybrid Codecs (§5) | Phase 3: Benchmark Reproduction | `python benchmarks/run_all_benchmarks.py` | ✅ Verified |
-| Crypto (§7) | Protocol C: Cryptographic Security | NIST STS not yet run | ⚠️ Incomplete |
-| Quantum Sim (§8) | Protocol B: Quantum Simulation | Qiskit/Cirq comparison in Class A | ✅ Verified |
-| Medical (§5.3) | Protocol D: Medical Signal Processing | PhysioNet tests in benchmarks | ⚠️ Partial |
+| Hybrid Codecs (§5) | Phase 3: Benchmark Reproduction | `python benchmarks/run_all_benchmarks.py` | OBSERVED (not archived) |
+| Crypto (§7) | Protocol C: Cryptographic Security | NIST STS not yet run | OBSERVED (not archived) |
+| Quantum Sim (§8) | Protocol B: Quantum Simulation | Qiskit/Cirq comparison in Class A | OBSERVED (not archived) |
+| Medical (§5.3) | Protocol D: Medical Signal Processing | PhysioNet tests in benchmarks | OBSERVED (not archived) |
 
 ### Source Cross-Reference
 
 | NOVEL_ALGORITHMS Claim | Research Guide Source | Validation Status |
 |------------------------|----------------------|-------------------|
-| "O(N²) naive, no fast algorithm proven" | arXiv math.NA (Protocol A) | ✅ Honest—matches guide expectation |
+| "O(N²) naive, no fast algorithm formally shown" | arXiv math.NA (Protocol A) | OBSERVED (not archived) |
 | "O(N³) for QR" | MIT 18.06 Linear Algebra | ✅ Standard complexity |
 | "Cond(Gram) = 1.0 (QR-enforced)" | Protocol A: Ψ†Ψ = I | ✅ Clarified as construction |
 | φ-SIS "non-standard assumption" | IACR ePrint, Protocol C | ✅ Correctly distinguished |
@@ -817,7 +809,7 @@ python scripts/archive_rft_stability.py --output data/artifacts/rft_stability --
 python scripts/archive_codec_rd_curves.py --output data/artifacts/codec_benchmark --seed 42
 ```
 
-### Verified Results (2026-01-27)
+### EMPIRICALLY VERIFIED Results (2026-01-27)
 
 | Test | Previous (Buggy) | Actual (Fixed) | Status |
 |------|------------------|----------------|--------|

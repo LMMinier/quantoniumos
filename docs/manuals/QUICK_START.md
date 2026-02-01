@@ -19,7 +19,7 @@ Click the Q logo in the center to access applications.
 
 ```bash
 # Quantum simulator (symbolic surrogate; not full 2^n state)
-python src/apps/quantum_simulator.py
+python src/apps/symbolic_simulator.py
 
 # Secure note-taking
 python src/apps/q_notes.py
@@ -34,7 +34,7 @@ python src/apps/qshll_chatbox.py
 python src/apps/qshll_system_monitor.py
 
 # Cryptography tools
-python src/apps/quantum_crypto.py
+python src/apps/quantum_inspired_crypto.py
 ```
 
 ## Run Validation Tests

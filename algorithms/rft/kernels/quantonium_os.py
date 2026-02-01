@@ -224,16 +224,20 @@ class QuantoniumOS:
         return result
     
     def run_quantum_benchmark(self) -> Dict:
-        """Benchmark the quantum engine"""
+        """Benchmark the symbolic compression engine.
+        
+        NOTE: This compresses structured classical vectors, NOT quantum states.
+        The 'qubit' terminology is legacy and misleading.
+        """
         if self.engines['quantum']['status'] != 'operational':
-            return {'error': 'Quantum engine not operational'}
+            return {'error': 'Symbolic compression engine not operational'}
             
-        print("\n⚛️  Running Quantum Engine Benchmark...")
+        print("\n🔢  Running Symbolic Compression Benchmark (legacy 'quantum' naming)...")
         engine = self.engines['quantum']['engine']
         
-        # Test million symbolic label compression
+        # Test symbolic vector compression (NOT actual quantum simulation)
         start_time = time.perf_counter()
-        success, perf = engine.compress_million_qubits(1000000)
+        success, perf = engine.compress_million_qubits(1000000)  # Legacy name
         total_time = time.perf_counter() - start_time
         
         if success:
@@ -253,7 +257,7 @@ class QuantoniumOS:
                 'backend': perf['backend']
             }
             
-            print(f"   ✅ Successfully simulated 1,000,000 symbolic labels")
+            print(f"   ✅ Compressed 1,000,000 symbolic vectors (NOT quantum states)")
             print(f"   ⏱️  Compression time: {result['compression_time_ms']:.1f}ms")
             print(f"   🔄 Operations/sec: {result['operations_per_second']:,}")
             print(f"   💾 Memory usage: {result['memory_mb']:.6f} MB")

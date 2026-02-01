@@ -182,7 +182,7 @@ class QuantoniumImports:
             status[f'core.{module}'] = mod is not None
             
         # Test key apps
-        key_apps = ['quantum_crypto', 'q_notes', 'quantum_simulator']
+        key_apps = ['quantum_inspired_crypto', 'q_notes', 'symbolic_simulator']
         for app in key_apps:
             mod = self.import_app(app)
             status[f'app.{app}'] = mod is not None

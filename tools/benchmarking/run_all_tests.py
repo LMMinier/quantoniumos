@@ -117,7 +117,7 @@ class ReproducibilityHarness:
     def test_quantum_scaling(self):
         """Test quantum simulator scaling (T2: Quantum Simulator)"""
         try:
-            from quantum_simulator import QuantumSimulator
+            from symbolic_simulator import QuantumSimulator
             
             # Test scaling behavior
             sizes = [100, 200] if self.quick_mode else [100, 200, 500, 1000]

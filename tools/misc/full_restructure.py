@@ -149,7 +149,7 @@ class QuantoniumRestructure:
             "algorithms/compression/hybrid",
             "algorithms/compression/vertex",
             "algorithms/crypto",
-            "os/apps/quantum_simulator",
+            "os/apps/symbolic_simulator",
             "os/apps/q_vault",
             "os/apps/q_notes", 
             "os/apps/visualizers",
@@ -235,7 +235,7 @@ class QuantoniumRestructure:
             return
             
         app_groups = {
-            "quantum_simulator": ["quantum_simulator.py", "quantum_crypto.py", "quantum_parameter_3d_visualizer.py"],
+            "symbolic_simulator": ["symbolic_simulator.py", "quantum_inspired_crypto.py", "quantum_parameter_3d_visualizer.py"],
             "q_vault": ["q_vault.py", "launch_q_vault.py"],
             "q_notes": ["q_notes.py", "launch_q_notes.py"],
             "visualizers": ["rft_visualizer*.py", "rft_validation_visualizer.py"],

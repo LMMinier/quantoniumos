@@ -1,3 +1,11 @@
+// SPDX-License-Identifier: LicenseRef-QuantoniumOS-Claims-NC
+// Copyright (C) 2025-2026 Luis M. Minier / quantoniumos
+// Patent Application: USPTO #19/169,399
+//
+// SPDX-License-Identifier: LicenseRef-QuantoniumOS-Claims-NC
+// Copyright (C) 2025-2026 Luis M. Minier / quantoniumos
+// Patent Application: USPTO #19/169,399
+//
 module testbench;
 
     // Inputs

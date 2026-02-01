@@ -1,3 +1,11 @@
+// SPDX-License-Identifier: LicenseRef-QuantoniumOS-Claims-NC
+// Copyright (C) 2025-2026 Luis M. Minier / quantoniumos
+// Patent Application: USPTO #19/169,399
+//
+// SPDX-License-Identifier: LicenseRef-QuantoniumOS-Claims-NC
+// Copyright (C) 2025-2026 Luis M. Minier / quantoniumos
+// Patent Application: USPTO #19/169,399
+//
 // Synthesizable RFT 8x8 Kernel Module for Cell Count Analysis
 // This is the canonical RFT eigenbasis matrix multiply core
 // Written in Verilog-2005 for Yosys compatibility

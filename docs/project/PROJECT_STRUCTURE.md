@@ -11,7 +11,7 @@
   - `rft_kernel.c` - Unitary RFT kernel with QR decomposition
   - `rft_kernel.h` - Header definitions and constants
 - `apps/` - PyQt5 desktop applications
-  - `quantum_simulator.py` - symbolic surrogate quantum simulator (artifact: results/QUANTUM_SCALING_BENCHMARK.json)
+  - `symbolic_simulator.py` - symbolic surrogate quantum simulator (artifact: results/QUANTUM_SCALING_BENCHMARK.json)
   - `q_notes.py` - Note-taking application
   - `q_vault.py` - Secure storage application
   - Additional utility and monitoring applications
@@ -70,7 +70,7 @@ python quantonium_boot.py
 ### Individual Components
 ```bash
 # Run specific applications
-python src/apps/quantum_simulator.py
+python src/apps/symbolic_simulator.py
 python src/apps/q_notes.py
 
 # Test RFT kernel

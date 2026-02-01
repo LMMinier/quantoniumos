@@ -156,3 +156,7 @@ algorithms/rft/kernels/compiled/
 
 hardware/tb/obj_phi_rft/
 hardware/rftpu-3d-viewer/node_modules/
+results/
+*.pyc
+__pycache__/
+papers_backup/*.pdf

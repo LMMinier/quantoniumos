@@ -104,14 +104,14 @@ Empirical results, crypto conjectures, and constructions without reductions do *
 ### Gate Definitions and Unitarity
 - **Source**: Nielsen & Chuang (textbook equivalence)
 - **Implementation**:
-  - [algorithms/rft/quantum/quantum_gates.py](algorithms/rft/quantum/quantum_gates.py)
+  - [algorithms/rft/quantum_inspired/quantum_gates.py](algorithms/rft/quantum_inspired/quantum_gates.py)
 - **Tests**:
   - [tests/proofs/test_entanglement_protocols.py](tests/proofs/test_entanglement_protocols.py)
 
 ### Grover’s Algorithm Correctness
 - **Source**: Grover (1996)
 - **Implementation**:
-  - [algorithms/rft/quantum/quantum_search.py](algorithms/rft/quantum/quantum_search.py)
+  - [algorithms/rft/quantum_inspired/quantum_search.py](algorithms/rft/quantum_inspired/quantum_search.py)
 
 ---
 

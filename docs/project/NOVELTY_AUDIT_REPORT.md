@@ -229,7 +229,7 @@ Defines 10+ variants (Golden, Fibonacci, Harmonic, etc.) that differ only in the
 
 ## Part 4: Quantum Simulation
 
-### 4.1 Topological Quantum Kernel (`algorithms/rft/quantum/topological_quantum_kernel.py`)
+### 4.1 Topological Quantum Kernel (`algorithms/rft/quantum_inspired/topological_quantum_kernel.py`)
 
 **Lines 1-200**
 
@@ -249,7 +249,7 @@ Defines 10+ variants (Golden, Fibonacci, Harmonic, etc.) that differ only in the
 
 ---
 
-### 4.2 Geometric Waveform Hash (`algorithms/rft/quantum/geometric_waveform_hash.py`)
+### 4.2 Geometric Waveform Hash (`algorithms/rft/quantum_inspired/geometric_waveform_hash.py`)
 
 **Lines 1-100**
 

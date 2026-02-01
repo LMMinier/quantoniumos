@@ -52,7 +52,7 @@ ls -la core/*.py | grep "r--r--r--"
 cd /workspaces/quantoniumos
 python3 quantonium_boot.py                    # Main system
 python3 weights/streaming_llama_integrator.py # AI operations
-python3 apps/launch_quantum_simulator.py      # Quantum sim
+python3 apps/launch_symbolic_simulator.py      # Quantum sim
 
 # ❌ AVOID - Never run unknown or automated scripts
 ```

@@ -72,7 +72,7 @@ winding_factor = Q[k,n] * np.exp(symbolic_phase)
 
 #### [OK] Topological Embedding Layer
 **Files**:
-- `algorithms/rft/quantum/enhanced_topological_qubit.py` (lines 125-200)
+- `algorithms/rft/quantum_inspired/enhanced_topological_qubit.py` (lines 125-200)
 - `algorithms/rft/kernels/include/rft_kernel.h` (lines 91-126)
 
 **Key Implementation**:
@@ -98,9 +98,9 @@ winding_number = cmath.exp(1j * theta) * cmath.exp(1j * phi_angle * self.phi)
 
 #### [OK] Symbolic Gate Propagation (Hadamard & Pauli-X)
 **Files**:
-- `algorithms/rft/quantum/quantum_gates.py` (lines 56-75, 133-143)
+- `algorithms/rft/quantum_inspired/quantum_gates.py` (lines 56-75, 133-143)
 - `algorithms/rft/kernels/kernel/quantum_symbolic_compression.h` (lines 98-101)
-- `algorithms/rft/quantum/topological_quantum_kernel.py` (lines 176-230)
+- `algorithms/rft/quantum_inspired/topological_quantum_kernel.py` (lines 176-230)
 
 **Hadamard Gate**:
 ```python
@@ -138,7 +138,7 @@ def X() -> QuantumGate:
 
 #### [OK] Symbolic Waveform Generation
 **Files**:
-- `algorithms/rft/quantum/geometric_waveform_hash.py` (lines 82-97)
+- `algorithms/rft/quantum_inspired/geometric_waveform_hash.py` (lines 82-97)
 - `docs/patent/USPTO_ALGORITHM_SPECIFICATIONS.md` (lines 130-152)
 
 **Key Implementation**:
@@ -167,7 +167,7 @@ A(t) = Σ(k=0 to |D|-1) d[k] × φ^k / √|D|
 
 #### [OK] Topological Hashing Module
 **Files**:
-- `algorithms/rft/quantum/geometric_waveform_hash.py` (lines 99-132)
+- `algorithms/rft/quantum_inspired/geometric_waveform_hash.py` (lines 99-132)
 - `algorithms/rft/crypto/enhanced_cipher.py` (lines 355-380)
 
 **Key Implementation**:
@@ -261,7 +261,7 @@ for iteration in range(3):
 #### [OK] Polar-to-Cartesian with Golden Ratio Scaling
 **Files**:
 - `docs/patent/USPTO_ALGORITHM_SPECIFICATIONS.md` (lines 239-251)
-- `algorithms/rft/quantum/geometric_waveform_hash.py` (complete implementation)
+- `algorithms/rft/quantum_inspired/geometric_waveform_hash.py` (complete implementation)
 
 **Mathematical Formula**:
 ```python
@@ -299,7 +299,7 @@ for k in range(N):
 
 #### [OK] Phase-Winding Tag (Synthetic)
 **Files**:
-- `algorithms/rft/quantum/enhanced_topological_qubit.py` (lines 140-155)
+- `algorithms/rft/quantum_inspired/enhanced_topological_qubit.py` (lines 140-155)
 - `docs/patent/USPTO_ALGORITHM_SPECIFICATIONS.md` (lines 207-220)
 
 **Mathematical Formula**:
@@ -325,7 +325,7 @@ synthetic_score = 2 - len(set(np.round(winding_numbers).astype(int)))
 
 #### [OK] Projection-Based Hash Generation
 **Files**:
-- `algorithms/rft/quantum/geometric_waveform_hash.py` (lines 151-177)
+- `algorithms/rft/quantum_inspired/geometric_waveform_hash.py` (lines 151-177)
 - `docs/patent/USPTO_ALGORITHM_SPECIFICATIONS.md` (lines 265-275)
 
 **Key Implementation**:
@@ -512,20 +512,20 @@ The following files from `CLAIMS_PRACTICING_FILES.txt` implement the claimed inv
 - `algorithms/rft/kernels/kernel/quantum_symbolic_compression.asm`
 - `algorithms/rft/variants/symbolic_unitary.py`
 - `algorithms/rft/kernels/python_bindings/quantum_symbolic_engine.py`
-- `algorithms/rft/quantum/quantum_gates.py`
-- `algorithms/rft/quantum/enhanced_topological_qubit.py`
-- `algorithms/rft/quantum/topological_quantum_kernel.py`
+- `algorithms/rft/quantum_inspired/quantum_gates.py`
+- `algorithms/rft/quantum_inspired/enhanced_topological_qubit.py`
+- `algorithms/rft/quantum_inspired/topological_quantum_kernel.py`
 
 ### Claim 2 Core Files:
-- `algorithms/rft/quantum/geometric_waveform_hash.py`
+- `algorithms/rft/quantum_inspired/geometric_waveform_hash.py`
 - `algorithms/rft/crypto/enhanced_cipher.py`
 - `algorithms/rft/crypto/benchmarks/rft_sis/rft_sis_hash_v31.py`
 - `algorithms/rft/kernels/engines/crypto/src/feistel_round48.c`
 
 ### Claim 3 Core Files:
-- `algorithms/rft/quantum/geometric_waveform_hash.py`
-- `algorithms/rft/quantum/geometric_hashing.py`
-- `algorithms/rft/quantum/enhanced_topological_qubit.py`
+- `algorithms/rft/quantum_inspired/geometric_waveform_hash.py`
+- `algorithms/rft/quantum_inspired/geometric_hashing.py`
+- `algorithms/rft/quantum_inspired/enhanced_topological_qubit.py`
 
 ### Claim 4 Core Files:
 - `algorithms/rft/kernels/unified/kernel/unified_orchestrator.c`
