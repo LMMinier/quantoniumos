@@ -4,6 +4,16 @@
 H3-ARFT Integration
 Extends the H3 Hierarchical Cascade to use the Operator-Based ARFT for the texture component.
 This replaces the standard RFT with the signal-adaptive ARFT kernel.
+
+Note on "Coherence":
+    The coherence metric measures the normalized correlation between the
+    structure and texture components. For an ideal decomposition, this
+    should be close to zero (orthogonal components).
+    
+    coherence = |<structure, texture>| / (||structure|| * ||texture||)
+    
+    This is NOT the same as quantum coherence or signal-processing coherence
+    functions. It's a simple measure of decomposition quality.
 """
 
 import numpy as np
@@ -15,6 +25,32 @@ from scipy.fft import dct, idct
 # Import existing H3 for inheritance/reference
 from algorithms.rft.hybrids.cascade_hybrids import H3HierarchicalCascade, CascadeResult
 from algorithms.rft.kernels.operator_arft_kernel import build_operator_kernel, arft_forward
+
+
+def compute_decomposition_coherence(structure: np.ndarray, texture: np.ndarray) -> float:
+    """
+    Compute normalized correlation between decomposition components.
+    
+    This measures how "orthogonal" the structure/texture split is.
+    Values close to 0 indicate good separation; values near 1 indicate
+    redundant or highly correlated components.
+    
+    Args:
+        structure: Structure component of signal
+        texture: Texture component of signal
+        
+    Returns:
+        Coherence value in [0, 1]
+    """
+    norm_s = np.linalg.norm(structure)
+    norm_t = np.linalg.norm(texture)
+    
+    if norm_s < 1e-10 or norm_t < 1e-10:
+        return 0.0  # One component is effectively zero
+    
+    inner = np.abs(np.dot(structure, texture))
+    return float(inner / (norm_s * norm_t))
+
 
 class H3ARFTCascade(H3HierarchicalCascade):
     """
@@ -28,18 +64,26 @@ class H3ARFTCascade(H3HierarchicalCascade):
         C = {DCT(x_structure), ARFT(x_texture)}
         
     Where ARFT is the eigenbasis of the texture's autocorrelation operator.
+    
+    Note: This is a PROTOTYPE implementation. For production compression,
+    use the native C++ pipeline (rftmw_native) with ANS entropy coding.
     """
     
     def __init__(self, kernel_size_ratio: float = 1/32):
         super().__init__(kernel_size_ratio)
         self.variant_name = "H3_ARFT_Cascade"
-        self.last_kernel = None # Store kernel for decoding
+        self.last_kernel = None  # Store kernel for decoding
+        self.last_decomposition = None  # Store for coherence calculation
         
     def encode(self, signal: np.ndarray, sparsity_target: float = 0.95) -> CascadeResult:
         start_time = time.perf_counter()
         
         # 1. Decompose Signal
         structure, texture = self._decompose(signal)
+        self.last_decomposition = (structure, texture)
+        
+        # Compute actual coherence (not hardcoded!)
+        coherence = compute_decomposition_coherence(structure, texture)
         
         # 2. Transform Structure (DCT)
         # Use standard DCT-II with ortho normalization
@@ -77,38 +121,19 @@ class H3ARFTCascade(H3HierarchicalCascade):
         final_texture[texture_indices[:n_texture]] = texture_coeffs[texture_indices[:n_texture]]
         
         # Combine for storage (interleaved or concatenated)
-        # For BPP calculation, we count non-zero coefficients
         combined_coeffs = np.concatenate([final_struct, final_texture])
         
         # 5. Calculate Metrics
-        # BPP estimation: (non-zero count * 16 bits) / N
-        # Note: H3 uses a different BPP calculation (likely entropy-based or different quantization)
-        # To be fair, we should use the same logic.
-        # H3 result was ~0.6 BPP. Our previous calc gave 15.9 BPP (way too high).
-        # This implies H3 is counting bits AFTER entropy coding, or using a very sparse selection.
-        
-        # Let's use a simpler sparsity-based BPP estimate for comparison
-        # Assuming 16 bits per coefficient, but only storing the top K coefficients
-        # BPP = (K * 16) / N
-        
-        # In H3, BPP is calculated as:
-        # bpp = (len(encoded_bits) / n)
-        # We don't have the entropy coder here, so we'll estimate.
-        # H3 achieved 0.62 BPP. That's ~0.04 coefficients per sample (very sparse).
-        # Our current selection (70% + 30%) is 100% density! That's why BPP is 16.
-        
-        # FIX: Apply thresholding to match H3 sparsity
-        threshold = 0.1 # Keep coeffs > 10% of max
-        nz_struct = np.count_nonzero(np.abs(final_struct) > threshold * np.max(np.abs(final_struct)))
-        nz_texture = np.count_nonzero(np.abs(final_texture) > threshold * np.max(np.abs(final_texture)))
-        
-        nz_count = nz_struct + nz_texture
-        bpp = (nz_count * 16) / N 
+        # BPP is estimated from non-zero count (actual BPP requires entropy coding)
+        # NOTE: This is an ESTIMATE. For true BPP, use bench_h3_codec_real_bpp.py
+        threshold = 0.01 * np.max(np.abs(combined_coeffs))  # 1% of max
+        nz_count = np.count_nonzero(np.abs(combined_coeffs) > threshold)
+        estimated_bpp = (nz_count * 16) / N  # 16 bits per non-zero coeff
         
         # Calculate PSNR
         # Reconstruct to measure error
         rec_struct = idct(final_struct, norm='ortho')
-        rec_texture = self.last_kernel @ final_texture # Inverse ARFT
+        rec_texture = self.last_kernel @ final_texture  # Inverse ARFT
         rec_signal = rec_struct + rec_texture
         
         mse = np.mean((signal - rec_signal) ** 2)
@@ -117,9 +142,9 @@ class H3ARFTCascade(H3HierarchicalCascade):
         
         return CascadeResult(
             coefficients=combined_coeffs,
-            bpp=bpp,
-            coherence=0.0, # Orthogonal decomposition
-            sparsity=1.0 - (nz_count / (2*N)),
+            bpp=estimated_bpp,
+            coherence=coherence,  # Now actually computed!
+            sparsity=1.0 - (nz_count / len(combined_coeffs)),
             variant=self.variant_name,
             time_ms=(time.perf_counter() - start_time) * 1000,
             psnr=psnr

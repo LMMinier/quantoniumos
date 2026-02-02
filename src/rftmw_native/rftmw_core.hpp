@@ -85,15 +85,19 @@ using RealVec = std::vector<double>;
 
 /**
  * AVX2-accelerated golden phase computation.
- * Computes: phase[k] = 2π * φ^(k/n) for k = 0..n-1
+ * Matches Python formula: θ[k] = 2π·frac(k/φ) + π·k²/n
  */
 inline void compute_golden_phases_avx2(double* phases, size_t n) {
-    const double log_phi = std::log(PHI);
+    const double beta = 1.0;
+    const double sigma = 1.0;
     const double inv_n = 1.0 / static_cast<double>(n);
     
     // Process 4 doubles at a time with AVX2
     __m256d v_two_pi = _mm256_set1_pd(TWO_PI);
-    __m256d v_log_phi = _mm256_set1_pd(log_phi);
+    __m256d v_pi = _mm256_set1_pd(PI);
+    __m256d v_phi_inv = _mm256_set1_pd(PHI_INV);
+    __m256d v_beta = _mm256_set1_pd(beta);
+    __m256d v_sigma = _mm256_set1_pd(sigma);
     __m256d v_inv_n = _mm256_set1_pd(inv_n);
     
     size_t k = 0;
@@ -105,25 +109,37 @@ inline void compute_golden_phases_avx2(double* phases, size_t n) {
             static_cast<double>(k)
         );
         
-        // exp(k/n * log(phi)) = phi^(k/n)
-        __m256d v_exponent = _mm256_mul_pd(_mm256_mul_pd(v_k, v_inv_n), v_log_phi);
+        // k_phi_inv = k * PHI_INV
+        __m256d v_k_phi_inv = _mm256_mul_pd(v_k, v_phi_inv);
         
-        // Approximate exp using Taylor series (fast path)
-        // For production, use Intel SVML or custom exp implementation
-        __m256d v_phi_pow = _mm256_set_pd(
-            std::exp(((k + 3) * inv_n) * log_phi),
-            std::exp(((k + 2) * inv_n) * log_phi),
-            std::exp(((k + 1) * inv_n) * log_phi),
-            std::exp((k * inv_n) * log_phi)
+        // frac_part = k_phi_inv - floor(k_phi_inv)
+        __m256d v_floor = _mm256_floor_pd(v_k_phi_inv);
+        __m256d v_frac = _mm256_sub_pd(v_k_phi_inv, v_floor);
+        
+        // theta_phi = 2π * beta * frac_part
+        __m256d v_theta_phi = _mm256_mul_pd(_mm256_mul_pd(v_two_pi, v_beta), v_frac);
+        
+        // k_squared = k * k
+        __m256d v_k_sq = _mm256_mul_pd(v_k, v_k);
+        
+        // theta_chirp = π * sigma * k² / n
+        __m256d v_theta_chirp = _mm256_mul_pd(
+            _mm256_mul_pd(_mm256_mul_pd(v_pi, v_sigma), v_k_sq),
+            v_inv_n
         );
         
-        __m256d v_phase = _mm256_mul_pd(v_two_pi, v_phi_pow);
-        _mm256_storeu_pd(phases + k, v_phase);
+        // theta = theta_phi + theta_chirp
+        __m256d v_theta = _mm256_add_pd(v_theta_phi, v_theta_chirp);
+        _mm256_storeu_pd(phases + k, v_theta);
     }
     
-    // Handle remainder
+    // Handle remainder with scalar
     for (; k < n; ++k) {
-        phases[k] = TWO_PI * std::pow(PHI, static_cast<double>(k) / n);
+        double k_phi_inv = static_cast<double>(k) * PHI_INV;
+        double frac_part = k_phi_inv - std::floor(k_phi_inv);
+        double theta_phi = TWO_PI * beta * frac_part;
+        double theta_chirp = PI * sigma * static_cast<double>(k * k) * inv_n;
+        phases[k] = theta_phi + theta_chirp;
     }
 }
 
@@ -176,10 +192,29 @@ inline void apply_phase_rotation_avx2(
 // Scalar Fallback Implementations
 // ============================================================================
 
+/**
+ * Compute fused phase diagonal matching Python's phi_phase_fft_optimized.
+ * 
+ * Python formula (default β=1, σ=1):
+ *   θ[k] = 2π·frac(k/φ) + π·k²/n
+ * 
+ * where frac(x) = x mod 1 (fractional part)
+ */
 inline void compute_golden_phases_scalar(double* phases, size_t n) {
-    const double inv_n = 1.0 / static_cast<double>(n);
+    const double beta = 1.0;
+    const double sigma = 1.0;
+    
     for (size_t k = 0; k < n; ++k) {
-        phases[k] = TWO_PI * std::pow(PHI, static_cast<double>(k) * inv_n);
+        // θ_phi = 2πβ·frac(k/φ) = 2πβ·frac(k·φ_inv)
+        double k_phi_inv = static_cast<double>(k) * PHI_INV;
+        double frac_part = k_phi_inv - std::floor(k_phi_inv);  // frac(x) = x - floor(x)
+        double theta_phi = TWO_PI * beta * frac_part;
+        
+        // θ_chirp = πσk²/n
+        double k_squared = static_cast<double>(k * k);
+        double theta_chirp = PI * sigma * k_squared / static_cast<double>(n);
+        
+        phases[k] = theta_phi + theta_chirp;
     }
 }
 
@@ -206,6 +241,9 @@ inline void apply_phase_rotation_scalar(
 /**
  * In-place radix-2 Cooley-Tukey FFT.
  * n must be a power of 2.
+ * 
+ * NOTE: This FFT does NOT apply any normalization.
+ * Normalization is handled by the calling code (RFTMWEngine).
  */
 inline void fft_radix2_inplace(Complex* data, size_t n, bool inverse = false) {
     if (n <= 1) return;
@@ -241,18 +279,15 @@ inline void fft_radix2_inplace(Complex* data, size_t n, bool inverse = false) {
         }
     }
     
-    // Normalize for inverse FFT
-    if (inverse) {
-        double inv_n = 1.0 / static_cast<double>(n);
-        for (size_t i = 0; i < n; ++i) {
-            data[i] *= inv_n;
-        }
-    }
+    // NO normalization here - handled by RFTMWEngine
 }
 
 /**
  * Mixed-radix FFT for non-power-of-2 sizes.
  * Falls back to DFT for prime factors.
+ * 
+ * NOTE: This FFT does NOT apply any normalization.
+ * Normalization is handled by the calling code (RFTMWEngine).
  */
 inline void fft_mixed_radix(Complex* data, size_t n, bool inverse = false) {
     // For power-of-2, use fast path
@@ -271,9 +306,7 @@ inline void fft_mixed_radix(Complex* data, size_t n, bool inverse = false) {
             double angle = sign * TWO_PI * static_cast<double>(k * j) / static_cast<double>(n);
             result[k] += data[j] * Complex(std::cos(angle), std::sin(angle));
         }
-        if (inverse) {
-            result[k] /= static_cast<double>(n);
-        }
+        // NO normalization here - handled by RFTMWEngine
     }
     
     std::copy(result.begin(), result.end(), data);
@@ -315,6 +348,7 @@ private:
     ComplexVec basis_cache_;  // For ASM kernel basis matrix
     bool use_simd_;
     bool use_asm_;
+    size_t last_transform_size_ = 0;  // Track last computed phase size (chirp depends on n)
     
 public:
     explicit RFTMWEngine(
@@ -441,25 +475,35 @@ public:
     /**
      * Forward Φ-RFT transform.
      * 
-     * RFT(x) = FFT(x ⊙ exp(i·2π·φ^(k/n)))
+     * Matches Python phi_phase_fft_optimized:
+     *   Y = E · FFT(x)
      * 
-     * Where ⊙ is element-wise multiplication.
+     * where E[k] = exp(i · θ[k])
+     *       θ[k] = 2π·frac(k/φ) + π·k²/n
+     * 
+     * Phase modulation is applied AFTER FFT.
      */
     ComplexVec forward(const RealVec& input) {
         size_t n = input.size();
         if (n == 0) return {};
         
-        // Ensure phases are cached
-        if (n > phase_cache_.size()) {
+        // Always recompute phases for the actual transform size
+        // (chirp term θ_chirp = πk²/n depends on n)
+        if (n != last_transform_size_) {
             precompute_phases(n);
+            last_transform_size_ = n;
         }
         
-        // Convert real to complex and apply golden phase modulation
+        // Convert real to complex
         ComplexVec data(n);
         for (size_t k = 0; k < n; ++k) {
             data[k] = Complex(input[k], 0.0);
         }
         
+        // Apply FFT first
+        fft_mixed_radix(data.data(), n, false);
+        
+        // Apply phase modulation AFTER FFT (matches Python)
         ComplexVec modulated(n);
         
 #if RFTMW_HAS_AVX2
@@ -471,9 +515,6 @@ public:
             apply_phase_rotation_scalar(data.data(), modulated.data(), phase_cache_.data(), n);
         }
         
-        // Apply FFT
-        fft_mixed_radix(modulated.data(), n, false);
-        
         // Apply normalization
         apply_normalization(modulated, false);
         
@@ -484,22 +525,28 @@ public:
         size_t n = input.size();
         if (n == 0) return {};
         
-        if (n > phase_cache_.size()) {
+        // Always recompute phases for the actual transform size
+        if (n != last_transform_size_) {
             precompute_phases(n);
+            last_transform_size_ = n;
         }
         
+        // Copy input and apply FFT
+        ComplexVec data = input;
+        fft_mixed_radix(data.data(), n, false);
+        
+        // Apply phase modulation AFTER FFT
         ComplexVec modulated(n);
         
 #if RFTMW_HAS_AVX2
         if (use_simd_) {
-            apply_phase_rotation_avx2(input.data(), modulated.data(), phase_cache_.data(), n);
+            apply_phase_rotation_avx2(data.data(), modulated.data(), phase_cache_.data(), n);
         } else
 #endif
         {
-            apply_phase_rotation_scalar(input.data(), modulated.data(), phase_cache_.data(), n);
+            apply_phase_rotation_scalar(data.data(), modulated.data(), phase_cache_.data(), n);
         }
         
-        fft_mixed_radix(modulated.data(), n, false);
         apply_normalization(modulated, false);
         
         return modulated;
@@ -508,28 +555,35 @@ public:
     /**
      * Inverse Φ-RFT transform.
      * 
-     * IRFT(X) = IFFT(X) ⊙ exp(-i·2π·φ^(k/n))
+     * Matches Python phi_phase_fft_optimized:
+     *   x = IFFT(E† · Y)
+     * 
+     * where E† = conj(E) = exp(-i · θ)
+     * 
+     * Inverse phase modulation is applied BEFORE IFFT.
      */
     RealVec inverse(const ComplexVec& input) {
         size_t n = input.size();
         if (n == 0) return {};
         
-        if (n > phase_cache_.size()) {
+        // Always recompute phases for the actual transform size
+        if (n != last_transform_size_) {
             precompute_phases(n);
+            last_transform_size_ = n;
         }
         
-        // Copy and apply IFFT
-        ComplexVec data = input;
-        fft_mixed_radix(data.data(), n, true);
-        
-        // Apply inverse phase modulation (conjugate phases)
+        // Compute conjugate phases for inverse
         RealVec phases_neg(n);
         for (size_t k = 0; k < n; ++k) {
             phases_neg[k] = -phase_cache_[k];
         }
         
+        // Apply inverse phase modulation FIRST (before IFFT)
         ComplexVec demodulated(n);
-        apply_phase_rotation_scalar(data.data(), demodulated.data(), phases_neg.data(), n);
+        apply_phase_rotation_scalar(input.data(), demodulated.data(), phases_neg.data(), n);
+        
+        // Apply IFFT
+        fft_mixed_radix(demodulated.data(), n, true);
         
         // Apply normalization
         apply_normalization(demodulated, true);
@@ -547,8 +601,10 @@ public:
         size_t n = input.size();
         if (n == 0) return {};
         
-        if (n > phase_cache_.size()) {
+        // Always recompute phases for the actual transform size
+        if (n != last_transform_size_) {
             precompute_phases(n);
+            last_transform_size_ = n;
         }
         
         ComplexVec data = input;

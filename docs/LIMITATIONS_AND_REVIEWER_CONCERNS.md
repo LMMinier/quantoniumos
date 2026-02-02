@@ -179,6 +179,67 @@ See [BENCHMARK_PROTOCOL.md](../BENCHMARK_PROTOCOL.md).
 
 ---
 
+### Q11: "The compression BPP claims are not valid engineering."
+
+**Answer: Correct. We have now built an engineering-grade codec that shows the truth.**
+
+The hypothesis testing results (BPP 0.808, PSNR 52 dB) measured **coefficient sparsity**, not actual compression. We've since built a proper binary codec with full overhead accounting.
+
+**Engineering-grade codec results (`algorithms/rft/compression/rft_binary_codec.py`):**
+
+| Test Data | Original | RFT True BPP | zlib BPP | Winner |
+|-----------|----------|--------------|----------|--------|
+| Random 1KB | 1024 B | 19.3 | 8.1 | zlib |
+| Random 10KB | 10240 B | 15.7 | 8.0 | zlib |
+| Structured JSON | 1075 B | 21.8 | 0.4 | zlib |
+| Repeated pattern | 1300 B | 20.5 | 0.2 | zlib |
+
+**What the TRUE BPP includes:**
+- Header: 18 bytes (magic, version, flags, metadata)
+- Frequency table: 370-640 bytes (delta + varint encoded)
+- Payload: ANS-encoded quantized coefficients
+- CRC32: 4 bytes
+
+**The honest conclusion:**
+- RFT transform + ANS entropy coding **expands** data (>8 BPP)
+- The transform doesn't produce sparse enough coefficients for general data
+- zlib/zstd/brotli beat us handily on every test case
+- PSNR 46-53 dB is good quality but it's **lossy**, not lossless
+
+**What the RFT codec IS good for:**
+- Exact numerical reconstruction of continuous signals
+- Research on transform-domain representations
+- Signal analysis where sparsity matters more than compression
+
+**What it is NOT:**
+- A production compression codec
+- A replacement for entropy coders
+- Better than existing compression standards
+
+**Validation:** `python algorithms/rft/compression/rft_binary_codec.py`
+
+---
+
+### Q12: "Does the native C++ module match the Python reference?"
+
+**Answer: Yes, after fixing a critical bug (Feb 2026).**
+
+The native `rftmw_native` C++ module now exactly matches the Python reference implementation.
+
+**Bug fixed:** The chirp phase component `θ_chirp = πk²/n` was being computed with `n=65536` (max precomputed size) instead of the actual transform size. This caused the chirp term to be essentially zero for small transforms.
+
+**Current test results:**
+
+| Metric | Result | Threshold |
+|--------|--------|-----------|
+| Roundtrip error | 1.53e-14 | < 1e-10 |
+| Python match error | 1.87e-15 | < 1e-10 |
+| Norm preservation | 6.18e-15 | < 1% |
+
+**Validation:** `python tests/native/test_native_correctness_gate.py`
+
+---
+
 ## Summary of Limitations
 
 ### Computational
