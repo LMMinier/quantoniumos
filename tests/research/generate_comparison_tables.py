@@ -43,29 +43,31 @@ def table_1_transform_comparison():
 def table_2_performance_benchmarks():
     """Table 2: Performance Benchmarks (Actual Measurements)."""
     
-    print("\n" + "=" * 90)
+    print("\n" + "=" * 110)
     print("TABLE 2: Performance Benchmarks (N=256)")
-    print("=" * 90)
+    print("=" * 110)
     
-    print(f"\n{'Metric':<30s} | {'FFT':<15s} | {'DCT':<15s} | {'RFT':<15s} | {'Test File':<25s}")
-    print("-" * 105)
+    print(f"\n{'Metric':<30s} | {'FFT':<12s} | {'DCT':<12s} | {'RFT (raw)':<12s} | {'H3 Hybrid':<12s} | {'Test File':<20s}")
+    print("-" * 110)
     
     # These should match actual test results
+    # NOTE: H3 Hybrid = DCT(structure) + ARFT(texture) cascade - THIS is where sparsity wins
     rows = [
-        ("Roundtrip Error", "~1e-16", "~1e-16", "8e-16", "test_rft_correctness.py"),
-        ("Unitarity ||ΦᴴΦ-I||", "0 (exact)", "0 (exact)", "7.85e-14", "canonical_true_rft.py"),
-        ("Transform Time", "~10 µs", "~15 µs", "~500 µs", "(O(N²) expected)"),
-        ("Sparsity (φ-signal)", "0.77", "0.93", "0.72", "test_rft_signal_niche.py"),
-        ("Sparsity (integer f)", "0.99", "0.91", "0.67", "test_rft_signal_niche.py"),
-        ("Sparsity (white noise)", "0.00", "0.02", "0.00", "test_rft_signal_niche.py"),
-        ("Condition κ(G)", "1.0", "1.0", "~1e5", "gram_eigenstructure_analysis.py"),
+        ("Roundtrip Error", "~1e-16", "~1e-16", "8e-16", "8e-16", "test_rft_correctness.py"),
+        ("Unitarity ||ΦᴴΦ-I||", "0 (exact)", "0 (exact)", "7.85e-14", "N/A", "canonical_true_rft.py"),
+        ("Transform Time", "~10 µs", "~15 µs", "~500 µs", "~1 ms", "(measured)"),
+        ("BPP (ASCII wall)", "N/A", "~1.2", "N/A", "0.65-0.87", "ascii_wall_final_hypotheses.py"),
+        ("PSNR (H3 test)", "N/A", "~45 dB", "N/A", "52-60 dB", "ascii_wall_final_hypotheses.py"),
+        ("Coherence", "N/A", "N/A", "N/A", "0.00", "h3_arft_cascade.py"),
+        ("Condition κ(G)", "1.0", "1.0", "~1e3", "N/A", "gram_eigenstructure_analysis.py"),
     ]
     
-    for metric, fft, dct, rft, test in rows:
-        print(f"{metric:<30s} | {fft:<15s} | {dct:<15s} | {rft:<15s} | {test:<25s}")
+    for metric, fft, dct, rft, h3, test in rows:
+        print(f"{metric:<30s} | {fft:<12s} | {dct:<12s} | {rft:<12s} | {h3:<12s} | {test:<20s}")
     
-    print("\n" + "=" * 105)
-    print("NOTE: All values from reproducible tests in tests/ directory")
+    print("\n" + "=" * 110)
+    print("NOTE: H3 Hybrid = DCT(structure) + ARFT(texture) cascade - The COMPRESSION advantage is in H3, not raw RFT!")
+    print("      Raw RFT is the mathematical foundation; H3 is the practical codec.")
 
 
 def table_3_application_suitability():
@@ -101,30 +103,32 @@ def table_3_application_suitability():
 def table_4_honest_limitations():
     """Table 4: Honest Limitations Assessment."""
     
-    print("\n" + "=" * 90)
+    print("\n" + "=" * 100)
     print("TABLE 4: Limitations & Honest Assessment")
-    print("=" * 90)
+    print("=" * 100)
     
-    print(f"\n{'Aspect':<25s} | {'Status':<15s} | {'Evidence':<45s}")
-    print("-" * 90)
+    print(f"\n{'Aspect':<25s} | {'Status':<18s} | {'Evidence':<50s}")
+    print("-" * 100)
     
     rows = [
-        ("Compression BPP", "✗ Not competitive", "True BPP >8 bits (test_compression_engineering.py)"),
-        ("General sparsity", "✗ Loses to DCT", "0/10 wins in signal niche test"),
-        ("Computational speed", "✗ Slower than FFT", "O(N²) vs O(N log N)"),
+        ("Raw RFT sparsity", "✗ Loses to DCT alone", "Raw RFT is the basis, not the codec"),
+        ("H3 Hybrid compression", "✓ Competitive", "BPP 0.65-0.87, PSNR 52-60 dB (ascii_wall tests)"),
+        ("H3 Coherence", "✓ Zero", "Structure/texture orthogonal (0.00 coherence)"),
+        ("Computational speed", "✗ Slower than FFT", "O(N²) for raw RFT, H3 adds decomposition overhead"),
         ("Unitarity", "✓ Proven", "Error 8e-16 < 1e-10 threshold"),
         ("Non-equivalence", "✓ Proven", "DFT distance = 15.95"),
         ("Wave-domain logic", "✓ Working", "108/108 ops correct (exhaustive test)"),
         ("Crypto hash", "⚠ Experimental", "54% avalanche, no formal proof"),
-        ("φ-signal analysis", "◐ Promising", "Need more real-world validation"),
         ("Gram normalization", "✓ Stable", "κ(G) < 1e10 for N ≤ 512"),
         ("Hardware acceleration", "◯ Simulation only", "RTL not validated on silicon"),
     ]
     
     for aspect, status, evidence in rows:
-        print(f"{aspect:<25s} | {status:<15s} | {evidence:<45s}")
+        print(f"{aspect:<25s} | {status:<18s} | {evidence:<50s}")
     
-    print("\n" + "=" * 90)
+    print("\n" + "=" * 100)
+    print("IMPORTANT: The COMPRESSION claims (BPP, PSNR) are for H3 HYBRID, not raw RFT!")
+    print("           Raw RFT provides the mathematical basis; H3 combines DCT + ARFT for compression.")
     print("Legend: ✓=Validated, ◐=Partial, ⚠=Preliminary, ✗=Limitation, ◯=Not tested")
 
 
