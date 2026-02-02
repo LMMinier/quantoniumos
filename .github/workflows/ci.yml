@@ -1,0 +1,145 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # Lint and format checks
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install flake8 black isort
+      
+      - name: Check formatting with black
+        run: |
+          black --check . || echo "::warning::Code formatting issues found. Run 'black .' to fix."
+        continue-on-error: true
+      
+      - name: Check imports with isort
+        run: |
+          isort --check-only . || echo "::warning::Import order issues found. Run 'isort .' to fix."
+        continue-on-error: true
+      
+      - name: Lint with flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        continue-on-error: true
+
+  # Build and test
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ['3.10', '3.11', '3.12']
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Run unit tests
+        run: |
+          pytest tests/ -v --tb=short --maxfail=3 -n auto
+        continue-on-error: ${{ matrix.python-version != '3.11' }}
+      
+      - name: Generate coverage report
+        if: matrix.python-version == '3.11'
+        run: |
+          pytest tests/ --cov=algorithms --cov=src --cov=quantonium_os_src --cov-report=xml --cov-report=term
+        continue-on-error: true
+      
+      - name: Upload coverage to artifacts
+        if: matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+          retention-days: 30
+
+  # Build verification
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install build tools
+        run: |
+          pip install --upgrade pip
+          pip install build twine
+      
+      - name: Build package
+        run: python -m build
+      
+      - name: Check package
+        run: twine check dist/*
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 30
+
+  # Docker build verification
+  docker:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: quantoniumos:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      - name: Test Docker image
+        run: |
+          docker run --rm quantoniumos:test python --version
+          docker run --rm quantoniumos:test python -c "import numpy; print('NumPy:', numpy.__version__)"

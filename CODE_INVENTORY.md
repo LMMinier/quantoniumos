@@ -206,7 +206,7 @@
 | `legacy_mca.py` | `LegacyMCA` | Old greedy Multi-Component Analysis. Kept for comparison. | **DEPRECATED** - use cascade |
 | `theoretic_hybrid_decomposition.py` | `TheoreticHybridDecomposition` | Mathematical framework proving why cascade works. | Theory/proofs only |
 
-### 1.4 Quantum (`algorithms/rft/quantum_inspired/`)
+### 1.4 Quantum (`algorithms/rft/quantum/`)
 
 **Purpose:** Classical simulation of quantum systems using RFT's algebraic properties.
 
@@ -558,8 +558,8 @@
 |:---|:---|:---|
 | `quantonium_os_src/engine/RFTMW.py` | `MiddlewareTransformEngine`, `QuantumEngine` | **The Middleware.** Binary↔Wave bridge. |
 | `quantonium_os_src/frontend/quantonium_desktop.py` | `QuantoniumDesktop`, `GoldenSpiralLoader` | Desktop shell. |
-| `quantonium_os_src/apps/symbolic_simulator/main.py` | `RFTQuantumSimulator` | Quantum simulator. |
-| `quantonium_os_src/apps/quantum_inspired_crypto/main.py` | `QuantumCrypto` | Crypto application. |
+| `quantonium_os_src/apps/quantum_simulator/main.py` | `RFTQuantumSimulator` | Quantum simulator. |
+| `quantonium_os_src/apps/quantum_crypto/main.py` | `QuantumCrypto` | Crypto application. |
 | `quantonium_os_src/apps/rft_visualizer/main.py` | `RFTVisualizer`, `WaveCanvas` | RFT visualization. |
 | `quantonium_os_src/apps/rft_validator/main.py` | `MainWindow` | Validation tool. |
 | `quantonium_os_src/apps/q_vault/main.py` | `QVault`, `VaultItem` | Encrypted vault. |
