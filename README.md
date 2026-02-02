@@ -15,6 +15,62 @@
 
 **Scope note:** “QuantoniumOS” is a research branding name. This repository does **not** implement an OS kernel, scheduler, or filesystem. It provides a user‑space desktop UI and signal‑processing stack. Any OS‑level claims require explicit implementation and test evidence.
 
+## Start here (10–15 lines)
+
+**What this is:** A research‑grade, reproducible codebase for Φ‑RFT algorithms, hybrid codecs, and hardware/RTL experiments. No quantum speedups, no clinical claims, no production cryptography.
+
+**Run the core checks (from repo root):**
+1) Environment check: [verify_setup.sh](verify_setup.sh)
+2) Quick demo: [run_demo.sh](run_demo.sh)
+3) Full reproducibility: [reproduce_results.sh](reproduce_results.sh)
+
+**Where the details live:** The canonical RFT definition and proofs are in [algorithms/rft/README_RFT.md](algorithms/rft/README_RFT.md) and [THEOREMS_RFT_IRONCLAD.md](THEOREMS_RFT_IRONCLAD.md). Hardware RTL and reports are in [hardware/](hardware/).
+
+## What is implemented (evidence‑based)
+
+This section lists only what is present in this repository, with pointers to runnable code and reproducibility scripts.
+
+### 1) RFT core algorithms (canonical + variants)
+- Canonical RFT definition and implementation: [algorithms/rft/README_RFT.md](algorithms/rft/README_RFT.md)
+- Core kernels and transform APIs: [algorithms/rft/core/](algorithms/rft/core/)
+- Variants registry and variant implementations: [algorithms/rft/variants/](algorithms/rft/variants/)
+
+### 2) Compression and routing hybrids
+- Hybrid/cascade codecs and routing logic: [algorithms/rft/hybrids/](algorithms/rft/hybrids/)
+- Compression pipelines and model tooling: [tools/compression/](tools/compression/)
+
+### 3) Cryptography experiments (research‑only)
+- Experimental cipher and crypto utilities: [algorithms/rft/crypto/](algorithms/rft/crypto/)
+- Benchmarking and analysis tools: [tools/crypto/](tools/crypto/)
+
+### 4) Hardware RTL and synthesis artifacts
+- Synthesizable RTL and testbenches: [hardware/rtl/](hardware/rtl/)
+- Simulation and reports: [hardware/simulation/](hardware/simulation/)
+- WebFPGA/iCE40 synthesis reports: [hardware/](hardware/)
+
+### 5) Desktop UI + apps (user‑space)
+- Desktop shell: [quantonium_os_src/frontend/quantonium_desktop.py](quantonium_os_src/frontend/quantonium_desktop.py)
+- Apps (visualizer, validator, vault, crypto, simulator, etc.): [quantonium_os_src/apps/](quantonium_os_src/apps/)
+- UI styles and assets: [ui/](ui/)
+
+### 6) Mobile app
+- React Native app source: [quantonium-mobile/](quantonium-mobile/)
+
+### 7) Formal proofs and technical docs
+- Theorem proofs (unitarity, twisted convolution, limits of claims): [THEOREMS_RFT_IRONCLAD.md](THEOREMS_RFT_IRONCLAD.md)
+- Architecture docs and validation reports: [docs/](docs/)
+
+## Reproducibility (what you can run)
+
+Use these scripts to reproduce results directly from this repo:
+
+1) Environment check: [verify_setup.sh](verify_setup.sh)
+2) Quick demo (RFT power visualization): [run_demo.sh](run_demo.sh)
+3) Full reproducibility pipeline: [reproduce_results.sh](reproduce_results.sh)
+4) Shannon benchmark suite: [scripts/run_shannon_tests.py](scripts/run_shannon_tests.py)
+
+Each script is intentionally referenced to concrete code paths and artifacts in this repository. No claims here depend on external or unpublished code.
+
 ## IMPORTANT: RFT Definition Update (December 2025)
 
 **Breaking Change:** The definition of "RFT" (Resonant Fourier Transform) has been corrected.
@@ -28,6 +84,16 @@
 | **Novelty** | Trivially equivalent to phased DFT | Genuine operator-eigenbasis transform |
 
 ### The Canonical RFT Definition
+
+**Canonical RFT (boxed summary):**
+
+$$
+\widetilde{\Phi} = \Phi\,(\Phi^H\Phi)^{-1/2},\quad \text{RFT}(x)=\widetilde{\Phi}^H x
+$$
+
+- **Unitary:** $\widetilde{\Phi}^H\widetilde{\Phi}=I$ (proofs in [THEOREMS_RFT_IRONCLAD.md](THEOREMS_RFT_IRONCLAD.md))
+- **Target regime:** golden quasi‑periodic / Fibonacci‑structured signals
+- **Honest losses:** FFT/DCT outperform on non‑target families
 
 The **Resonant Fourier Transform (RFT)** is now defined as the **Gram-normalized φ-grid exponential basis**:
 
@@ -474,7 +540,7 @@ python -c "from src.apps.quantsounddesign.gui import QuantSoundDesign; from PyQt
 
 ## RFTPU: Hardware Accelerator Architecture
 
-**RFTPU** (Resonant Fourier Transform Processing Unit) is a synthesizable 64-tile hardware accelerator that implements the Φ-RFT transform in silicon. The architecture is defined in TL-Verilog for Makerchip simulation and includes a cycle-accurate NoC fabric.
+**RFTPU** (Resonant Fourier Transform Processing Unit) is a synthesizable 64-tile hardware accelerator that implements the Φ-RFT transform in silicon. The architecture is defined in TL-Verilog for Makerchip simulation and includes a cycle-accurate NoC fabric. **N7FF is a design‑target spec only; no tape‑out or silicon is claimed.**
 
 ### Architecture Overview
 
@@ -897,17 +963,6 @@ results/competitors/                           # Benchmark output (JSON/CSV/MD)
 REPRODUCING_RESULTS.md                         # Complete reproducibility guide
 scripts/run_full_suite.sh                      # One-command benchmark runner
 ```
-
----
-
-## License
-
-**License split:** Most of this repository is **AGPL-3.0-or-later** (see `LICENSE.md`).
-Files listed in **`CLAIMS_PRACTICING_FILES.txt`** are licensed under **`LICENSE-CLAIMS-NC.md`**
-(research/education only) because they practice methods in U.S. Patent Application
-No. 19/169,399. Commercial rights require a separate patent license from the author.
-
-See `docs/project/PATENT_NOTICE.md` for details on the patent-pending technologies.
 
 ---
 
