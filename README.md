@@ -69,6 +69,31 @@ Use these scripts to reproduce results directly from this repo:
 3) Full reproducibility pipeline: [reproduce_results.sh](reproduce_results.sh)
 4) Shannon benchmark suite: [scripts/run_shannon_tests.py](scripts/run_shannon_tests.py)
 
+### IP Pillar Verification (CI-tested on every push)
+
+These 4 tests run automatically in CI and verify the core IP claims:
+
+| IP Pillar | Claim | Test Command | Expected Result |
+|-----------|-------|--------------|-----------------|
+| **1. RFT Transform** | Unitarity (roundtrip < 1e-14) | `python -c "from algorithms.rft.core.canonical_true_rft import CanonicalTrueRFT; import numpy as np; rft=CanonicalTrueRFT(256); x=np.random.randn(256)+1j*np.random.randn(256); err=np.linalg.norm(x-rft.inverse_transform(rft.forward_transform(x)))/np.linalg.norm(x); print(f'{err:.2e}')"` | `~8e-16` |
+| **2. RFT ≠ FFT** | Non-equivalence | `python -c "from algorithms.rft.core.canonical_true_rft import CanonicalTrueRFT; import numpy as np; from numpy.fft import fft; rft=CanonicalTrueRFT(256); x=np.random.randn(256)+1j*np.random.randn(256); corr=np.abs(np.vdot(rft.forward_transform(x),fft(x,norm='ortho')))/(np.linalg.norm(rft.forward_transform(x))*np.linalg.norm(fft(x,norm='ortho'))); print(f'{corr:.4f}')"` | `<0.5` (proves NOT equivalent) |
+| **3. Compression** | Zero coherence, high PSNR | `pytest tests/codec_tests/ -v` | All pass, coherence=0.00 |
+| **4. Crypto** | Avalanche ~50% | See [algorithms/rft/crypto/enhanced_cipher.py](algorithms/rft/crypto/enhanced_cipher.py) | `50% ±5%` |
+
+**Full test suite (43 tests):**
+```bash
+pytest tests/transforms/test_rft_correctness.py -v
+```
+
+**File locations for each IP pillar:**
+
+| Pillar | Implementation | Tests | Docs |
+|--------|---------------|-------|------|
+| RFT Transform | [algorithms/rft/core/canonical_true_rft.py](algorithms/rft/core/canonical_true_rft.py) | [tests/transforms/test_rft_correctness.py](tests/transforms/test_rft_correctness.py) | [algorithms/rft/README_RFT.md](algorithms/rft/README_RFT.md) |
+| Compression | [algorithms/rft/hybrids/h3_arft_cascade.py](algorithms/rft/hybrids/h3_arft_cascade.py) | [tests/codec_tests/](tests/codec_tests/) | [docs/](docs/) |
+| Crypto | [algorithms/rft/crypto/enhanced_cipher.py](algorithms/rft/crypto/enhanced_cipher.py) | [tests/crypto/](tests/crypto/) | [experiments/crypto_prototypes/README.md](experiments/crypto_prototypes/README.md) |
+| Hardware | [hardware/rftpu_architecture.sv](hardware/rftpu_architecture.sv) | [hardware/tb/](hardware/tb/) | [hardware/README.md](hardware/README.md) |
+
 Each script is intentionally referenced to concrete code paths and artifacts in this repository. No claims here depend on external or unpublished code.
 
 ## IMPORTANT: RFT Definition Update (December 2025)

@@ -69,10 +69,87 @@ jobs:
           pip install --upgrade pip
           pip install numpy scipy sympy matplotlib pytest
           pip install brotli zstandard
-      
-      - name: Run unit tests
+
+      # === IP Pillar 1: RFT Transform Unitarity ===
+      - name: "Test: RFT Unitarity (roundtrip < 1e-14)"
         run: |
-          pytest tests/transforms/test_rft_correctness.py tests/codec_tests/ -v --tb=short
+          python -c "
+          from algorithms.rft.core.canonical_true_rft import CanonicalTrueRFT
+          import numpy as np
+          rft = CanonicalTrueRFT(256)
+          x = np.random.randn(256) + 1j*np.random.randn(256)
+          y = rft.forward_transform(x)
+          x_rec = rft.inverse_transform(y)
+          err = np.linalg.norm(x - x_rec) / np.linalg.norm(x)
+          assert err < 1e-14, f'Unitarity failed: {err:.2e}'
+          print(f'✓ RFT Unitarity: {err:.2e}')
+          "
+
+      # === IP Pillar 2: RFT ≠ FFT (Non-equivalence) ===
+      - name: "Test: RFT is NOT equivalent to FFT"
+        run: |
+          python -c "
+          from algorithms.rft.core.canonical_true_rft import CanonicalTrueRFT
+          import numpy as np
+          from numpy.fft import fft
+          np.random.seed(42)
+          N = 256
+          x = np.random.randn(N) + 1j * np.random.randn(N)
+          rft = CanonicalTrueRFT(N)
+          y_rft = rft.forward_transform(x)
+          y_fft = fft(x, norm='ortho')
+          corr = np.abs(np.vdot(y_rft, y_fft)) / (np.linalg.norm(y_rft) * np.linalg.norm(y_fft))
+          assert corr < 0.5, f'RFT should NOT correlate with FFT: {corr:.4f}'
+          print(f'✓ RFT ≠ FFT: correlation={corr:.4f}')
+          "
+
+      # === IP Pillar 3: Compression Codec ===
+      - name: "Test: H3-ARFT Cascade (coherence=0)"
+        run: |
+          python -c "
+          from algorithms.rft.hybrids.h3_arft_cascade import H3ARFTCascade
+          import numpy as np
+          np.random.seed(42)
+          t = np.linspace(0, 10, 512)
+          phi = (1 + np.sqrt(5)) / 2
+          signal = np.sin(2*np.pi*t) + 0.5*np.sin(2*np.pi*phi*t)
+          codec = H3ARFTCascade()
+          result = codec.encode(signal)
+          decoded = codec.decode(result.coefficients, len(signal))
+          mse = np.mean((signal - decoded)**2)
+          psnr = 10 * np.log10(np.max(signal)**2 / mse) if mse > 0 else float('inf')
+          assert result.coherence < 0.01, f'Coherence should be ~0: {result.coherence}'
+          assert psnr > 30, f'PSNR too low: {psnr:.1f}'
+          print(f'✓ H3-ARFT: PSNR={psnr:.1f}dB, coherence={result.coherence:.4f}')
+          "
+
+      # === IP Pillar 4: Crypto Avalanche ===
+      - name: "Test: Crypto Avalanche (~50%)"
+        run: |
+          python -c "
+          from algorithms.rft.crypto.enhanced_cipher import EnhancedRFTCryptoV2
+          import secrets
+          key = secrets.token_bytes(32)
+          cipher = EnhancedRFTCryptoV2(master_key=key)
+          pt = b'Test message for avalanche analysis - need 128 bits minimum'
+          ct1 = cipher.encrypt_aead(pt)
+          pt2 = bytearray(pt); pt2[0] ^= 0x01
+          ct2 = cipher.encrypt_aead(bytes(pt2))
+          min_len = min(len(ct1), len(ct2))
+          diff = sum(bin(ct1[i] ^ ct2[i]).count('1') for i in range(min_len))
+          avalanche = diff / (min_len * 8)
+          assert 0.4 < avalanche < 0.6, f'Avalanche out of range: {avalanche*100:.1f}%'
+          print(f'✓ Crypto Avalanche: {avalanche*100:.1f}%')
+          "
+
+      # === Full Test Suite ===
+      - name: Run RFT correctness tests (43 tests)
+        run: |
+          pytest tests/transforms/test_rft_correctness.py -v --tb=short
+      
+      - name: Run codec tests
+        run: |
+          pytest tests/codec_tests/ -v --tb=short
 
   # Build verification
   build:
