@@ -701,5 +701,87 @@ public:
     }
 };
 
+// ============================================================================
+// Theorems 10-12 Hardware Verification Stubs
+// ============================================================================
+// These structures enable hardware-in-the-loop verification of the foundational
+// theorems. The actual verification runs in software (Python/C++), but these
+// stubs provide hooks for FPGA/ASIC implementations to report their results.
+
+/**
+ * Hardware verification result for Theorem 10 (Polar Uniqueness)
+ */
+struct HWTheorem10Result {
+    uint32_t N;
+    bool polar_factor_verified;
+    bool hermitian_verified;
+    bool positive_definite_verified;
+    double max_error;
+};
+
+/**
+ * Hardware verification result for Theorem 11 (No Exact Diagonalization)
+ */
+struct HWTheorem11Result {
+    uint32_t N;
+    double max_off_diagonal_ratio;
+    uint32_t m_values_tested;
+    bool impossibility_verified;
+};
+
+/**
+ * Hardware verification result for Theorem 12 (Variational Minimality)
+ */
+struct HWTheorem12Result {
+    uint32_t N;
+    double J_canonical;
+    double J_perturbed_min;
+    bool minimality_verified;
+};
+
+/**
+ * Combined hardware theorem verification
+ */
+struct HWTheoremVerificationBundle {
+    HWTheorem10Result theorem_10;
+    HWTheorem11Result theorem_11;
+    HWTheorem12Result theorem_12;
+    uint64_t timestamp_ns;
+    uint32_t hw_version;
+    bool all_verified;
+};
+
+/**
+ * Stub for hardware theorem verification - to be linked with RTL simulation
+ * or FPGA bitstream.
+ */
+inline HWTheoremVerificationBundle hw_verify_foundational_theorems(uint32_t N) {
+    HWTheoremVerificationBundle bundle;
+    bundle.theorem_10.N = N;
+    bundle.theorem_10.polar_factor_verified = false;
+    bundle.theorem_10.hermitian_verified = false;
+    bundle.theorem_10.positive_definite_verified = false;
+    bundle.theorem_10.max_error = 0.0;
+    
+    bundle.theorem_11.N = N;
+    bundle.theorem_11.max_off_diagonal_ratio = 0.0;
+    bundle.theorem_11.m_values_tested = 0;
+    bundle.theorem_11.impossibility_verified = false;
+    
+    bundle.theorem_12.N = N;
+    bundle.theorem_12.J_canonical = 0.0;
+    bundle.theorem_12.J_perturbed_min = 0.0;
+    bundle.theorem_12.minimality_verified = false;
+    
+    bundle.timestamp_ns = 0;
+    bundle.hw_version = 0;
+    bundle.all_verified = false;
+    
+    // Actual implementation would call into FPGA/ASIC verification logic
+    // via memory-mapped registers or DMA transfer
+    
+    return bundle;
+}
+
 } // namespace asm_kernels
 } // namespace rftmw

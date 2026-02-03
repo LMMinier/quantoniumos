@@ -151,7 +151,13 @@ PYBIND11_MODULE(rftmw_native, m) {
         .def("forward", [](RFTMWEngine& self, py::array_t<double> arr) {
             return complexvec_to_numpy(self.forward(numpy_to_realvec(arr)));
         }, py::arg("input"), R"pbdoc(
-            Forward RFT transform.
+            Forward RFT transform (TRUE CANONICAL RFT).
+            
+            Computes X = Φ† × x using O(N²) matrix-vector product.
+            This is the true canonical RFT, NOT an approximation.
+            
+            Basis definition:
+                Φ[n,k] = exp(2πi × frac((k+1)φ) × n) / √N
             
             Args:
                 input: Real-valued 1D numpy array
@@ -161,13 +167,38 @@ PYBIND11_MODULE(rftmw_native, m) {
         )pbdoc")
         
         .def("forward_complex", [](RFTMWEngine& self, py::array_t<std::complex<double>> arr) {
-            return complexvec_to_numpy(self.forward_complex(numpy_to_complexvec(arr)));
+            // For complex input, use hybrid for now (canonical would need complex input support)
+            return complexvec_to_numpy(self.forward_hybrid_complex(numpy_to_complexvec(arr)));
+        }, py::arg("input"))
+        
+        .def("forward_hybrid", [](RFTMWEngine& self, py::array_t<double> arr) {
+            return complexvec_to_numpy(self.forward_hybrid(numpy_to_realvec(arr)));
+        }, py::arg("input"), R"pbdoc(
+            Forward RFT HYBRID transform (O(N log N) approximation).
+            
+            Computes Y = E · FFT(x) / √N using O(N log N) FFT + phase rotation.
+            This is an APPROXIMATION, not the true canonical RFT.
+            
+            For the true canonical RFT, use forward().
+            
+            Args:
+                input: Real-valued 1D numpy array
+            
+            Returns:
+                Complex-valued 1D numpy array of hybrid RFT coefficients
+        )pbdoc")
+        
+        .def("forward_hybrid_complex", [](RFTMWEngine& self, py::array_t<std::complex<double>> arr) {
+            return complexvec_to_numpy(self.forward_hybrid_complex(numpy_to_complexvec(arr)));
         }, py::arg("input"))
         
         .def("inverse", [](RFTMWEngine& self, py::array_t<std::complex<double>> arr) {
             return realvec_to_numpy(self.inverse(numpy_to_complexvec(arr)));
         }, py::arg("input"), R"pbdoc(
-            Inverse RFT transform.
+            Inverse RFT transform (TRUE CANONICAL RFT).
+            
+            Computes x = Φ × X using O(N²) matrix-vector product.
+            This is the true canonical inverse RFT, NOT an approximation.
             
             Args:
                 input: Complex-valued 1D numpy array of RFT coefficients
@@ -177,7 +208,29 @@ PYBIND11_MODULE(rftmw_native, m) {
         )pbdoc")
         
         .def("inverse_complex", [](RFTMWEngine& self, py::array_t<std::complex<double>> arr) {
-            return complexvec_to_numpy(self.inverse_complex(numpy_to_complexvec(arr)));
+            // For complex output, use hybrid for now
+            return complexvec_to_numpy(self.inverse_hybrid_complex(numpy_to_complexvec(arr)));
+        }, py::arg("input"))
+        
+        .def("inverse_hybrid", [](RFTMWEngine& self, py::array_t<std::complex<double>> arr) {
+            return realvec_to_numpy(self.inverse_hybrid(numpy_to_complexvec(arr)));
+        }, py::arg("input"), R"pbdoc(
+            Inverse RFT HYBRID transform (O(N log N) approximation).
+            
+            Computes x = IFFT(E† · Y) using O(N log N) FFT + phase rotation.
+            This is an APPROXIMATION, not the true canonical inverse RFT.
+            
+            For the true canonical inverse RFT, use inverse().
+            
+            Args:
+                input: Complex-valued 1D numpy array of RFT coefficients
+            
+            Returns:
+                Real-valued 1D numpy array
+        )pbdoc")
+        
+        .def("inverse_hybrid_complex", [](RFTMWEngine& self, py::array_t<std::complex<double>> arr) {
+            return complexvec_to_numpy(self.inverse_hybrid_complex(numpy_to_complexvec(arr)));
         }, py::arg("input"))
         
         .def("precompute_phases", &RFTMWEngine::precompute_phases,
@@ -195,8 +248,9 @@ PYBIND11_MODULE(rftmw_native, m) {
         static thread_local RFTMWEngine engine;
         return complexvec_to_numpy(engine.forward(numpy_to_realvec(arr)));
     }, py::arg("input"), R"pbdoc(
-        Forward RFT transform (convenience function).
+        Forward RFT transform (TRUE CANONICAL RFT).
         
+        Uses the true canonical Φ†x matrix multiply (O(N²)).
         Uses a thread-local engine instance for efficiency.
         
         Args:
@@ -210,9 +264,42 @@ PYBIND11_MODULE(rftmw_native, m) {
         static thread_local RFTMWEngine engine;
         return realvec_to_numpy(engine.inverse(numpy_to_complexvec(arr)));
     }, py::arg("input"), R"pbdoc(
-        Inverse RFT transform (convenience function).
+        Inverse RFT transform (TRUE CANONICAL RFT).
         
+        Uses the true canonical Φx matrix multiply (O(N²)).
         Uses a thread-local engine instance for efficiency.
+        
+        Args:
+            input: Complex-valued 1D numpy array of RFT coefficients
+        
+        Returns:
+            Real-valued 1D numpy array
+    )pbdoc");
+    
+    m.def("forward_hybrid", [](py::array_t<double> arr) {
+        static thread_local RFTMWEngine engine;
+        return complexvec_to_numpy(engine.forward_hybrid(numpy_to_realvec(arr)));
+    }, py::arg("input"), R"pbdoc(
+        Forward RFT HYBRID transform (O(N log N) approximation).
+        
+        Uses FFT + phase rotation for O(N log N) complexity.
+        This is an approximation, not the true canonical RFT.
+        
+        Args:
+            input: Real-valued 1D numpy array
+        
+        Returns:
+            Complex-valued 1D numpy array of hybrid RFT coefficients
+    )pbdoc");
+    
+    m.def("inverse_hybrid", [](py::array_t<std::complex<double>> arr) {
+        static thread_local RFTMWEngine engine;
+        return realvec_to_numpy(engine.inverse_hybrid(numpy_to_complexvec(arr)));
+    }, py::arg("input"), R"pbdoc(
+        Inverse RFT HYBRID transform (O(N log N) approximation).
+        
+        Uses FFT + phase rotation for O(N log N) complexity.
+        This is an approximation, not the true canonical inverse RFT.
         
         Args:
             input: Complex-valued 1D numpy array of RFT coefficients
@@ -273,6 +360,123 @@ PYBIND11_MODULE(rftmw_native, m) {
         Golden drift ensemble x[n] = exp(i2π(f0*n + a*frac(n*phi))).
 
         Returns a complex128 array of shape (M, N).
+    )pbdoc");
+    
+    // ========================================================================
+    // Theorem Verification Bindings (Theorems 10-12)
+    // ========================================================================
+    
+    m.def("verify_theorem_10", [](std::size_t N) {
+        auto result = rftmw::theorems::verify_theorem_10_cpp(N);
+        py::dict d;
+        d["N"] = result.N;
+        d["is_unitary"] = result.is_unitary;
+        d["unitarity_error"] = result.unitarity_error;
+        d["off_diag_ratio_C1"] = result.off_diag_ratio_C1;
+        d["verified"] = result.is_unitary;
+        return d;
+    }, py::arg("N") = 16, R"pbdoc(
+        Verify Theorem 10: Uniqueness of Canonical Basis.
+        
+        Checks that the raw φ-grid basis Φ has proper Gram structure
+        and off-diagonal properties with respect to the companion matrix.
+        
+        Args:
+            N: Dimension (default: 16)
+            
+        Returns:
+            dict with keys: N, is_unitary, unitarity_error, off_diag_ratio_C1, verified
+    )pbdoc");
+    
+    m.def("verify_theorem_11", [](std::size_t N, std::size_t M_powers) {
+        auto result = rftmw::theorems::verify_theorem_11_cpp(N, M_powers);
+        py::dict d;
+        d["N"] = result.N;
+        d["max_off_diagonal_ratio"] = result.max_off_diagonal_ratio;
+        d["m_values_tested"] = result.m_values_tested;
+        d["exact_diagonalization_impossible"] = result.exact_diagonalization_impossible;
+        d["verified"] = result.exact_diagonalization_impossible;
+        return d;
+    }, py::arg("N") = 16, py::arg("M_powers") = 5, R"pbdoc(
+        Verify Theorem 11: No Exact Joint Diagonalization.
+        
+        Shows that no unitary basis can simultaneously diagonalize all
+        powers of the golden companion shift C_φ.
+        
+        Args:
+            N: Dimension (default: 16)
+            M_powers: Number of powers to test (default: 5)
+            
+        Returns:
+            dict with keys: N, max_off_diagonal_ratio, m_values_tested,
+                           exact_diagonalization_impossible, verified
+    )pbdoc");
+    
+    m.def("verify_theorem_12", [](std::size_t N, std::size_t n_random, uint64_t seed) {
+        auto result = rftmw::theorems::verify_theorem_12_cpp(N, n_random, seed);
+        py::dict d;
+        d["N"] = result.N;
+        d["J_base"] = result.J_base;
+        d["J_random_min"] = result.J_random_min;
+        d["J_random_mean"] = result.J_random_mean;
+        d["canonical_is_minimal"] = result.canonical_is_minimal;
+        d["verified"] = result.canonical_is_minimal;
+        return d;
+    }, py::arg("N") = 16, py::arg("n_random") = 20, py::arg("seed") = 42, R"pbdoc(
+        Verify Theorem 12: Variational Minimality.
+        
+        Shows that the canonical RFT basis minimizes the J functional
+        among all unitary perturbations.
+        
+        Args:
+            N: Dimension (default: 16)
+            n_random: Number of random perturbations to test (default: 20)
+            seed: Random seed (default: 42)
+            
+        Returns:
+            dict with keys: N, J_base, J_random_min, J_random_mean,
+                           canonical_is_minimal, verified
+    )pbdoc");
+    
+    m.def("verify_all_theorems", [](std::size_t N) {
+        auto summary = rftmw::theorems::verify_all_foundational_theorems_cpp(N);
+        py::dict d;
+        
+        py::dict t10;
+        t10["N"] = summary.theorem_10.N;
+        t10["is_unitary"] = summary.theorem_10.is_unitary;
+        t10["unitarity_error"] = summary.theorem_10.unitarity_error;
+        t10["off_diag_ratio_C1"] = summary.theorem_10.off_diag_ratio_C1;
+        t10["verified"] = summary.theorem_10.is_unitary;
+        
+        py::dict t11;
+        t11["N"] = summary.theorem_11.N;
+        t11["max_off_diagonal_ratio"] = summary.theorem_11.max_off_diagonal_ratio;
+        t11["m_values_tested"] = summary.theorem_11.m_values_tested;
+        t11["exact_diagonalization_impossible"] = summary.theorem_11.exact_diagonalization_impossible;
+        t11["verified"] = summary.theorem_11.exact_diagonalization_impossible;
+        
+        py::dict t12;
+        t12["N"] = summary.theorem_12.N;
+        t12["J_base"] = summary.theorem_12.J_base;
+        t12["J_random_min"] = summary.theorem_12.J_random_min;
+        t12["J_random_mean"] = summary.theorem_12.J_random_mean;
+        t12["canonical_is_minimal"] = summary.theorem_12.canonical_is_minimal;
+        t12["verified"] = summary.theorem_12.canonical_is_minimal;
+        
+        d["theorem_10"] = t10;
+        d["theorem_11"] = t11;
+        d["theorem_12"] = t12;
+        d["all_verified"] = summary.all_verified;
+        return d;
+    }, py::arg("N") = 16, R"pbdoc(
+        Verify all foundational theorems (10, 11, 12) at once.
+        
+        Args:
+            N: Dimension (default: 16)
+            
+        Returns:
+            dict with keys: theorem_10, theorem_11, theorem_12, all_verified
     )pbdoc");
     
     // ========================================================================

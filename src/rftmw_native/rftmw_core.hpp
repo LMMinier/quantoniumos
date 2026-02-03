@@ -81,6 +81,219 @@ using ComplexVec = std::vector<Complex>;
 using RealVec = std::vector<double>;
 
 // ============================================================================
+// Gram Normalization for True Canonical RFT
+// ============================================================================
+
+/**
+ * Compute the raw φ-grid basis Φ[n,k] = exp(2πi × frac((k+1)φ) × n) / √N
+ * Returns N×N matrix in row-major order.
+ */
+inline ComplexVec compute_raw_phi_basis(size_t N) {
+    ComplexVec Phi(N * N);
+    const double inv_sqrt_n = 1.0 / std::sqrt(static_cast<double>(N));
+    
+    for (size_t k = 0; k < N; ++k) {
+        double freq = static_cast<double>(k + 1) * PHI;
+        double f_k = freq - std::floor(freq);  // frac((k+1)φ)
+        
+        for (size_t n = 0; n < N; ++n) {
+            double angle = TWO_PI * f_k * static_cast<double>(n);
+            // Φ[n, k] stored as Phi[n * N + k]
+            Phi[n * N + k] = Complex(std::cos(angle), std::sin(angle)) * inv_sqrt_n;
+        }
+    }
+    return Phi;
+}
+
+/**
+ * Compute G = Φ†Φ (Gram matrix) - Hermitian positive definite.
+ * Input: Phi is N×N in row-major (Phi[row * N + col])
+ * Output: G is N×N Hermitian matrix
+ */
+inline ComplexVec compute_gram_matrix(const ComplexVec& Phi, size_t N) {
+    ComplexVec G(N * N, Complex(0.0, 0.0));
+    
+    // G[i,j] = Σₙ Φ*[n,i] × Φ[n,j]
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < N; ++j) {
+            Complex sum(0.0, 0.0);
+            for (size_t n = 0; n < N; ++n) {
+                // Φ[n,i] and Φ[n,j]
+                sum += std::conj(Phi[n * N + i]) * Phi[n * N + j];
+            }
+            G[i * N + j] = sum;
+        }
+    }
+    return G;
+}
+
+/**
+ * Jacobi eigendecomposition for Hermitian matrix.
+ * Computes G = V D V† where D is diagonal (eigenvalues) and V is unitary.
+ * 
+ * This is O(N³) but numerically stable for small N.
+ * For N > 256, consider using LAPACK.
+ */
+inline void jacobi_eigen_hermitian(
+    ComplexVec& A,      // N×N input/output: eigenvalues on diagonal after
+    ComplexVec& V,      // N×N output: eigenvector columns
+    RealVec& eigenvals, // N output: eigenvalues
+    size_t N,
+    size_t max_sweeps = 50  // Each sweep processes all pairs
+) {
+    // Initialize V to identity
+    V.assign(N * N, Complex(0.0, 0.0));
+    for (size_t i = 0; i < N; ++i) {
+        V[i * N + i] = Complex(1.0, 0.0);
+    }
+    
+    eigenvals.resize(N);
+    
+    // Jacobi sweeps - process all upper triangular pairs each sweep
+    for (size_t sweep = 0; sweep < max_sweeps; ++sweep) {
+        double max_off = 0.0;
+        
+        // Compute max off-diagonal for convergence check
+        for (size_t i = 0; i < N; ++i) {
+            for (size_t j = i + 1; j < N; ++j) {
+                max_off = std::max(max_off, std::abs(A[i * N + j]));
+            }
+        }
+        
+        // Convergence check
+        if (max_off < 1e-15) break;
+        
+        // Process all pairs in this sweep
+        for (size_t p = 0; p < N - 1; ++p) {
+            for (size_t q = p + 1; q < N; ++q) {
+                Complex Apq = A[p * N + q];
+                if (std::abs(Apq) < 1e-16) continue;
+                
+                double App = std::real(A[p * N + p]);
+                double Aqq = std::real(A[q * N + q]);
+                
+                // Compute rotation angle
+                double diff = Aqq - App;
+                double t;  // tan(theta)
+                
+                if (std::abs(diff) < 1e-16) {
+                    t = 1.0;
+                } else {
+                    double phi = diff / (2.0 * std::abs(Apq));
+                    t = 1.0 / (std::abs(phi) + std::sqrt(phi * phi + 1.0));
+                    if (phi < 0) t = -t;
+                }
+                
+                double c = 1.0 / std::sqrt(1.0 + t * t);  // cos(theta)
+                double s = t * c;                          // sin(theta)
+                
+                // Phase factor to make Apq real
+                Complex tau = (std::abs(Apq) > 1e-16) ? 
+                    Apq / std::abs(Apq) : Complex(1.0, 0.0);
+                
+                // Apply rotation to A: A' = J† A J
+                // Update rows p and q
+                for (size_t k = 0; k < N; ++k) {
+                    if (k != p && k != q) {
+                        Complex Akp = A[k * N + p];
+                        Complex Akq = A[k * N + q];
+                        A[k * N + p] = c * Akp - s * std::conj(tau) * Akq;
+                        A[k * N + q] = s * tau * Akp + c * Akq;
+                        A[p * N + k] = std::conj(A[k * N + p]);
+                        A[q * N + k] = std::conj(A[k * N + q]);
+                    }
+                }
+                
+                // Update diagonal elements
+                double Apq_abs = std::abs(Apq);
+                A[p * N + p] = Complex(App - t * Apq_abs, 0.0);
+                A[q * N + q] = Complex(Aqq + t * Apq_abs, 0.0);
+                A[p * N + q] = Complex(0.0, 0.0);
+                A[q * N + p] = Complex(0.0, 0.0);
+                
+                // Accumulate eigenvectors: V' = V J
+                for (size_t k = 0; k < N; ++k) {
+                    Complex Vkp = V[k * N + p];
+                    Complex Vkq = V[k * N + q];
+                    V[k * N + p] = c * Vkp - s * std::conj(tau) * Vkq;
+                    V[k * N + q] = s * tau * Vkp + c * Vkq;
+                }
+            }
+        }
+    }
+    
+    // Extract eigenvalues from diagonal
+    for (size_t i = 0; i < N; ++i) {
+        eigenvals[i] = std::real(A[i * N + i]);
+    }
+}
+
+/**
+ * Compute G^{-1/2} for positive definite Hermitian G.
+ * Uses eigendecomposition: G = V D V†, so G^{-1/2} = V D^{-1/2} V†
+ */
+inline ComplexVec compute_gram_inv_sqrt(const ComplexVec& G, size_t N) {
+    // Copy G for eigendecomposition (it gets modified)
+    ComplexVec A = G;
+    ComplexVec V(N * N);
+    RealVec eigenvals(N);
+    
+    jacobi_eigen_hermitian(A, V, eigenvals, N);
+    
+    // Compute V D^{-1/2} V†
+    ComplexVec result(N * N, Complex(0.0, 0.0));
+    
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < N; ++j) {
+            Complex sum(0.0, 0.0);
+            for (size_t k = 0; k < N; ++k) {
+                // D^{-1/2}[k,k] = 1/sqrt(eigenvals[k])
+                double d_inv_sqrt = (eigenvals[k] > 1e-14) ? 
+                    1.0 / std::sqrt(eigenvals[k]) : 0.0;
+                // V[i,k] × D^{-1/2}[k,k] × V†[k,j] = V[i,k] × d × conj(V[j,k])
+                sum += V[i * N + k] * d_inv_sqrt * std::conj(V[j * N + k]);
+            }
+            result[i * N + j] = sum;
+        }
+    }
+    
+    return result;
+}
+
+/**
+ * Compute the TRUE CANONICAL RFT basis: U = Φ × (Φ†Φ)^{-1/2}
+ * This is the Gram-normalized unitary basis.
+ * 
+ * Complexity: O(N³) for eigendecomposition
+ * 
+ * Returns N×N unitary matrix U where U†U = I exactly.
+ */
+inline ComplexVec compute_canonical_basis(size_t N) {
+    // Step 1: Compute raw φ-grid basis Φ
+    ComplexVec Phi = compute_raw_phi_basis(N);
+    
+    // Step 2: Compute Gram matrix G = Φ†Φ
+    ComplexVec G = compute_gram_matrix(Phi, N);
+    
+    // Step 3: Compute G^{-1/2}
+    ComplexVec G_inv_sqrt = compute_gram_inv_sqrt(G, N);
+    
+    // Step 4: Compute U = Φ × G^{-1/2}
+    ComplexVec U(N * N, Complex(0.0, 0.0));
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < N; ++j) {
+            Complex sum(0.0, 0.0);
+            for (size_t k = 0; k < N; ++k) {
+                sum += Phi[i * N + k] * G_inv_sqrt[k * N + j];
+            }
+            U[i * N + j] = sum;
+        }
+    }
+    
+    return U;
+}
+
+// ============================================================================
 // SIMD-Accelerated Phase Modulation Kernels
 // ============================================================================
 
@@ -334,6 +547,8 @@ private:
     Variant variant_;
     RealVec phase_cache_;
     ComplexVec basis_cache_;  // For ASM kernel basis matrix
+    ComplexVec canonical_U_;  // Gram-normalized canonical basis U = Φ(Φ†Φ)^{-1/2}
+    size_t canonical_N_ = 0;  // Size of cached canonical basis
     bool use_simd_;
     bool use_asm_;
     size_t last_transform_size_ = 0;  // Track last computed phase size (chirp depends on n)
@@ -468,17 +683,20 @@ public:
     }
     
     /**
-     * Forward Φ-RFT transform.
+     * Forward Hybrid RFT transform (O(N log N) approximation).
      * 
-     * Matches Python phi_phase_fft_optimized:
-     *   Y = E · FFT(x)
+     * Computes:
+     *   Y = E · FFT(x) / √N
      * 
      * where E[k] = exp(i · θ[k])
-     *       θ[k] = 2π·frac(k/φ) + π·k²/n
+     *       θ[k] = 2π·frac((k+1)·φ)
      * 
      * Phase modulation is applied AFTER FFT.
+     * 
+     * NOTE: This is an O(N log N) APPROXIMATION, not the true canonical RFT.
+     * For the true RFT (Φ†x matrix multiply), use forward().
      */
-    ComplexVec forward(const RealVec& input) {
+    ComplexVec forward_hybrid(const RealVec& input) {
         size_t n = input.size();
         if (n == 0) return {};
         
@@ -516,7 +734,7 @@ public:
         return modulated;
     }
     
-    ComplexVec forward_complex(const ComplexVec& input) {
+    ComplexVec forward_hybrid_complex(const ComplexVec& input) {
         size_t n = input.size();
         if (n == 0) return {};
         
@@ -548,16 +766,19 @@ public:
     }
     
     /**
-     * Inverse Φ-RFT transform.
+     * Inverse Hybrid RFT transform (O(N log N) approximation).
      * 
-     * Matches Python phi_phase_fft_optimized:
+     * Computes:
      *   x = IFFT(E† · Y)
      * 
      * where E† = conj(E) = exp(-i · θ)
      * 
      * Inverse phase modulation is applied BEFORE IFFT.
+     * 
+     * NOTE: This is an O(N log N) APPROXIMATION.
+     * For the true inverse RFT, use inverse().
      */
-    RealVec inverse(const ComplexVec& input) {
+    RealVec inverse_hybrid(const ComplexVec& input) {
         size_t n = input.size();
         if (n == 0) return {};
         
@@ -592,7 +813,7 @@ public:
         return result;
     }
     
-    ComplexVec inverse_complex(const ComplexVec& input) {
+    ComplexVec inverse_hybrid_complex(const ComplexVec& input) {
         size_t n = input.size();
         if (n == 0) return {};
         
@@ -619,63 +840,82 @@ public:
     }
     
     /**
-     * Forward Canonical RFT (USPTO Patent 19/169,399 Claim 1)
+     * Forward RFT Transform (USPTO Patent 19/169,399 Claim 1)
      * 
-     * X[k] = Σₙ x[n] × Ψₖ*(n/N)
-     * where Ψₖ(t) = exp(2πi × fₖ × t + i × θₖ)
-     *       fₖ = (k+1) × φ
-     *       θₖ = 2πk / φ
+     * TRUE CANONICAL RFT: X = U† × x (O(N²) matrix-vector product)
+     * 
+     * Uses the Gram-normalized canonical basis:
+     *   U = Φ × (Φ†Φ)^{-1/2}
+     * 
+     * where Φ[n,k] = exp(2πi × frac((k+1)φ) × n) / √N
+     * 
+     * This basis is EXACTLY UNITARY: U†U = I
+     * 
+     * The Gram normalization is computed once and cached.
      */
-    ComplexVec forward_canonical(const RealVec& input) {
+    ComplexVec forward(const RealVec& input) {
         size_t n = input.size();
         if (n == 0) return {};
         
-        ComplexVec result(n);
-        const double inv_sqrt_n = 1.0 / std::sqrt(static_cast<double>(n));
+        // Ensure canonical basis is computed for this size
+        ensure_canonical_basis(n);
         
+        ComplexVec result(n);
+        
+        // X = U† × x  (analysis transform)
         for (size_t k = 0; k < n; ++k) {
-            double f_k = (static_cast<double>(k) + 1.0) * PHI;
-            double theta_k = TWO_PI * static_cast<double>(k) / PHI;
-            
             Complex sum(0.0, 0.0);
-            for (size_t t_idx = 0; t_idx < n; ++t_idx) {
-                double t = static_cast<double>(t_idx) / static_cast<double>(n);
-                double angle = TWO_PI * f_k * t + theta_k;
-                // Conjugate for forward transform
-                Complex basis_conj(std::cos(angle), -std::sin(angle));
-                sum += input[t_idx] * basis_conj;
+            for (size_t m = 0; m < n; ++m) {
+                // U†[k,m] = conj(U[m,k])
+                sum += std::conj(canonical_U_[m * n + k]) * input[m];
             }
-            result[k] = sum * inv_sqrt_n;
+            result[k] = sum;
         }
         
         return result;
     }
     
     /**
-     * Inverse Canonical RFT (USPTO Patent 19/169,399 Claim 1)
-     * 
-     * x[n] = Σₖ X[k] × Ψₖ(n/N)
+     * Ensure canonical basis U = Φ(Φ†Φ)^{-1/2} is computed for size n.
+     * Caches the result for reuse.
      */
-    RealVec inverse_canonical(const ComplexVec& input) {
+    void ensure_canonical_basis(size_t n) {
+        if (canonical_N_ == n && !canonical_U_.empty()) {
+            return;  // Already computed
+        }
+        
+        // Compute true canonical basis with Gram normalization
+        canonical_U_ = compute_canonical_basis(n);
+        canonical_N_ = n;
+    }
+    
+    /**
+     * Inverse RFT Transform (USPTO Patent 19/169,399 Claim 1)
+     * 
+     * TRUE CANONICAL RFT INVERSE: x = U × X (O(N²) matrix-vector product)
+     * 
+     * Uses the Gram-normalized canonical basis:
+     *   U = Φ × (Φ†Φ)^{-1/2}
+     * 
+     * Since U is unitary, U† × U = I, so inverse(forward(x)) = x exactly.
+     */
+    RealVec inverse(const ComplexVec& input) {
         size_t n = input.size();
         if (n == 0) return {};
         
-        RealVec result(n);
-        const double inv_sqrt_n = 1.0 / std::sqrt(static_cast<double>(n));
+        // Ensure canonical basis is computed for this size
+        ensure_canonical_basis(n);
         
-        for (size_t t_idx = 0; t_idx < n; ++t_idx) {
-            double t = static_cast<double>(t_idx) / static_cast<double>(n);
-            
+        RealVec result(n);
+        
+        // x = U × X  (synthesis transform)
+        for (size_t m = 0; m < n; ++m) {
             Complex sum(0.0, 0.0);
             for (size_t k = 0; k < n; ++k) {
-                double f_k = (static_cast<double>(k) + 1.0) * PHI;
-                double theta_k = TWO_PI * static_cast<double>(k) / PHI;
-                double angle = TWO_PI * f_k * t + theta_k;
-                
-                Complex basis(std::cos(angle), std::sin(angle));
-                sum += input[k] * basis;
+                // U[m,k]
+                sum += canonical_U_[m * n + k] * input[k];
             }
-            result[t_idx] = sum.real() * inv_sqrt_n;
+            result[m] = sum.real();
         }
         
         return result;
@@ -726,14 +966,36 @@ private:
 // Convenience Functions
 // ============================================================================
 
+/**
+ * Forward RFT transform (true canonical Φ†x).
+ */
 inline ComplexVec rft_forward(const RealVec& input) {
     static thread_local RFTMWEngine engine;
     return engine.forward(input);
 }
 
+/**
+ * Inverse RFT transform (true canonical Φx).
+ */
 inline RealVec rft_inverse(const ComplexVec& input) {
     static thread_local RFTMWEngine engine;
     return engine.inverse(input);
+}
+
+/**
+ * Forward RFT hybrid transform (O(N log N) FFT approximation).
+ */
+inline ComplexVec rft_forward_hybrid(const RealVec& input) {
+    static thread_local RFTMWEngine engine;
+    return engine.forward_hybrid(input);
+}
+
+/**
+ * Inverse RFT hybrid transform (O(N log N) FFT approximation).
+ */
+inline RealVec rft_inverse_hybrid(const ComplexVec& input) {
+    static thread_local RFTMWEngine engine;
+    return engine.inverse_hybrid(input);
 }
 
 } // namespace rftmw

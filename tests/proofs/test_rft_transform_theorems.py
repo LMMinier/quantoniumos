@@ -29,6 +29,8 @@ from algorithms.rft.core.resonant_fourier_transform import PHI
 from algorithms.rft.core.transform_theorems import (
     canonical_unitary_basis,
     companion_matrix_from_roots,
+    comparative_report,
+    conditioning_report,
     fft_unitary_matrix,
     golden_companion_shift,
     golden_drift_ensemble,
@@ -536,5 +538,290 @@ def test_theorem_8_bootstrap_scaling_trend() -> None:
             all_positive = False
     
     assert all_positive, "Mean improvement should be positive at all N values"
+
+
+# =============================================================================
+# NUMERICAL STABILITY: Condition Number Analysis
+# =============================================================================
+# These tests address the concern about ill-conditioning of Vandermonde-like
+# matrices for irrational-grid transforms. We verify that:
+# 1) The canonical unitary U has κ(U) ≈ 1 (unitarity)
+# 2) The Gram matrix κ(ΦᴴΦ) grows moderately with N
+# 3) Unitarity error remains at machine precision
+# =============================================================================
+
+
+def test_conditioning_canonical_U_is_unitary() -> None:
+    """Verify κ(U) ≈ 1 for the canonical unitary basis.
+
+    This is a PROVEN property: U is unitary by construction, so κ(U) = 1.
+    Any deviation indicates numerical error in the Gram normalization.
+    """
+    for N in [16, 32, 64, 128]:
+        report = conditioning_report(N)
+
+        # Unitary matrices have condition number 1
+        assert report.kappa_U < 1.0 + 1e-10, (
+            f"N={N}: κ(U) = {report.kappa_U:.6f} should be ≈ 1"
+        )
+
+        # Unitarity error should be at machine precision level
+        assert report.unitarity_error < 1e-12, (
+            f"N={N}: ||UᴴU - I||_F = {report.unitarity_error:.2e} exceeds tolerance"
+        )
+
+
+def test_conditioning_gram_matrix_scaling() -> None:
+    """Track how κ(ΦᴴΦ) scales with N.
+
+    This addresses the Vandermonde conditioning concern: irrational-grid
+    exponential bases can become ill-conditioned. We verify that:
+    - κ(ΦᴴΦ) grows at most polynomially, not exponentially
+    - The Gram matrix remains invertible (positive definite)
+    """
+    results = []
+    for N in [16, 32, 64, 128, 256]:
+        report = conditioning_report(N)
+        results.append((N, report.kappa_G, report.gram_eigenvalue_min))
+
+    # Verify positive definiteness: min eigenvalue > 0
+    for N, kappa_G, lam_min in results:
+        assert lam_min > 1e-15, (
+            f"N={N}: Gram matrix has eigenvalue {lam_min:.2e} ≤ 0 (not positive definite)"
+        )
+
+    # Verify condition number growth is sub-exponential
+    # Exponential would be κ(N) ~ c^N; polynomial is κ(N) ~ N^α
+    N_vals = [r[0] for r in results]
+    kappa_vals = [r[1] for r in results]
+
+    # Fit log-log slope (polynomial growth: slope = α)
+    log_N = np.log(N_vals)
+    log_kappa = np.log(kappa_vals)
+    slope, _ = np.polyfit(log_N, log_kappa, 1)
+
+    # For well-behaved transforms, α should be modest (< 3)
+    # Exponential growth would show as huge effective α
+    assert slope < 4.0, (
+        f"Condition number scaling exponent α = {slope:.2f} suggests "
+        f"problematic conditioning (should be < 4 for polynomial growth)"
+    )
+
+
+def test_conditioning_raw_phi_vs_canonical_U() -> None:
+    """Compare conditioning of raw Φ vs canonical U.
+
+    The raw Φ can be ill-conditioned, but U must always be perfectly conditioned.
+    This demonstrates the value of Gram normalization.
+    """
+    N = 64
+    report = conditioning_report(N)
+
+    # Raw Φ may have large condition number
+    # (this is expected for Vandermonde-like matrices)
+    assert report.kappa_Phi >= 1.0  # κ ≥ 1 always
+
+    # Canonical U must be unitary (κ = 1)
+    assert abs(report.kappa_U - 1.0) < 1e-10, (
+        f"Canonical U should have κ = 1, got {report.kappa_U:.10f}"
+    )
+
+
+# =============================================================================
+# COMPARATIVE ANALYSIS: RFT vs Related Transforms
+# =============================================================================
+# These tests address the concern about historical/comparative context by
+# benchmarking against related transforms from the literature:
+# - Fibonacci-phase FFT (golden-angle sampling family)
+# - Chirplet/LCT transforms
+# - Golden-angle sampling basis (MRI imaging)
+# =============================================================================
+
+
+def test_comparative_rft_beats_fibonacci_fft_on_golden_ensemble() -> None:
+    """Canonical RFT outperforms Fibonacci-phase FFT on golden drift signals.
+
+    Both transforms use golden-ratio-related phases, but canonical RFT's
+    Gram-normalized unitary structure provides better concentration.
+    """
+    report = comparative_report(N=64, M=200, seed=42)
+
+    assert report.rft_k99_mean < report.fibonacci_fft_k99_mean, (
+        f"RFT K99={report.rft_k99_mean:.2f} should beat "
+        f"Fibonacci-FFT K99={report.fibonacci_fft_k99_mean:.2f}"
+    )
+
+
+def test_comparative_rft_beats_chirplet_on_golden_ensemble() -> None:
+    """Canonical RFT outperforms chirplet basis on golden drift signals.
+
+    Chirplets are in the LCT family; RFT is proven NOT to be in LCT.
+    This demonstrates that RFT's advantage is not reducible to chirp structure.
+    """
+    report = comparative_report(N=64, M=200, seed=42)
+
+    assert report.rft_k99_mean < report.chirplet_k99_mean, (
+        f"RFT K99={report.rft_k99_mean:.2f} should beat "
+        f"Chirplet K99={report.chirplet_k99_mean:.2f}"
+    )
+
+
+def test_comparative_fft_dominates_on_harmonic_ensemble() -> None:
+    """FFT achieves perfect sparsity on harmonic signals; RFT does not.
+
+    This is the key NEGATIVE CONTROL: RFT's advantage is domain-specific.
+    On FFT-native signals (pure harmonics), FFT wins decisively.
+    """
+    report = comparative_report(N=64, M=200, seed=42)
+
+    # FFT should achieve K99 ≈ 1 on pure harmonics
+    assert report.fft_k99_harmonic < 2.0, (
+        f"FFT K99={report.fft_k99_harmonic:.2f} should be ≈ 1 on harmonics"
+    )
+
+    # RFT should NOT be sparse on harmonics
+    assert report.rft_k99_harmonic > report.fft_k99_harmonic + 5, (
+        f"RFT K99={report.rft_k99_harmonic:.2f} should be >> "
+        f"FFT K99={report.fft_k99_harmonic:.2f} on harmonics"
+    )
+
+
+def test_comparative_report_summary() -> None:
+    """Generate and validate a full comparative report.
+
+    This provides the explicit contrasts with related transforms
+    requested in the review.
+    """
+    report = comparative_report(N=128, M=300, seed=123)
+
+    # Core inequality: RFT < FFT on golden ensemble
+    assert report.rft_k99_mean < report.fft_k99_mean, (
+        f"Golden concentration: RFT={report.rft_k99_mean:.2f} "
+        f"should be < FFT={report.fft_k99_mean:.2f}"
+    )
+
+    # Domain specificity: FFT wins on its native ensemble
+    assert report.fft_k99_harmonic < report.rft_k99_harmonic, (
+        f"Harmonic signals: FFT={report.fft_k99_harmonic:.2f} "
+        f"should beat RFT={report.rft_k99_harmonic:.2f}"
+    )
+
+    # Print summary for documentation
+    print(f"\n=== Comparative Report (N={report.N}, M={report.M}) ===")
+    print(f"Golden drift ensemble K99 means:")
+    print(f"  RFT (canonical):     {report.rft_k99_mean:.2f}")
+    print(f"  FFT:                 {report.fft_k99_mean:.2f}")
+    print(f"  Fibonacci-FFT:       {report.fibonacci_fft_k99_mean:.2f}")
+    print(f"  Chirplet (α=0.1):    {report.chirplet_k99_mean:.2f}")
+    print(f"  Golden-angle:        {report.golden_angle_k99_mean:.2f}")
+    print(f"Harmonic ensemble K99 means:")
+    print(f"  RFT:                 {report.rft_k99_harmonic:.2f}")
+    print(f"  FFT:                 {report.fft_k99_harmonic:.2f}")
+
+
+# =============================================================================
+# THEOREM CLASSIFICATION: Proven vs Conjectural
+# =============================================================================
+# This section explicitly separates PROVEN results from CONJECTURAL/EMPIRICAL
+# results, addressing the concern about overstating claims.
+#
+# PROVEN (deterministic, machine-precision verification):
+#   - Theorem A: U is polar factor (nearest unitary)
+#   - Theorem B: Companion eigenstructure
+#   - Theorem C: Convolution algebra diagonalization
+#   - Unitarity: U is unitary (κ(U) = 1)
+#
+# CONJECTURAL/EMPIRICAL (statistical validation, not closed-form proof):
+#   - Theorem 8: Golden Concentration Inequality
+#   - Theorem E: Empirical optimality on golden drift ensemble
+#   - Non-Clifford exclusion (operational, not group-theoretic proof)
+# =============================================================================
+
+
+def test_proven_theorem_summary() -> None:
+    """Summary verification of all PROVEN theorems (deterministic checks).
+
+    These theorems have closed-form proofs and are verified to machine precision.
+    """
+    N = 32
+    tol = 1e-10
+
+    # Theorem A: Polar factor
+    R = _raw_resonance_kernel_R(N)
+    U = _canonical_unitary_U(N)
+    U_polar, _ = scipy.linalg.polar(R)
+    polar_match = np.allclose(U, U_polar, atol=tol)
+    assert polar_match, "Theorem A (polar factor) FAILED"
+
+    # Theorem B: Companion eigenstructure
+    z = _roots_z_phi(N)
+    C = _companion_from_roots(z)
+    V = _vandermonde_evecs(z)
+    Lambda = np.diag(z)
+    resid_B = _fro_norm(C @ V - V @ Lambda) / _fro_norm(V)
+    assert resid_B < tol, f"Theorem B (companion eigenpairs) FAILED: resid={resid_B}"
+
+    # Theorem C: Filter algebra diagonalization
+    rng = np.random.default_rng(0)
+    h = rng.normal(size=N) + 1j * rng.normal(size=N)
+    H = golden_filter_operator(C, h)
+    powers = np.arange(N, dtype=np.int64).reshape(-1, 1)
+    p_h = (h.reshape(-1, 1) * (z.reshape(1, -1) ** powers)).sum(axis=0)
+    resid_C = _fro_norm(H @ V - V @ np.diag(p_h)) / _fro_norm(V)
+    assert resid_C < tol, f"Theorem C (filter algebra) FAILED: resid={resid_C}"
+
+    # Unitarity
+    unitarity_error = _fro_norm(U.conj().T @ U - np.eye(N))
+    assert unitarity_error < tol, f"Unitarity FAILED: error={unitarity_error}"
+
+    print("\n=== PROVEN THEOREMS: All passed with residuals < 1e-10 ===")
+    print(f"  Theorem A (polar factor): ✓")
+    print(f"  Theorem B (companion eigenpairs): resid = {resid_B:.2e}")
+    print(f"  Theorem C (filter algebra): resid = {resid_C:.2e}")
+    print(f"  Unitarity: error = {unitarity_error:.2e}")
+
+
+def test_conjectural_theorem_summary() -> None:
+    """Summary verification of CONJECTURAL/EMPIRICAL theorems.
+
+    These theorems are supported by statistical evidence, NOT closed-form proofs.
+    The tests verify the DIRECTION of the effect, not arbitrary thresholds.
+    """
+    rng = np.random.default_rng(0)
+    N = 128
+    M = 200
+
+    U = _canonical_unitary_U(N)
+    F = _fft_unitary_matrix(N)
+
+    # Theorem 8 / E: Golden concentration inequality
+    Xs = golden_drift_ensemble(N, M, rng)
+    k99_rft = [k99(U.conj().T @ x) for x in Xs]
+    k99_fft = [k99(F.conj().T @ x) for x in Xs]
+
+    mean_rft = float(np.mean(k99_rft))
+    mean_fft = float(np.mean(k99_fft))
+    std_rft = float(np.std(k99_rft))
+    std_fft = float(np.std(k99_fft))
+
+    # Report effect size (Cohen's d)
+    pooled_std = np.sqrt((std_rft**2 + std_fft**2) / 2)
+    cohens_d = (mean_fft - mean_rft) / pooled_std if pooled_std > 0 else 0
+
+    # Verify direction (NOT magnitude threshold)
+    direction_correct = mean_rft < mean_fft
+    assert direction_correct, (
+        f"Theorem 8 direction FAILED: E[K99(RFT)]={mean_rft:.2f} "
+        f"should be < E[K99(FFT)]={mean_fft:.2f}"
+    )
+
+    print("\n=== CONJECTURAL THEOREMS: Statistical evidence ===")
+    print(f"  Theorem 8 (Golden Concentration):")
+    print(f"    E[K99(RFT)] = {mean_rft:.2f} ± {std_rft:.2f}")
+    print(f"    E[K99(FFT)] = {mean_fft:.2f} ± {std_fft:.2f}")
+    print(f"    Effect size (Cohen's d) = {cohens_d:.3f}")
+    print(f"    Direction: {'✓ RFT < FFT' if direction_correct else '✗ FAILED'}")
+    print(f"  NOTE: This is empirical evidence, not a closed-form proof.")
+
 
 
