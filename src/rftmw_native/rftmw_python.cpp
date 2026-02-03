@@ -25,10 +25,12 @@
 #include <pybind11/complex.h>
 #include <chrono>
 #include <array>
+#include <random>
 #include <cstring>
 
 #include "rftmw_core.hpp"
 #include "rftmw_compression.hpp"
+#include "rftmw_transform_theorems.hpp"
 
 #if RFTMW_ENABLE_ASM
 #include "rftmw_asm_kernels.hpp"
@@ -76,6 +78,13 @@ py::array_t<std::complex<double>> complexvec_to_numpy(const ComplexVec& vec) {
     return result;
 }
 
+py::array_t<std::complex<double>> dense_to_numpy(const rftmw::theorems::Dense& mat) {
+    py::array_t<std::complex<double>> result({mat.n, mat.n});
+    auto buf = result.request();
+    std::memcpy(buf.ptr, mat.a.data(), mat.a.size() * sizeof(std::complex<double>));
+    return result;
+}
+
 // ============================================================================
 // Module Definition
 // ============================================================================
@@ -85,7 +94,7 @@ PYBIND11_MODULE(rftmw_native, m) {
         RFTMW Native Extension
         ----------------------
         
-        High-performance Φ-RFT transform and compression.
+        High-performance RFT transform and compression.
         
         This module provides C++/SIMD-accelerated implementations of:
         - Forward and inverse RFT transforms
@@ -142,7 +151,7 @@ PYBIND11_MODULE(rftmw_native, m) {
         .def("forward", [](RFTMWEngine& self, py::array_t<double> arr) {
             return complexvec_to_numpy(self.forward(numpy_to_realvec(arr)));
         }, py::arg("input"), R"pbdoc(
-            Forward Φ-RFT transform.
+            Forward RFT transform.
             
             Args:
                 input: Real-valued 1D numpy array
@@ -158,7 +167,7 @@ PYBIND11_MODULE(rftmw_native, m) {
         .def("inverse", [](RFTMWEngine& self, py::array_t<std::complex<double>> arr) {
             return realvec_to_numpy(self.inverse(numpy_to_complexvec(arr)));
         }, py::arg("input"), R"pbdoc(
-            Inverse Φ-RFT transform.
+            Inverse RFT transform.
             
             Args:
                 input: Complex-valued 1D numpy array of RFT coefficients
@@ -186,7 +195,7 @@ PYBIND11_MODULE(rftmw_native, m) {
         static thread_local RFTMWEngine engine;
         return complexvec_to_numpy(engine.forward(numpy_to_realvec(arr)));
     }, py::arg("input"), R"pbdoc(
-        Forward Φ-RFT transform (convenience function).
+        Forward RFT transform (convenience function).
         
         Uses a thread-local engine instance for efficiency.
         
@@ -201,7 +210,7 @@ PYBIND11_MODULE(rftmw_native, m) {
         static thread_local RFTMWEngine engine;
         return realvec_to_numpy(engine.inverse(numpy_to_complexvec(arr)));
     }, py::arg("input"), R"pbdoc(
-        Inverse Φ-RFT transform (convenience function).
+        Inverse RFT transform (convenience function).
         
         Uses a thread-local engine instance for efficiency.
         
@@ -210,6 +219,60 @@ PYBIND11_MODULE(rftmw_native, m) {
         
         Returns:
             Real-valued 1D numpy array
+    )pbdoc");
+
+    // ========================================================================
+    // Transform-Theory (Reference) Objects
+    // ========================================================================
+
+    auto theorems = m.def_submodule("theorems", R"pbdoc(
+        Transform-theory reference objects (non-SIMD, non-ASM).
+
+        These bindings exist to keep the C++ stack aligned with the canonical
+        Python definitions in algorithms/rft/core/transform_theorems.py.
+    )pbdoc");
+
+    theorems.def("phi_frequencies", [](std::size_t N) {
+        return realvec_to_numpy(rftmw::theorems::phi_frequencies(N));
+    }, py::arg("N"), R"pbdoc(
+        Canonical frequency grid f_k = frac((k+1)*phi).
+    )pbdoc");
+
+    theorems.def("golden_roots_z", [](std::size_t N) {
+        return complexvec_to_numpy(rftmw::theorems::golden_roots_z(N));
+    }, py::arg("N"), R"pbdoc(
+        Unit-circle roots z_k = exp(i 2π f_k) for the canonical grid.
+    )pbdoc");
+
+    theorems.def("golden_companion_shift", [](std::size_t N) {
+        return dense_to_numpy(rftmw::theorems::golden_companion_shift(N));
+    }, py::arg("N"), R"pbdoc(
+        Golden companion (shift) operator C_phi built from {z_k}.
+    )pbdoc");
+
+    theorems.def("k99", [](py::array_t<std::complex<double>> arr, double frac_energy) {
+        return rftmw::theorems::k99(numpy_to_complexvec(arr), frac_energy);
+    }, py::arg("X"), py::arg("frac_energy") = 0.99, R"pbdoc(
+        Smallest K such that the largest-K energy mass is >= frac_energy.
+    )pbdoc");
+
+    theorems.def("golden_drift_ensemble", [](std::size_t N, std::size_t M, std::uint64_t seed) {
+        std::mt19937_64 rng(seed);
+        const auto Xs = rftmw::theorems::golden_drift_ensemble(N, M, rng);
+        py::array_t<std::complex<double>> out({M, N});
+        auto buf = out.request();
+        auto* ptr = static_cast<std::complex<double>*>(buf.ptr);
+        for (std::size_t i = 0; i < M; ++i) {
+            if (Xs[i].size() != N) {
+                throw std::runtime_error("golden_drift_ensemble: unexpected vector length");
+            }
+            std::memcpy(ptr + i * N, Xs[i].data(), N * sizeof(std::complex<double>));
+        }
+        return out;
+    }, py::arg("N"), py::arg("M"), py::arg("seed") = 0, R"pbdoc(
+        Golden drift ensemble x[n] = exp(i2π(f0*n + a*frac(n*phi))).
+
+        Returns a complex128 array of shape (M, N).
     )pbdoc");
     
     // ========================================================================

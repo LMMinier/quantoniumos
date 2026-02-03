@@ -17,7 +17,7 @@
 
 ## Start here (10–15 lines)
 
-**What this is:** A research‑grade, reproducible codebase for Φ‑RFT algorithms, hybrid codecs, and hardware/RTL experiments. No quantum speedups, no clinical claims, no production cryptography.
+**What this is:** A research‑grade, reproducible codebase for RFT algorithms, hybrid codecs, and hardware/RTL experiments. No quantum speedups, no clinical claims, no production cryptography.
 
 **Run the core checks (from repo root):**
 1) Environment check: [verify_setup.sh](verify_setup.sh)
@@ -25,6 +25,12 @@
 3) Full reproducibility: [reproduce_results.sh](reproduce_results.sh)
 
 **Where the details live:** The canonical RFT definition and proofs are in [algorithms/rft/README_RFT.md](algorithms/rft/README_RFT.md) and [THEOREMS_RFT_IRONCLAD.md](THEOREMS_RFT_IRONCLAD.md). Hardware RTL and reports are in [hardware/](hardware/).
+
+**Transform-theory checks (Theorems A–E + Theorems 8, 9):**
+```bash
+pytest -q tests/proofs/test_rft_transform_theorems.py tests/proofs/test_golden_uncertainty_principle.py
+# 33 tests: Theorems A-E (operator diagonalization) + Theorem 8 (concentration) + Theorem 9 (uncertainty)
+```
 
 ## What is implemented (evidence‑based)
 
@@ -47,6 +53,8 @@ This section lists only what is present in this repository, with pointers to run
 - Synthesizable RTL and testbenches: [hardware/rtl/](hardware/rtl/)
 - Simulation and reports: [hardware/simulation/](hardware/simulation/)
 - WebFPGA/iCE40 synthesis reports: [hardware/](hardware/)
+- **Theorem 8 hardware test vectors**: [hardware/hardware_test_vectors/theorem8/](hardware/hardware_test_vectors/theorem8/)
+- RFTPU capabilities and verification: [hardware/RFTPU_CAPABILITIES.md](hardware/RFTPU_CAPABILITIES.md)
 
 ### 5) Desktop UI + apps (user‑space)
 - Desktop shell: [quantonium_os_src/frontend/quantonium_desktop.py](quantonium_os_src/frontend/quantonium_desktop.py)
@@ -71,7 +79,7 @@ Use these scripts to reproduce results directly from this repo:
 
 ### IP Pillar Verification (CI-tested on every push)
 
-These 4 tests run automatically in CI and verify the core IP claims:
+These 6 tests run automatically in CI and verify the core IP claims:
 
 | IP Pillar | Claim | Test Command | Expected Result |
 |-----------|-------|--------------|-----------------|
@@ -79,6 +87,8 @@ These 4 tests run automatically in CI and verify the core IP claims:
 | **2. RFT ≠ FFT** | Non-equivalence | `python -c "from algorithms.rft.core.canonical_true_rft import CanonicalTrueRFT; import numpy as np; from numpy.fft import fft; rft=CanonicalTrueRFT(256); x=np.random.randn(256)+1j*np.random.randn(256); corr=np.abs(np.vdot(rft.forward_transform(x),fft(x,norm='ortho')))/(np.linalg.norm(rft.forward_transform(x))*np.linalg.norm(fft(x,norm='ortho'))); print(f'{corr:.4f}')"` | `<0.5` (proves NOT equivalent) |
 | **3. Compression** | Zero coherence, high PSNR | `pytest tests/codec_tests/ -v` | All pass, coherence=0.00 |
 | **4. Crypto** | Avalanche ~50% | See [algorithms/rft/crypto/enhanced_cipher.py](algorithms/rft/crypto/enhanced_cipher.py) | `50% ±5%` |
+| **5. Theorem 8** | E[K99(RFT)] < E[K99(FFT)] | `pytest tests/proofs/test_rft_transform_theorems.py -k theorem_8` | 8 tests pass (bootstrap CI) |
+| **6. Theorem 9** | Maassen-Uffink Entropic Uncertainty | `pytest tests/proofs/test_maassen_uffink_uncertainty.py -v` | 31 tests pass |
 
 ### Reproducible Benchmark Commands
 
@@ -246,15 +256,15 @@ This repository includes a suite of scripts to verify the environment, reproduce
 | Step | Doc | Purpose |
 | --- | --- | --- |
 | 1 | **[README.md](README.md)** | Project summary, RFT update, quick install |
-| 2 | **[GETTING_STARTED.md](GETTING_STARTED.md)** | First run, examples, learning path |
-| 3 | **[SETUP_GUIDE.md](SETUP_GUIDE.md)** | Installation, native builds, troubleshooting |
-| 4 | **[DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** | Doc tree, task-based navigation |
-| 5 | **[REPO_ORGANIZATION.md](REPO_ORGANIZATION.md)** | Repo structure map (this is the source of truth) |
+| 2 | **[GETTING_STARTED.md](docs/guides/GETTING_STARTED.md)** | First run, examples, learning path |
+| 3 | **[SETUP_GUIDE.md](docs/guides/SETUP_GUIDE.md)** | Installation, native builds, troubleshooting |
+| 4 | **[DOCS_INDEX.md](docs/DOCS_INDEX.md)** | Doc tree, task-based navigation |
+| 5 | **[REPO_ORGANIZATION.md](docs/project/REPO_ORGANIZATION.md)** | Repo structure map (this is the source of truth) |
 
 **More docs:**
 - **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Technical deep dive (ASM → C → C++ → Python)
 - **[docs/ARCHITECTURE_QUICKREF.md](docs/ARCHITECTURE_QUICKREF.md)** - One-page cheat sheet
-- **[COMPONENT_INVENTORY.md](COMPONENT_INVENTORY.md)** - Per-path purpose & routes table
+- **[COMPONENT_INVENTORY.md](docs/project/COMPONENT_INVENTORY.md)** - Per-path purpose & routes table
 
 **Quick installation:**
 ```bash
@@ -391,6 +401,57 @@ rec = rft_inverse_frame(X, Phi)         # RFT⁻¹(X) = Φ̃ X
 - **Unitary:** $\widetilde{\Phi}^H \widetilde{\Phi} = I$ (by Gram normalization)
 - **Domain-Specific:** +15-20 dB PSNR on golden quasi-periodic signals
 - **Honest:** Loses to FFT/DCT on non-target signal families
+
+### Theorem 8: Golden Spectral Concentration Inequality (February 2026)
+
+The central theoretical result for the RFTPU architecture:
+
+$$
+\limsup_{N \to \infty} \mathbb{E}_{x \sim \mathcal{E}_\phi}[K_{0.99}(\widetilde{\Phi}, x)] < \liminf_{N \to \infty} \mathbb{E}_{x \sim \mathcal{E}_\phi}[K_{0.99}(F, x)]
+$$
+
+**Interpretation:** For signals from the golden quasi-periodic ensemble $\mathcal{E}_\phi$, RFT requires **fewer coefficients** than FFT to capture 99% of signal energy.
+
+| N | E[K₀.₉₉(RFT)] | E[K₀.₉₉(FFT)] | Gap |
+|---|---------------|---------------|-----|
+| 64 | 34.6 | 35.7 | 3.3% |
+| 128 | 59.0 | 60.2 | 2.1% |
+
+**Run verification:**
+```bash
+pytest tests/proofs/test_rft_transform_theorems.py -k theorem_8 -v  # 4 tests pass
+python hardware/theorem8_concentration_test.py                      # Generate hardware vectors
+```
+
+**Hardware test vectors:** [hardware/hardware_test_vectors/theorem8/](hardware/hardware_test_vectors/theorem8/)
+
+### Theorem 9: Maassen-Uffink Entropic Uncertainty (February 2026)
+
+The **correct** finite-dimensional uncertainty principle for RFT:
+
+$$
+H(|x|^2) + H(|U_\phi^H x|^2) \geq -2 \log(\mu(U_\phi))
+$$
+
+where:
+- H(p) = Shannon entropy = -Σ p_k log(p_k)
+- μ(U) = max|U_{jk}| = mutual coherence
+
+⚠️ **Why not Heisenberg?** The continuous bound Δx·Δp ≥ ℏ/2 does NOT apply to discrete finite-N transforms. Using spread products can produce values below 1/(4π), which is mathematically invalid.
+
+| Transform | Mutual Coherence μ | Entropy Bound |
+|-----------|-------------------|---------------|
+| DFT | 1/√N | log(N) |
+| RFT | > 1/√N | < log(N) |
+
+**Run verification:**
+```bash
+pytest tests/proofs/test_maassen_uffink_uncertainty.py -v  # 31 tests pass
+```
+
+**Implementation:** [algorithms/rft/core/maassen_uffink_uncertainty.py](algorithms/rft/core/maassen_uffink_uncertainty.py)
+
+**Legacy (deprecated):** [algorithms/rft/core/golden_uncertainty_principle.py](algorithms/rft/core/golden_uncertainty_principle.py) — uses Heisenberg-style bounds (incorrect for finite N)
 
 ### Deprecated: φ-Phase FFT (Old "RFT")
 
@@ -847,7 +908,7 @@ python experiments/competitors/benchmark_compression_vs_codecs.py --output-dir r
 python experiments/competitors/benchmark_crypto_throughput.py --output-dir results/competitors
 ```
 
-See **[REPRODUCING_RESULTS.md](REPRODUCING_RESULTS.md)** for complete reproducibility guide.
+See **[REPRODUCING_RESULTS.md](docs/validation/REPRODUCING_RESULTS.md)** for complete reproducibility guide.
 
 ### Run Tests
 
@@ -991,13 +1052,66 @@ See `tests/` and `algorithms/crypto/crypto_benchmarks/rft_sis/`.
 
 ---
 
+
 ## Patent & Licensing
 
-> **License split.** Most of this repository is licensed under **AGPL-3.0-or-later** (see `LICENSE.md`).  
-> Files explicitly listed in **`CLAIMS_PRACTICING_FILES.txt`** are licensed under **`LICENSE-CLAIMS-NC.md`** (research/education only) because they practice methods disclosed in **U.S. Patent Application No. 19/169,399**.  
-> **No non-commercial restriction applies to any files outside that list.**  
-> Commercial use of the claim-practicing implementations requires a separate patent license from **Luis M. Minier** (contact: **luisminier79@gmail.com**).  
-> See `docs/project/PATENT_NOTICE.md` for details. Trademarks (“QuantoniumOS”, “RFT”) are not licensed.
+### Dual License Structure
+
+| License | Applies To | Commercial Use | Research Use |
+|---------|------------|----------------|--------------|
+| **AGPL-3.0** | Files NOT in `CLAIMS_PRACTICING_FILES.txt` | ✅ With AGPL compliance | ✅ Free |
+| **Research-Only (NC)** | Files IN `CLAIMS_PRACTICING_FILES.txt` | ❌ Requires license | ✅ Free |
+
+### Quick Guide
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Is your file in CLAIMS_PRACTICING_FILES.txt?               │
+│                                                             │
+│  NO  ──────────►  AGPL-3.0 license                         │
+│                   ✅ Commercial OK (share source)           │
+│                   ✅ Research OK                            │
+│                                                             │
+│  YES ──────────►  LICENSE-CLAIMS-NC.md                     │
+│                   ❌ Commercial requires license            │
+│                   ✅ Research/Education OK                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Patent Information
+
+**USPTO Application:** 19/169,399  
+**Title:** Hybrid Computational Framework for Quantum and Resonance Simulation  
+**Filing Date:** April 3, 2025  
+**Inventor:** Luis M. Minier
+
+| Claim | Description |
+|-------|-------------|
+| **1** | Symbolic Resonance Fourier Transform Engine (φ-grid, Gram normalization) |
+| **2** | Resonance-Based Cryptographic Subsystem (RFT-SIS hash, Feistel cipher) |
+| **3** | Geometric Structures for Cryptographic Waveform Hashing |
+| **4** | Hybrid Mode Integration (DCT-RFT cascade, zero-coherence routing) |
+
+### Research & Verification Rights
+
+**Explicitly permitted without commercial license:**
+- ✅ Verify mathematical claims (Theorems 1-9)
+- ✅ Reproduce benchmarks (`./reproduce_results.sh`)
+- ✅ Publish research findings (including negative results)
+- ✅ Security audits (responsible disclosure)
+- ✅ Academic coursework and education
+
+### Commercial Licensing
+
+For commercial use of patent-practicing code:
+
+📧 **Contact:** luisminier79@gmail.com  
+📄 **Details:** [docs/project/PATENT_NOTICE.md](docs/project/PATENT_NOTICE.md)  
+📋 **License Split:** [docs/licensing/LICENSE_SPLIT.md](docs/licensing/LICENSE_SPLIT.md)
+
+### Trademarks
+
+"QuantoniumOS," "RFTPU," and "Φ-RFT" are trademarks of Luis M. Minier and are **NOT** licensed under any open-source license.
 
 ---
 

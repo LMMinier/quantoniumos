@@ -12,13 +12,13 @@ Empirical results, crypto conjectures, and constructions without reductions do *
 | Theorem | Status | Validation |
 |---------|--------|------------|
 | Unitarity (Gram-normalized) | ✅ Proven | `tests/validation/test_mathematical_correctness.py` |
-| Unitarity (Fast Φ-RFT) | ✅ Proven | `tests/validation/test_numerical_stability.py` |
-| Resonance kernel non-quadratic | ✅ Proven | `scripts/reproduce_validation.py` |
-| Twisted convolution | ✅ Proven | [THEOREMS_RFT_IRONCLAD.md] |
+| Unitarity (Fast RFT variant) | ✅ Proven | `tests/validation/test_numerical_stability.py` |
+| Raw φ-grid kernel ≠ N-point DFT | ✅ Proven | `scripts/reproduce_validation.py` |
+| Twisted convolution | ✅ Proven | [THEOREMS_RFT_IRONCLAD.md](../../THEOREMS_RFT_IRONCLAD.md) |
 | Canonical ≠ DLCT | ⚠️ Open | Requires invariant for post-Gram matrix |
 
 ## Canonical Theorem Sources
-- [docs/proofs/THEOREMS_RFT_IRONCLAD.md](docs/proofs/THEOREMS_RFT_IRONCLAD.md)
+- [THEOREMS_RFT_IRONCLAD.md](../../THEOREMS_RFT_IRONCLAD.md)
 - [docs/proofs/RFT_THEOREMS.md](docs/proofs/RFT_THEOREMS.md)
 - [docs/proofs/THEOREM_10_HYBRID.md](docs/proofs/THEOREM_10_HYBRID.md)
 - [docs/proofs/VALIDATED_THEOREMS.md](docs/proofs/VALIDATED_THEOREMS.md) — Empirically validated

@@ -28,11 +28,12 @@ from typing import List, Tuple, Optional
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-# Use canonical operator-based RFT (December 2025)
-from algorithms.rft.variants.operator_variants import generate_rft_golden
+# Use CANONICAL Gram-normalized RFT (January 2026)
+# Per README.md: Canonical RFT = Φ̃ = Φ (ΦᴴΦ)^{-1/2} where Φ[k,n] = exp(j 2π frac((k+1)φ) n) / √N
+from algorithms.rft.core.resonant_fourier_transform import rft_basis_matrix, PHI
 
-# Golden ratio constant
-PHI = (1 + 5**0.5) / 2
+# Legacy operator-based variant kept for comparison only
+from algorithms.rft.variants.operator_variants import generate_rft_golden as generate_rft_golden_legacy
 
 # =============================================================================
 # HARDWARE PARAMETERS (must match rftpu_pkg)
@@ -125,15 +126,41 @@ def complex_to_q15_pair(c: complex) -> Tuple[int, int]:
 _KERNEL_CACHE = {}
 
 def get_rft_kernel(n: int = BLOCK_SAMPLES) -> np.ndarray:
-    """Get canonical RFT kernel matrix (eigenbasis of resonance operator)"""
+    """
+    Get CANONICAL RFT kernel matrix.
+    
+    CANONICAL DEFINITION (January 2026):
+        Φ̃ = Φ (ΦᴴΦ)^{-1/2}
+    where:
+        Φ[n,k] = exp(j 2π frac((k+1)φ) n) / √N
+    
+    This is the Gram-normalized φ-grid exponential basis that provides:
+    - Exact unitarity: Φ̃ᴴ Φ̃ = I
+    - +15-20 dB PSNR on golden quasi-periodic signals
+    
+    See: THEOREMS_RFT_IRONCLAD.md, algorithms/rft/README_RFT.md
+    """
     if n not in _KERNEL_CACHE:
-        _KERNEL_CACHE[n] = generate_rft_golden(n)
+        # Use canonical Gram-normalized basis
+        _KERNEL_CACHE[n] = rft_basis_matrix(n, n, use_gram_normalization=True)
     return _KERNEL_CACHE[n]
+
+
+def get_rft_kernel_legacy(n: int = BLOCK_SAMPLES) -> np.ndarray:
+    """
+    Get LEGACY operator-based RFT kernel (for comparison only).
+    
+    DEPRECATED: This uses the eigenbasis of resonance operator K = T(R_φ * d).
+    The canonical definition is now the Gram-normalized φ-grid basis.
+    
+    Kept for backwards compatibility and comparison studies.
+    """
+    return generate_rft_golden_legacy(n)
 
 
 def generate_rft_kernel_coefficients(n: int = BLOCK_SAMPLES) -> Tuple[np.ndarray, np.ndarray]:
     """Generate kernel coefficients matching hardware implementation"""
-    # Use canonical operator-based RFT (eigenbasis of K = T(R_phi * d))
+    # Use CANONICAL Gram-normalized RFT
     kernel = get_rft_kernel(n)
     return kernel.real, kernel.imag
 

@@ -1,5 +1,16 @@
 # A Golden-Phase Unitary Transform with FFT-Class Complexity and a DCT+RFT Hybrid Decomposition Scheme
 
+> **Legacy / Deprecated framing notice (2026-02):**
+> This technical report uses older Φ-RFT / closed-form factorization language (e.g. `{k/φ}` and `Ψ = Dφ Cσ F`).
+> The canonical definition used by the repository today is the **Gram-normalized φ-grid exponential basis**
+> `U := Φ(ΦᴴΦ)^{-1/2}` with frequencies `f_k = frac((k+1)φ)`.
+>
+> Canonical theorem proofs and test-backed claims:
+> - [THEOREMS_RFT_IRONCLAD.md](../../THEOREMS_RFT_IRONCLAD.md)
+> - [algorithms/rft/README_RFT.md](../../algorithms/rft/README_RFT.md)
+>
+> This file is kept for historical context and should not be used as the repo’s source of truth.
+
 **Author:** Luis M. Minier  
 **Date:** December 7, 2025  
 **Status:** Technical Report

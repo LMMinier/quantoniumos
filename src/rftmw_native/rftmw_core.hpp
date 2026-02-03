@@ -28,6 +28,9 @@
  *   - feistel_encrypt_batch_asm: 48-round Feistel cipher (9.2 MB/s target)
  */
 
+// Transform-theory reference objects (companion shift, golden drift model, K99, etc.):
+//   see rftmw_transform_theorems.hpp
+
 #pragma once
 
 #include <complex>
@@ -84,62 +87,47 @@ using RealVec = std::vector<double>;
 #if RFTMW_HAS_AVX2
 
 /**
- * AVX2-accelerated golden phase computation.
- * Matches Python formula: θ[k] = 2π·frac(k/φ) + π·k²/n
+ * AVX2-accelerated golden phase computation for CANONICAL RFT.
+ * 
+ * CANONICAL DEFINITION (per README.md - January 2026):
+ *   θ[k] = 2π·frac((k+1)·φ)
+ * 
+ * This computes the canonical φ-grid frequencies used in the
+ * Gram-normalized RFT basis.
  */
 inline void compute_golden_phases_avx2(double* phases, size_t n) {
-    const double beta = 1.0;
-    const double sigma = 1.0;
-    const double inv_n = 1.0 / static_cast<double>(n);
-    
     // Process 4 doubles at a time with AVX2
     __m256d v_two_pi = _mm256_set1_pd(TWO_PI);
-    __m256d v_pi = _mm256_set1_pd(PI);
-    __m256d v_phi_inv = _mm256_set1_pd(PHI_INV);
-    __m256d v_beta = _mm256_set1_pd(beta);
-    __m256d v_sigma = _mm256_set1_pd(sigma);
-    __m256d v_inv_n = _mm256_set1_pd(inv_n);
+    __m256d v_phi = _mm256_set1_pd(PHI);
+    __m256d v_one = _mm256_set1_pd(1.0);
     
     size_t k = 0;
     for (; k + 4 <= n; k += 4) {
-        __m256d v_k = _mm256_set_pd(
+        // k+1 values
+        __m256d v_k_plus_1 = _mm256_set_pd(
+            static_cast<double>(k + 4),
             static_cast<double>(k + 3),
             static_cast<double>(k + 2),
-            static_cast<double>(k + 1),
-            static_cast<double>(k)
+            static_cast<double>(k + 1)
         );
         
-        // k_phi_inv = k * PHI_INV
-        __m256d v_k_phi_inv = _mm256_mul_pd(v_k, v_phi_inv);
+        // freq = (k+1) * PHI
+        __m256d v_freq = _mm256_mul_pd(v_k_plus_1, v_phi);
         
-        // frac_part = k_phi_inv - floor(k_phi_inv)
-        __m256d v_floor = _mm256_floor_pd(v_k_phi_inv);
-        __m256d v_frac = _mm256_sub_pd(v_k_phi_inv, v_floor);
+        // frac_part = freq - floor(freq)
+        __m256d v_floor = _mm256_floor_pd(v_freq);
+        __m256d v_frac = _mm256_sub_pd(v_freq, v_floor);
         
-        // theta_phi = 2π * beta * frac_part
-        __m256d v_theta_phi = _mm256_mul_pd(_mm256_mul_pd(v_two_pi, v_beta), v_frac);
-        
-        // k_squared = k * k
-        __m256d v_k_sq = _mm256_mul_pd(v_k, v_k);
-        
-        // theta_chirp = π * sigma * k² / n
-        __m256d v_theta_chirp = _mm256_mul_pd(
-            _mm256_mul_pd(_mm256_mul_pd(v_pi, v_sigma), v_k_sq),
-            v_inv_n
-        );
-        
-        // theta = theta_phi + theta_chirp
-        __m256d v_theta = _mm256_add_pd(v_theta_phi, v_theta_chirp);
+        // theta = 2π * frac_part
+        __m256d v_theta = _mm256_mul_pd(v_two_pi, v_frac);
         _mm256_storeu_pd(phases + k, v_theta);
     }
     
     // Handle remainder with scalar
     for (; k < n; ++k) {
-        double k_phi_inv = static_cast<double>(k) * PHI_INV;
-        double frac_part = k_phi_inv - std::floor(k_phi_inv);
-        double theta_phi = TWO_PI * beta * frac_part;
-        double theta_chirp = PI * sigma * static_cast<double>(k * k) * inv_n;
-        phases[k] = theta_phi + theta_chirp;
+        double freq = static_cast<double>(k + 1) * PHI;
+        double frac_part = freq - std::floor(freq);
+        phases[k] = TWO_PI * frac_part;
     }
 }
 
@@ -193,28 +181,28 @@ inline void apply_phase_rotation_avx2(
 // ============================================================================
 
 /**
- * Compute fused phase diagonal matching Python's phi_phase_fft_optimized.
+ * Compute fused phase diagonal for CANONICAL RFT (January 2026).
  * 
- * Python formula (default β=1, σ=1):
- *   θ[k] = 2π·frac(k/φ) + π·k²/n
+ * CANONICAL DEFINITION (per README.md and THEOREMS_RFT_IRONCLAD.md):
+ *   Φ[n,k] = exp(j 2π frac((k+1)φ) n) / √N
+ *   
+ * For the phase-diagonal approximation used in fast transforms:
+ *   θ[k] = 2π·frac((k+1)·φ)
  * 
  * where frac(x) = x mod 1 (fractional part)
+ * 
+ * NOTE: This is different from the deprecated φ-phase FFT which used:
+ *   θ[k] = 2π·frac(k/φ) + π·k²/n  (DEPRECATED)
  */
 inline void compute_golden_phases_scalar(double* phases, size_t n) {
-    const double beta = 1.0;
-    const double sigma = 1.0;
-    
+    // CANONICAL RFT: frequencies at frac((k+1)·φ)
     for (size_t k = 0; k < n; ++k) {
-        // θ_phi = 2πβ·frac(k/φ) = 2πβ·frac(k·φ_inv)
-        double k_phi_inv = static_cast<double>(k) * PHI_INV;
-        double frac_part = k_phi_inv - std::floor(k_phi_inv);  // frac(x) = x - floor(x)
-        double theta_phi = TWO_PI * beta * frac_part;
+        // f_k = frac((k+1) × φ) - normalized frequency in [0, 1)
+        double freq = static_cast<double>(k + 1) * PHI;
+        double frac_part = freq - std::floor(freq);  // frac(x) = x - floor(x)
         
-        // θ_chirp = πσk²/n
-        double k_squared = static_cast<double>(k * k);
-        double theta_chirp = PI * sigma * k_squared / static_cast<double>(n);
-        
-        phases[k] = theta_phi + theta_chirp;
+        // θ[k] = 2π × frac((k+1)·φ)
+        phases[k] = TWO_PI * frac_part;
     }
 }
 
@@ -403,11 +391,14 @@ public:
     /**
      * Pre-compute RFT basis matrix for ASM kernel.
      * 
-     * For CANONICAL variant (USPTO Patent 19/169,399):
-     *   Ψₖ(t) = exp(2πi × fₖ × t + i × θₖ)
-     *   where fₖ = (k+1) × φ, θₖ = 2πk/φ
+     * CANONICAL DEFINITION (January 2026, per README.md):
+     *   Φ[n,k] = exp(j 2π frac((k+1)φ) n) / √N
+     *   
+     * The Gram normalization Φ̃ = Φ (ΦᴴΦ)^{-1/2} ensures exact unitarity.
+     * For the C++ engine, we use the raw φ-grid basis since the
+     * Gram normalization is applied in Python for the canonical transform.
      * 
-     * For LEGACY variant:
+     * For LEGACY variant (deprecated):
      *   Basis[i,j] = exp(i * 2π * φ^(i*j/n))
      * 
      * Note: Only precompute for small sizes to avoid memory explosion
@@ -429,23 +420,27 @@ public:
         const double inv_sqrt_n = 1.0 / std::sqrt(static_cast<double>(n));
         
         if (variant_ == Variant::CANONICAL || variant_ == Variant::BINARY_WAVE) {
-            // USPTO Patent 19/169,399 Claim 1: Canonical RFT
-            // Ψₖ(t) = exp(2πi × fₖ × t + i × θₖ)
+            // CANONICAL RFT (January 2026) - per README.md and THEOREMS_RFT_IRONCLAD.md
+            // Φ[n,k] = exp(j 2π frac((k+1)φ) n) / √N
+            //
+            // This is the raw φ-grid exponential basis.
+            // Full Gram normalization Φ̃ = Φ (ΦᴴΦ)^{-1/2} is applied in Python.
             for (size_t k = 0; k < n; ++k) {
-                double f_k = (static_cast<double>(k) + 1.0) * PHI;  // Resonant frequency
-                double theta_k = TWO_PI * static_cast<double>(k) / PHI;  // Golden phase
+                // f_k = frac((k+1) × φ) - normalized frequency in [0, 1)
+                double freq = static_cast<double>(k + 1) * PHI;
+                double f_k = freq - std::floor(freq);  // frac(x) = x - floor(x)
                 
-                for (size_t t_idx = 0; t_idx < n; ++t_idx) {
-                    double t = static_cast<double>(t_idx) / static_cast<double>(n);
-                    double angle = TWO_PI * f_k * t + theta_k;
-                    basis_cache_[k * n + t_idx] = Complex(
+                for (size_t n_idx = 0; n_idx < n; ++n_idx) {
+                    // Φ[n,k] = exp(j 2π f_k n) / √N
+                    double angle = TWO_PI * f_k * static_cast<double>(n_idx);
+                    basis_cache_[k * n + n_idx] = Complex(
                         std::cos(angle) * inv_sqrt_n,
                         std::sin(angle) * inv_sqrt_n
                     );
                 }
             }
         } else {
-            // Legacy phase-modulated FFT
+            // Legacy phase-modulated FFT (DEPRECATED)
             const double inv_n2 = 1.0 / static_cast<double>(n * n);
             for (size_t i = 0; i < n; ++i) {
                 for (size_t j = 0; j < n; ++j) {

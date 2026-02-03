@@ -1,93 +1,193 @@
+# ============================================================================
+# CLAIMS-PRACTICING FILES REGISTRY
+# ============================================================================
+#
 # Files that practice one or more claims of U.S. Patent Application 19/169,399
 # These files are licensed under LICENSE-CLAIMS-NC.md (research/education only).
-# Everything not listed here remains AGPL-3.0-or-later.
+# Everything NOT listed here remains AGPL-3.0-or-later.
 #
-# USPTO Patent Claims:
-#   Claim 1: Symbolic Resonance Fourier Transform Engine
-#   Claim 2: Resonance-Based Cryptographic Subsystem  
-#   Claim 3: Geometric Structures for Cryptographic Waveform Hashing
-#   Claim 4: Hybrid Mode Integration
+# USPTO Patent Application: 19/169,399
+# Title: Hybrid Computational Framework for Quantum and Resonance Simulation
+# Filing Date: April 3, 2025
+# First Named Inventor: Luis Michael Minier
+#
+# ============================================================================
+# PATENT CLAIMS SUMMARY
+# ============================================================================
+#
+# Claim 1: Symbolic Resonance Fourier Transform Engine
+#          - Golden-ratio frequency grid (φ-grid)
+#          - Gram-normalized unitary basis construction
+#          - O(N²) exact transform / O(N log N) approximate
+#
+# Claim 2: Resonance-Based Cryptographic Subsystem
+#          - RFT-SIS hash function
+#          - Feistel cipher with RFT mixing
+#          - Chaos-based key derivation
+#
+# Claim 3: Geometric Structures for Cryptographic Waveform Hashing
+#          - Topological waveform embedding
+#          - Geometric hash functions
+#          - φ-phase signature schemes
+#
+# Claim 4: Hybrid Mode Integration
+#          - DCT-RFT cascade codecs
+#          - Zero-coherence routing
+#          - Adaptive basis selection
+#
+# ============================================================================
+# HOW TO CHECK COMPLIANCE
+# ============================================================================
+#
+# 1. Search for your file path in this document
+# 2. If LISTED → Licensed under LICENSE-CLAIMS-NC.md (research only)
+# 3. If NOT LISTED → Licensed under LICENSE.md (AGPL-3.0-or-later)
+#
+# For commercial use of listed files, contact: luisminier79@gmail.com
+#
+# ============================================================================
 
 # ============================================================================
-# CANONICAL IMPLEMENTATION (Claims 1-4)
+# SECTION A: CANONICAL IMPLEMENTATIONS (Claims 1-4)
 # ============================================================================
+# These are the primary implementations of patented methods
 
-# Primary RFT implementation (Claims 1, 2, 3, 4)
+# --- Primary RFT Implementation (Claim 1) ---
 algorithms/rft/core/resonant_fourier_transform.py
+algorithms/rft/core/canonical_true_rft.py
 
-# Package exports
+# --- Theorem Implementations (Claim 1) ---
+algorithms/rft/core/transform_theorems.py
+algorithms/rft/core/golden_uncertainty_principle.py
+algorithms/rft/core/maassen_uffink_uncertainty.py
+algorithms/rft/core/theorem8_bootstrap_verification.py
+
+# --- Package Exports ---
 algorithms/rft/__init__.py
 algorithms/rft/core/__init__.py
 
 # ============================================================================
-# LEGACY/DEPRECATED (Still claim-bearing but superseded)
+# SECTION B: CRYPTOGRAPHIC IMPLEMENTATIONS (Claims 2, 3)
 # ============================================================================
 
-# --- Core closed-form RFT & kernels (Claim 1) ---
-algorithms/rft/core/canonical_true_rft.py
-algorithms/rft/core/phi_phase_fft_optimized.py
-algorithms/rft/core/rft_phi_legacy.py
-algorithms/rft/quantum/quantum_kernel_implementation.py
-algorithms/rft/quantum/topological_quantum_kernel.py
-algorithms/rft/quantum/enhanced_topological_qubit.py
-algorithms/rft/quantum/quantum_gates.py
+# --- RFT-SIS Hash (Claim 2) ---
+algorithms/rft/crypto/benchmarks/rft_sis/rft_sis_hash_v31.py
+algorithms/rft/crypto/benchmarks/rft_sis/rft_sis_v31_validation_suite.py
+algorithms/rft/crypto/enhanced_cipher.py
+algorithms/rft/crypto/primitives/quantum_prng.py
 
 # --- Geometric Hashing (Claim 3) ---
 algorithms/rft/quantum/geometric_waveform_hash.py
 algorithms/rft/quantum/geometric_hashing.py
 
-# --- Native C++/SIMD RFT implementations (Claim 1) ---
-src/rftmw_native/rftmw_core.hpp
-src/rftmw_native/rft_fused_kernel.hpp
-src/rftmw_native/rftmw_python.cpp
-
-# --- Unitary Algorithm Variants (Claim 1) ---
-algorithms/rft/variants/golden_ratio_unitary.py
-algorithms/rft/variants/symbolic_unitary.py
-algorithms/rft/variants/entropic_unitary.py
-algorithms/rft/variants/__init__.py
-
-# --- Compression Implementations (Claim 4) ---
-algorithms/rft/compression/rft_vertex_codec.py
-algorithms/rft/compression/rft_quantum_sim.py
-
-# --- Hybrid Codecs (Claim 4) ---
-algorithms/rft/hybrids/hybrid_residual_predictor.py
-algorithms/rft/hybrids/rft_hybrid_codec.py
-algorithms/rft/hybrids/legacy_mca.py
-
-# --- Crypto Implementations (Claim 2) ---
-algorithms/rft/crypto/primitives/quantum_prng.py
-algorithms/rft/crypto/enhanced_cipher.py
-algorithms/rft/crypto/benchmarks/rft_sis/rft_sis_hash_v31.py
-algorithms/rft/crypto/benchmarks/rft_sis/rft_sis_v31_validation_suite.py
-
-# --- Low-level engines & crypto primitives (Claims 2, 3) ---
+# --- Low-level Crypto Engines (Claims 2, 3) ---
 algorithms/rft/kernels/engines/crypto/src/feistel_round48.c
 algorithms/rft/kernels/engines/crypto/include/feistel_round48.h
 algorithms/rft/kernels/engines/crypto/asm/feistel_round48.asm
 algorithms/rft/kernels/engines/crypto/bindings/feistel_pybind.cpp
 algorithms/rft/kernels/engines/crypto/src/sha256_portable.c
 algorithms/rft/kernels/engines/crypto/include/sha256_portable.h
-algorithms/rft/kernels/engines/orchestrator/asm/rft_transform.asm
 
-# --- Operator-based RFT kernels (Claim 1) ---
-algorithms/rft/kernels/operator_arft_kernel.py
-algorithms/rft/kernels/resonant_fourier_transform.py
+# ============================================================================
+# SECTION C: COMPRESSION & HYBRID CODECS (Claim 4)
+# ============================================================================
 
-# --- Test files for claims validation ---
-tests/rft/test_canonical_rft.py
-tests/crypto/test_rft_sis_hash.py
+# --- Compression Implementations ---
+algorithms/rft/compression/rft_vertex_codec.py
+algorithms/rft/compression/rft_quantum_sim.py
 
-# --- Benchmark files ---
-benchmarks/class_a_quantum_simulation.py
-benchmarks/rft_realworld_benchmark.py
+# --- Hybrid Codecs (Zero-Coherence Routing) ---
+algorithms/rft/hybrids/hybrid_residual_predictor.py
+algorithms/rft/hybrids/rft_hybrid_codec.py
+algorithms/rft/hybrids/h3_arft_cascade.py
+algorithms/rft/hybrids/legacy_mca.py
 
-# --- Documentation ---
-docs/patent/USPTO_ALGORITHM_SPECIFICATIONS.md
-algorithms/rft/README_RFT.md
-
-# --- New Compression Tools (Claim 4) ---
+# --- Compression Tools ---
 tools/compression/rft_lossless_model_compressor.py
 tools/compression/rft_sparse_compressor.py
 tools/compression/compress_tinyllama.py
+
+# ============================================================================
+# SECTION D: NATIVE IMPLEMENTATIONS (Claim 1)
+# ============================================================================
+
+# --- C++/SIMD RFT Kernels ---
+src/rftmw_native/rftmw_core.hpp
+src/rftmw_native/rft_fused_kernel.hpp
+src/rftmw_native/rftmw_python.cpp
+
+# --- Assembly Kernels ---
+algorithms/rft/kernels/engines/orchestrator/asm/rft_transform.asm
+
+# --- Operator-based Kernels ---
+algorithms/rft/kernels/operator_arft_kernel.py
+algorithms/rft/kernels/resonant_fourier_transform.py
+
+# ============================================================================
+# SECTION E: VARIANT IMPLEMENTATIONS (Claim 1)
+# ============================================================================
+
+# --- Unitary Algorithm Variants ---
+algorithms/rft/variants/golden_ratio_unitary.py
+algorithms/rft/variants/symbolic_unitary.py
+algorithms/rft/variants/entropic_unitary.py
+algorithms/rft/variants/__init__.py
+
+# ============================================================================
+# SECTION F: QUANTUM-INSPIRED MODULES (Claims 1, 3)
+# ============================================================================
+
+algorithms/rft/quantum/quantum_kernel_implementation.py
+algorithms/rft/quantum/topological_quantum_kernel.py
+algorithms/rft/quantum/enhanced_topological_qubit.py
+algorithms/rft/quantum/quantum_gates.py
+
+# ============================================================================
+# SECTION G: LEGACY/DEPRECATED (Still claim-bearing)
+# ============================================================================
+# These files are superseded but still practice patent claims
+
+algorithms/rft/core/phi_phase_fft_optimized.py
+algorithms/rft/core/rft_phi_legacy.py
+
+# ============================================================================
+# SECTION H: TEST & VALIDATION FILES (Claim verification)
+# ============================================================================
+# These files validate patent claims and are included for completeness
+
+tests/rft/test_canonical_rft.py
+tests/crypto/test_rft_sis_hash.py
+tests/proofs/test_rft_transform_theorems.py
+tests/proofs/test_golden_uncertainty_principle.py
+tests/proofs/test_maassen_uffink_uncertainty.py
+
+# ============================================================================
+# SECTION I: BENCHMARKS (Claim validation)
+# ============================================================================
+
+benchmarks/class_a_quantum_simulation.py
+benchmarks/rft_realworld_benchmark.py
+
+# ============================================================================
+# SECTION J: DOCUMENTATION (Claim descriptions)
+# ============================================================================
+
+docs/patent/USPTO_ALGORITHM_SPECIFICATIONS.md
+docs/theory/DEFINITION_FIREWALL.md
+algorithms/rft/README_RFT.md
+THEOREMS_RFT_IRONCLAD.md
+
+# ============================================================================
+# SECTION K: HARDWARE RTL (Claim 1 - RFTPU Architecture)
+# ============================================================================
+# Hardware implementations of RFT are also covered
+
+hardware/rftpu_architecture.tlv
+hardware/rftpu_architecture.sv
+hardware/rtl/phi_rft_core.sv
+hardware/rtl/rftpu_tile_shell.sv
+hardware/theorem8_concentration_test.py
+
+# ============================================================================
+# END OF CLAIMS-PRACTICING FILES REGISTRY
+# ============================================================================

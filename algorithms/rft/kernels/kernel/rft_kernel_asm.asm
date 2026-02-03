@@ -3,11 +3,16 @@
 ; Listed in CLAIMS_PRACTICING_FILES.txt — LICENSE-CLAIMS-NC.md applies.
 
 ; rft_kernel_asm.asm
-; Assembly optimized routines for RFT kernel
+; Assembly optimized routines for CANONICAL RFT kernel
 ;
-; This file contains highly optimized assembly implementations
-; of the most performance-critical parts of the RFT algorithm
-; for bare metal execution.
+; CANONICAL RFT DEFINITION (January 2026):
+;   Φ̃ = Φ (ΦᴴΦ)^{-1/2} where Φ[n,k] = exp(j 2π frac((k+1)φ) n) / √N
+;
+; This is the Gram-normalized φ-grid exponential basis that provides:
+;   - Exact unitarity: Φ̃ᴴ Φ̃ = I
+;   - +15-20 dB PSNR on golden quasi-periodic signals
+;
+; See: THEOREMS_RFT_IRONCLAD.md, algorithms/rft/README_RFT.md
 
 section .text
 global rft_transform_asm
@@ -19,7 +24,7 @@ align 16
 rft_consts:
     dq 6.283185307179586    ; 2*PI
     dq 1.618033988749895    ; PHI (golden ratio)
-    dq 0.381966011250105    ; 1/PHI
+    dq 0.618033988749895    ; 1/PHI = PHI - 1
     dq 1.272019649514069    ; sqrt(phi) - quantum normalization factor
 
 ;------------------------------------------------------------------------------

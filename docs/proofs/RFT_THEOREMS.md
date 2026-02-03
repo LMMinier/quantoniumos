@@ -1,5 +1,15 @@
 # The Irrevocable Truths: Mathematical Proofs & Validation
 
+> **Status (2026-02): mixed / partially legacy.**
+> This document contains a blend of formal proofs, empirical validations, and older “Φ-RFT” closed-form framing.
+> The canonical, maintained proof set is:
+> - [THEOREMS_RFT_IRONCLAD.md](../../THEOREMS_RFT_IRONCLAD.md)
+>
+> The canonical transform definition is documented at:
+> - [algorithms/rft/README_RFT.md](../../algorithms/rft/README_RFT.md)
+>
+> Keep this file as an index/ledger; do not treat legacy formulas (e.g. `{k/φ}`, `Ψ=DφCσF`) as repo source-of-truth.
+
 **Date:** November 23, 2025  
 **License:** [LICENSE-CLAIMS-NC.md](../LICENSE-CLAIMS-NC.md) (Research/Non-Commercial Only)  
 **Patent Disclosure:** This document details implementations of claims in USPTO Application #19/169,399.

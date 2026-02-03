@@ -81,76 +81,78 @@ module fpga_top (
 
     // ═══════════════════════════════════════════════════════════════════════
     // KERNEL ROM: 4 modes × 64 coefficients = 256 entries
+    // CANONICAL RFT (January 2026): Φ̃ = Φ (ΦᴴΦ)^{-1/2} where Φ[n,k] = exp(j 2π frac((k+1)φ) n) / √N
     // ═══════════════════════════════════════════════════════════════════════
     
     always @(*) begin
         case ({current_mode, k_index, n_index})
 
-            // MODE 0: RFT-GOLDEN (unitarity: 6.12e-15)
-            {2'd0, 3'd0, 3'd0}: kernel_rom_out = -16'sd10528;
-            {2'd0, 3'd0, 3'd1}: kernel_rom_out = 16'sd12809;
-            {2'd0, 3'd0, 3'd2}: kernel_rom_out = -16'sd11788;
-            {2'd0, 3'd0, 3'd3}: kernel_rom_out = -16'sd12520;
-            {2'd0, 3'd0, 3'd4}: kernel_rom_out = 16'sd14036;
-            {2'd0, 3'd0, 3'd5}: kernel_rom_out = -16'sd14281;
-            {2'd0, 3'd0, 3'd6}: kernel_rom_out = -16'sd9488;
-            {2'd0, 3'd0, 3'd7}: kernel_rom_out = -16'sd3470;
-            {2'd0, 3'd1, 3'd0}: kernel_rom_out = -16'sd11613;
-            {2'd0, 3'd1, 3'd1}: kernel_rom_out = 16'sd12317;
-            {2'd0, 3'd1, 3'd2}: kernel_rom_out = 16'sd11248;
-            {2'd0, 3'd1, 3'd3}: kernel_rom_out = -16'sd7835;
-            {2'd0, 3'd1, 3'd4}: kernel_rom_out = 16'sd9793;
-            {2'd0, 3'd1, 3'd5}: kernel_rom_out = 16'sd15845;
-            {2'd0, 3'd1, 3'd6}: kernel_rom_out = 16'sd13399;
-            {2'd0, 3'd1, 3'd7}: kernel_rom_out = 16'sd8523;
-            {2'd0, 3'd2, 3'd0}: kernel_rom_out = -16'sd12087;
-            {2'd0, 3'd2, 3'd1}: kernel_rom_out = -16'sd10234;
-            {2'd0, 3'd2, 3'd2}: kernel_rom_out = 16'sd11353;
-            {2'd0, 3'd2, 3'd3}: kernel_rom_out = -16'sd15150;
-            {2'd0, 3'd2, 3'd4}: kernel_rom_out = -16'sd8738;
-            {2'd0, 3'd2, 3'd5}: kernel_rom_out = 16'sd7100;
-            {2'd0, 3'd2, 3'd6}: kernel_rom_out = -16'sd13620;
-            {2'd0, 3'd2, 3'd7}: kernel_rom_out = -16'sd12336;
-            {2'd0, 3'd3, 3'd0}: kernel_rom_out = -16'sd12043;
-            {2'd0, 3'd3, 3'd1}: kernel_rom_out = -16'sd10784;
-            {2'd0, 3'd3, 3'd2}: kernel_rom_out = -16'sd11936;
-            {2'd0, 3'd3, 3'd3}: kernel_rom_out = -16'sd9443;
-            {2'd0, 3'd3, 3'd4}: kernel_rom_out = -16'sd12944;
-            {2'd0, 3'd3, 3'd5}: kernel_rom_out = -16'sd5602;
-            {2'd0, 3'd3, 3'd6}: kernel_rom_out = 16'sd9043;
-            {2'd0, 3'd3, 3'd7}: kernel_rom_out = 16'sd17320;
-            {2'd0, 3'd4, 3'd0}: kernel_rom_out = -16'sd12043;
-            {2'd0, 3'd4, 3'd1}: kernel_rom_out = 16'sd10784;
-            {2'd0, 3'd4, 3'd2}: kernel_rom_out = -16'sd11936;
-            {2'd0, 3'd4, 3'd3}: kernel_rom_out = 16'sd9443;
-            {2'd0, 3'd4, 3'd4}: kernel_rom_out = -16'sd12944;
-            {2'd0, 3'd4, 3'd5}: kernel_rom_out = 16'sd5602;
-            {2'd0, 3'd4, 3'd6}: kernel_rom_out = 16'sd9043;
-            {2'd0, 3'd4, 3'd7}: kernel_rom_out = -16'sd17320;
-            {2'd0, 3'd5, 3'd0}: kernel_rom_out = -16'sd12087;
-            {2'd0, 3'd5, 3'd1}: kernel_rom_out = 16'sd10234;
-            {2'd0, 3'd5, 3'd2}: kernel_rom_out = 16'sd11353;
-            {2'd0, 3'd5, 3'd3}: kernel_rom_out = 16'sd15150;
-            {2'd0, 3'd5, 3'd4}: kernel_rom_out = -16'sd8738;
-            {2'd0, 3'd5, 3'd5}: kernel_rom_out = -16'sd7100;
-            {2'd0, 3'd5, 3'd6}: kernel_rom_out = -16'sd13620;
-            {2'd0, 3'd5, 3'd7}: kernel_rom_out = 16'sd12336;
-            {2'd0, 3'd6, 3'd0}: kernel_rom_out = -16'sd11613;
-            {2'd0, 3'd6, 3'd1}: kernel_rom_out = -16'sd12317;
-            {2'd0, 3'd6, 3'd2}: kernel_rom_out = 16'sd11248;
-            {2'd0, 3'd6, 3'd3}: kernel_rom_out = 16'sd7835;
-            {2'd0, 3'd6, 3'd4}: kernel_rom_out = 16'sd9793;
-            {2'd0, 3'd6, 3'd5}: kernel_rom_out = -16'sd15845;
-            {2'd0, 3'd6, 3'd6}: kernel_rom_out = 16'sd13399;
-            {2'd0, 3'd6, 3'd7}: kernel_rom_out = -16'sd8523;
-            {2'd0, 3'd7, 3'd0}: kernel_rom_out = -16'sd10528;
-            {2'd0, 3'd7, 3'd1}: kernel_rom_out = -16'sd12809;
-            {2'd0, 3'd7, 3'd2}: kernel_rom_out = -16'sd11788;
-            {2'd0, 3'd7, 3'd3}: kernel_rom_out = 16'sd12520;
-            {2'd0, 3'd7, 3'd4}: kernel_rom_out = 16'sd14036;
-            {2'd0, 3'd7, 3'd5}: kernel_rom_out = 16'sd14281;
-            {2'd0, 3'd7, 3'd6}: kernel_rom_out = -16'sd9488;
-            {2'd0, 3'd7, 3'd7}: kernel_rom_out = 16'sd3470;
+            // MODE 0: RFT-GOLDEN (CANONICAL Gram-normalized basis, unitarity: 4.56e-15)
+            // Definition: Φ̃ = Φ (ΦᴴΦ)^{-1/2} where Φ[n,k] = exp(j 2π frac((k+1)φ) n) / √N
+            {2'd0, 3'd0, 3'd0}: kernel_rom_out = 16'sd11082;
+            {2'd0, 3'd0, 3'd1}: kernel_rom_out = 16'sd11270;
+            {2'd0, 3'd0, 3'd2}: kernel_rom_out = 16'sd12518;
+            {2'd0, 3'd0, 3'd3}: kernel_rom_out = 16'sd10341;
+            {2'd0, 3'd0, 3'd4}: kernel_rom_out = 16'sd10341;
+            {2'd0, 3'd0, 3'd5}: kernel_rom_out = 16'sd12518;
+            {2'd0, 3'd0, 3'd6}: kernel_rom_out = 16'sd11270;
+            {2'd0, 3'd0, 3'd7}: kernel_rom_out = 16'sd11082;
+            {2'd0, 3'd1, 3'd0}: kernel_rom_out = -16'sd6600;
+            {2'd0, 3'd1, 3'd1}: kernel_rom_out = -16'sd2227;
+            {2'd0, 3'd1, 3'd2}: kernel_rom_out = 16'sd8594;
+            {2'd0, 3'd1, 3'd3}: kernel_rom_out = -16'sd10511;
+            {2'd0, 3'd1, 3'd4}: kernel_rom_out = 16'sd8859;
+            {2'd0, 3'd1, 3'd5}: kernel_rom_out = -16'sd5012;
+            {2'd0, 3'd1, 3'd6}: kernel_rom_out = -16'sd2616;
+            {2'd0, 3'd1, 3'd7}: kernel_rom_out = 16'sd9717;
+            {2'd0, 3'd2, 3'd0}: kernel_rom_out = -16'sd847;
+            {2'd0, 3'd2, 3'd1}: kernel_rom_out = -16'sd11529;
+            {2'd0, 3'd2, 3'd2}: kernel_rom_out = 16'sd325;
+            {2'd0, 3'd2, 3'd3}: kernel_rom_out = 16'sd10930;
+            {2'd0, 3'd2, 3'd4}: kernel_rom_out = 16'sd5259;
+            {2'd0, 3'd2, 3'd5}: kernel_rom_out = -16'sd7215;
+            {2'd0, 3'd2, 3'd6}: kernel_rom_out = -16'sd8269;
+            {2'd0, 3'd2, 3'd7}: kernel_rom_out = 16'sd8316;
+            {2'd0, 3'd3, 3'd0}: kernel_rom_out = 16'sd6603;
+            {2'd0, 3'd3, 3'd1}: kernel_rom_out = -16'sd3157;
+            {2'd0, 3'd3, 3'd2}: kernel_rom_out = -16'sd10444;
+            {2'd0, 3'd3, 3'd3}: kernel_rom_out = -16'sd11519;
+            {2'd0, 3'd3, 3'd4}: kernel_rom_out = -16'sd2051;
+            {2'd0, 3'd3, 3'd5}: kernel_rom_out = 16'sd8442;
+            {2'd0, 3'd3, 3'd6}: kernel_rom_out = 16'sd10697;
+            {2'd0, 3'd3, 3'd7}: kernel_rom_out = 16'sd4801;
+            {2'd0, 3'd4, 3'd0}: kernel_rom_out = -16'sd10115;
+            {2'd0, 3'd4, 3'd1}: kernel_rom_out = 16'sd10221;
+            {2'd0, 3'd4, 3'd2}: kernel_rom_out = -16'sd9713;
+            {2'd0, 3'd4, 3'd3}: kernel_rom_out = 16'sd10528;
+            {2'd0, 3'd4, 3'd4}: kernel_rom_out = -16'sd8404;
+            {2'd0, 3'd4, 3'd5}: kernel_rom_out = 16'sd6084;
+            {2'd0, 3'd4, 3'd6}: kernel_rom_out = -16'sd3277;
+            {2'd0, 3'd4, 3'd7}: kernel_rom_out = 16'sd2138;
+            {2'd0, 3'd5, 3'd0}: kernel_rom_out = 16'sd11608;
+            {2'd0, 3'd5, 3'd1}: kernel_rom_out = 16'sd6744;
+            {2'd0, 3'd5, 3'd2}: kernel_rom_out = 16'sd1729;
+            {2'd0, 3'd5, 3'd3}: kernel_rom_out = -16'sd7020;
+            {2'd0, 3'd5, 3'd4}: kernel_rom_out = -16'sd11067;
+            {2'd0, 3'd5, 3'd5}: kernel_rom_out = -16'sd8997;
+            {2'd0, 3'd5, 3'd6}: kernel_rom_out = -16'sd6119;
+            {2'd0, 3'd5, 3'd7}: kernel_rom_out = -16'sd324;
+            {2'd0, 3'd6, 3'd0}: kernel_rom_out = -16'sd5370;
+            {2'd0, 3'd6, 3'd1}: kernel_rom_out = -16'sd8740;
+            {2'd0, 3'd6, 3'd2}: kernel_rom_out = 16'sd9542;
+            {2'd0, 3'd6, 3'd3}: kernel_rom_out = 16'sd5672;
+            {2'd0, 3'd6, 3'd4}: kernel_rom_out = -16'sd10484;
+            {2'd0, 3'd6, 3'd5}: kernel_rom_out = -16'sd2089;
+            {2'd0, 3'd6, 3'd6}: kernel_rom_out = 16'sd12450;
+            {2'd0, 3'd6, 3'd7}: kernel_rom_out = -16'sd3514;
+            {2'd0, 3'd7, 3'd0}: kernel_rom_out = -16'sd1902;
+            {2'd0, 3'd7, 3'd1}: kernel_rom_out = -16'sd8553;
+            {2'd0, 3'd7, 3'd2}: kernel_rom_out = 16'sd12146;
+            {2'd0, 3'd7, 3'd3}: kernel_rom_out = -16'sd3131;
+            {2'd0, 3'd7, 3'd4}: kernel_rom_out = -16'sd6735;
+            {2'd0, 3'd7, 3'd5}: kernel_rom_out = 16'sd12588;
+            {2'd0, 3'd7, 3'd6}: kernel_rom_out = -16'sd4841;
+            {2'd0, 3'd7, 3'd7}: kernel_rom_out = -16'sd6243;
 
             // MODE 1: RFT-CASCADE (H3 Compression - Class B Winner)
             {2'd1, 3'd0, 3'd0}: kernel_rom_out = 16'sd11585;

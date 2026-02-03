@@ -26,8 +26,15 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 # Import QuantoniumOS modules
 try:
+    # CANONICAL RFT (January 2026): Gram-normalized φ-grid basis
+    from algorithms.rft.core.resonant_fourier_transform import (
+        rft_basis_matrix,
+        PHI,
+    )
+    
+    # Legacy operator-based variants (kept for comparison)
     from algorithms.rft.variants.operator_variants import (
-        generate_rft_golden,
+        generate_rft_golden as generate_rft_golden_legacy,
         generate_rft_cascade_h3,
         generate_rft_harmonic,
         generate_rft_fibonacci,
@@ -42,6 +49,21 @@ try:
 except ImportError as e:
     print(f"✗ Import error: {e}")
     sys.exit(1)
+
+
+def generate_rft_golden(n: int) -> np.ndarray:
+    """
+    Generate CANONICAL RFT-Golden kernel.
+    
+    CANONICAL DEFINITION (January 2026):
+        Φ̃ = Φ (ΦᴴΦ)^{-1/2}
+    where:
+        Φ[n,k] = exp(j 2π frac((k+1)φ) n) / √N
+    
+    Returns the Gram-normalized φ-grid exponential basis.
+    """
+    return rft_basis_matrix(n, n, use_gram_normalization=True)
+
 
 # Constants matching hardware (Q1.15 fixed-point, scale = 2^15 = 32768)
 Q15_SCALE = 32768

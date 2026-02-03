@@ -1,82 +1,12 @@
-# THEOREMS_RFT_IRONCLAD.md
-## Scope (what this file *does*)
-This file contains theorem statements with full proofs for:
-- Canonical Φ-RFT unitarity (QR-derived).
-- Fast Φ-RFT unitarity (factorized).
-- Twisted convolution theorem + the diagonalization claim (exact).
-- A **provable** “not an LCT/FrFT” result for the *resonance kernel* used to build the canonical basis.
-- Crypto: what reductions you can formally claim (and what you cannot) without new assumptions.
 
-This file does **not** pretend to prove:
-- “Post-quantum strength” of RFT-SIS with structured matrices.
-- IND-CPA/IND-CCA for any scheme unless it is explicitly built from a standard primitive with a standard proof.
-- Wigner–Dyson / quantum-chaos claims (those are empirical unless you specify an operator family and prove an asymptotic law).
+# THEOREMS_RFT_IRONCLAD.md (Stub)
 
----
+This file exists to avoid link-rot under `docs/proofs/`.
 
-## Definitions
+The canonical, maintained theorem file lives at:
+- [THEOREMS_RFT_IRONCLAD.md](../../THEOREMS_RFT_IRONCLAD.md)
 
-Let φ := (1+√5)/2.
-
-### D1 (Resonance vectors and resonance matrix)
-For fixed N, define vectors v_k ∈ ℂ^N by
-v_k[n] := exp(-i 2π φ^{-k} n),  for n,k ∈ {0,…,N-1}.
-Let R ∈ ℂ^{N×N} be the matrix with entries R_{n,k} := v_k[n].
-(These are exactly your published resonance vectors and resonance matrix.)  [Source: RFT PDF]
-
-### D2 (Canonical Φ-RFT)
-Let R = Q R_upper be the (thin) QR factorization with Q ∈ ℂ^{N×N} unitary and R_upper upper triangular.
-Define U_φ := Q and the canonical Φ-RFT by
-  x̂ := U_φ^† x,     x := U_φ x̂.
-[Source: RFT PDF]
-
-### D3 (Fast Φ-RFT)
-Let F be the unitary DFT matrix (FFT matrix) of size N×N.
-Let C_σ and D_φ be diagonal matrices with unit-modulus diagonal entries (phase-only):
-  (C_σ)_{kk} = exp(-i π σ g(k)),     (D_φ)_{kk} = exp(-i 2π h_φ(k)),
-for some real functions g, h_φ.
-Define the fast Φ-RFT matrix:
-  Ψ := D_φ C_σ F,
-and transforms:
-  x̂_fast := Ψ x,    x := Ψ^† x̂_fast.
-[Source: RFT PDF]
-
-### D4 (Twisted convolution induced by a unitary)
-Given a unitary Ψ, define the Ψ-twisted convolution of x,h ∈ ℂ^N by:
-  x ⋆_Ψ h := Ψ^† ( (Ψx) ⊙ (Ψh) ),
-where ⊙ is pointwise (Hadamard) multiplication.
-
-This is the exact algebraic statement you use for ⋆_{φ,σ}.  [Source: RFT PDF]
-
----
-
-## Theorem 1 (Full rank of the resonance matrix R)
-**Statement.**
-The resonance matrix R is invertible for every N ≥ 1.
-
-**Proof.**
-Write z_k := exp(-i 2π φ^{-k}). Then
-R_{n,k} = z_k^n,   n=0,…,N-1.
-So R is a Vandermonde matrix on nodes {z_k}_{k=0}^{N-1}. Its determinant is
-  det(R) = ∏_{0≤i<j≤N-1} (z_j - z_i).
-It suffices to show z_i ≠ z_j for i≠j.
-
-If z_i = z_j then exp(-i 2π (φ^{-i} - φ^{-j})) = 1, so (φ^{-i} - φ^{-j}) ∈ ℤ.
-But 0 < φ^{-k} ≤ 1 for all k≥0, and φ^{-i} ≠ φ^{-j} for i≠j, hence
-  0 < |φ^{-i} - φ^{-j}| < 1,
-so it cannot be an integer. Contradiction. Therefore all z_k are distinct, det(R)≠0, and R is invertible. ∎
-
----
-
-## Theorem 2 (Canonical Φ-RFT is unitary)
-**Statement.**
-U_φ is unitary, i.e., U_φ^† U_φ = I.
-
-**Proof.**
-By definition, R = Q R_upper is a QR factorization with Q unitary. Setting U_φ := Q gives
-U_φ^† U_φ = Q^† Q = I. ∎
-
----
+Do not edit this stub. Update the canonical file instead.
 
 ## Theorem 3 (Fast Φ-RFT is unitary)
 **Statement.**

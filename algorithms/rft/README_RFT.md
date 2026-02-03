@@ -36,6 +36,21 @@ Implementation: `algorithms/rft/core/resonant_fourier_transform.py`
 
 ---
 
+## 1.3 Transform theory (operator meaning; test-backed)
+
+The repo includes a minimal set of **falsifiable transform-theory theorems** (A–E) that go beyond “unitary basis exists” and instead define golden-native operator families that the canonical RFT basis diagonalizes well.
+
+- Canonical theorem statements + proof targets: [THEOREMS_RFT_IRONCLAD.md](../../THEOREMS_RFT_IRONCLAD.md)
+- Test suite (deterministic, CI-stable): [tests/proofs/test_rft_transform_theorems.py](../../tests/proofs/test_rft_transform_theorems.py)
+- Shared constructions used by tests/tools: [algorithms/rft/core/transform_theorems.py](core/transform_theorems.py)
+
+Run the theorem tests from repo root:
+```bash
+pytest -q tests/proofs/test_rft_transform_theorems.py
+```
+
+---
+
 ## 2. Legacy / Alternative: Resonance Operator Eigenbasis
 
 Earlier versions defined RFT as the eigenbasis of a modeled autocorrelation operator (Toeplitz). This is preserved for comparison but is no longer the canonical definition.
@@ -107,7 +122,7 @@ Complex expressions like `(A XOR B) AND (NOT C)` execute entirely in the wave do
 
 | Property | FFT | RFT (canonical kernel) |
 |----------|-----|-----|
-| **Basis** | Fixed DFT grid | Fixed unitary basis $\Phi$ from resonance operator |
+| **Basis** | Fixed DFT grid | Canonical unitary basis $U:=\Phi(\Phi^H\Phi)^{-1/2}$ |
 | **Periodicity** | Exactly periodic | Family-dependent (not a periodic grid assumption) |
 | **Leakage/Aliasing** | Grid/bin effects | Depends on the chosen operator/model and $N$ |
 | **Computation** | $O(N\log N)$ | Build $\Phi$: $O(N^3)$ (cached); apply: $O(N^2)$ |
@@ -163,7 +178,7 @@ print(f"XOR result: {result:08b}")  # 01100110
 
 | Purpose | File |
 |---------|------|
-| **Canonical RFT kernel** | `algorithms/rft/kernels/resonant_fourier_transform.py` |
+| **Canonical RFT kernel** | `algorithms/rft/core/resonant_fourier_transform.py` |
 | **Package exports** | `algorithms/rft/__init__.py` |
 | **Wave-domain hash** | `algorithms/rft/core/symbolic_wave_computer.py` |
 | **φ-grid frame correction** | `docs/theory/RFT_FRAME_NORMALIZATION.md` |

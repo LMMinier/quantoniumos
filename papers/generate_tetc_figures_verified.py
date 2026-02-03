@@ -4,19 +4,15 @@
 Generate UPDATED figures for IEEE TETC paper - using VERIFIED data.
 Based on actual hardware test results from run_full_verification.py
 
-Figures used in paper:
+Figures used in paper (sequential 1-8):
 - Fig 1: Operator structure (DFT, Chirp, Golden matrices)
-- Fig 3: RFTPU architecture block diagram  
-- Fig 4: Framework flow diagram
-- Fig 5: Sparsity comparison bar chart
-- Fig 6: Pareto curves (3 subplots)
-- Fig 7: Unitarity scaling
-- Fig 8: Timing scaling
-- Fig 10: Quantization impact
-
-NOT USED (can be removed):
-- Fig 2: Transform landscape
-- Fig 9: Signal examples
+- Fig 2: RFTPU architecture block diagram  
+- Fig 3: Framework flow diagram
+- Fig 4: Sparsity comparison bar chart
+- Fig 5: Pareto curves (3 subplots)
+- Fig 6: Unitarity scaling
+- Fig 7: Timing scaling
+- Fig 8: Quantization impact
 """
 
 import sys
@@ -174,9 +170,9 @@ def fig1_operator_structure():
     print("✓ Figure 1: Operator structure (using verified RFT basis)")
 
 
-def fig3_rftpu_architecture():
+def fig2_rftpu_architecture():
     """
-    Figure 3: RFTPU hardware architecture - UPDATED for 4-mode version.
+    Figure 2: RFTPU hardware architecture - UPDATED for 4-mode version.
     Matches actual fpga_top_webfpga.v implementation.
     """
     fig, ax = plt.subplots(figsize=(7, 3.5))
@@ -258,14 +254,14 @@ def fig3_rftpu_architecture():
                  fontsize=11, pad=10)
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / 'fig3_rftpu_architecture.pdf')
+    fig.savefig(OUTPUT_DIR / 'fig2_rftpu_architecture.pdf')
     plt.close(fig)
-    print("✓ Figure 3: RFTPU architecture (updated with verified modes)")
+    print("✓ Figure 2: RFTPU architecture (updated with verified modes)")
 
 
-def fig4_framework_flow():
+def fig3_framework_flow():
     """
-    Figure 4: Design framework flowchart - UPDATED.
+    Figure 3: Design framework flowchart - UPDATED.
     """
     fig, ax = plt.subplots(figsize=(7, 2.8))
     ax.set_xlim(0, 10)
@@ -308,14 +304,14 @@ def fig4_framework_flow():
     ax.set_title('QuantoniumOS Design Framework', fontsize=11)
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / 'fig4_framework_flow.pdf')
+    fig.savefig(OUTPUT_DIR / 'fig3_framework_flow.pdf')
     plt.close(fig)
-    print("✓ Figure 4: Framework flow (updated)")
+    print("✓ Figure 3: Framework flow (updated)")
 
 
-def fig5_sparsity_comparison():
+def fig4_sparsity_comparison():
     """
-    Figure 5: Sparsity comparison - LARGER fonts, clearer labels.
+    Figure 4: Sparsity comparison - LARGER fonts, clearer labels.
     """
     fig, ax = plt.subplots(figsize=(7, 3.5))
     
@@ -354,14 +350,14 @@ def fig5_sparsity_comparison():
         ax.annotate('★', (x[i] - 2*width, rft[i] + 3), ha='center', fontsize=10, color='#d62728')
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / 'fig5_sparsity_comparison.pdf')
+    fig.savefig(OUTPUT_DIR / 'fig4_sparsity_comparison.pdf')
     plt.close(fig)
-    print("✓ Figure 5: Sparsity comparison (larger fonts)")
+    print("✓ Figure 4: Sparsity comparison (larger fonts)")
 
 
-def fig6_pareto_curves():
+def fig5_pareto_curves():
     """
-    Figure 6: Pareto curves - UPDATED with actual synthesis data.
+    Figure 5: Pareto curves - UPDATED with actual synthesis data.
     """
     fig, axes = plt.subplots(1, 3, figsize=(7, 2.8))
     
@@ -404,14 +400,14 @@ def fig6_pareto_curves():
     ax.legend(loc='upper left', fontsize=7, framealpha=0.9)
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / 'fig6_pareto_curves.pdf')
+    fig.savefig(OUTPUT_DIR / 'fig5_pareto_curves.pdf')
     plt.close(fig)
-    print("✓ Figure 6: Pareto curves (updated)")
+    print("✓ Figure 5: Pareto curves (updated)")
 
 
-def fig7_unitarity_scaling():
+def fig6_unitarity_scaling():
     """
-    Figure 7: Unitarity error scaling - using VERIFIED data.
+    Figure 6: Unitarity error scaling - using VERIFIED data.
     """
     fig, ax = plt.subplots(figsize=(4.5, 3.5))
     
@@ -459,14 +455,14 @@ def fig7_unitarity_scaling():
                 fontsize=8, color='#d62728')
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / 'fig7_unitarity_scaling.pdf')
+    fig.savefig(OUTPUT_DIR / 'fig6_unitarity_scaling.pdf')
     plt.close(fig)
-    print("✓ Figure 7: Unitarity scaling (verified data)")
+    print("✓ Figure 6: Unitarity scaling (verified data)")
 
 
-def fig8_timing_scaling():
+def fig7_timing_scaling():
     """
-    Figure 8: Timing comparison.
+    Figure 7: Timing comparison.
     """
     fig, ax = plt.subplots(figsize=(4.5, 3.5))
     
@@ -488,14 +484,14 @@ def fig8_timing_scaling():
     ax.grid(True, alpha=0.3, which='both')
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / 'fig8_timing_scaling.pdf')
+    fig.savefig(OUTPUT_DIR / 'fig7_timing_scaling.pdf')
     plt.close(fig)
-    print("✓ Figure 8: Timing scaling")
+    print("✓ Figure 7: Timing scaling")
 
 
-def fig10_quantization_impact():
+def fig8_quantization_impact():
     """
-    Figure 10: Quantization impact - 2 panel figure.
+    Figure 8: Quantization impact - 2 panel figure.
     """
     fig, axes = plt.subplots(1, 2, figsize=(7, 3))
     
@@ -531,9 +527,9 @@ def fig10_quantization_impact():
     ax.set_xlim(7, 21)
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / 'fig10_quantization_impact.pdf')
+    fig.savefig(OUTPUT_DIR / 'fig8_quantization_impact.pdf')
     plt.close(fig)
-    print("✓ Figure 10: Quantization impact (with verified LUT count)")
+    print("✓ Figure 8: Quantization impact (with verified LUT count)")
 
 
 def main():
@@ -543,15 +539,15 @@ def main():
     print("="*60)
     print()
     
-    # Generate all figures used in paper
+    # Generate all figures used in paper (sequential 1-8)
     fig1_operator_structure()
-    fig3_rftpu_architecture()
-    fig4_framework_flow()
-    fig5_sparsity_comparison()
-    fig6_pareto_curves()
-    fig7_unitarity_scaling()
-    fig8_timing_scaling()
-    fig10_quantization_impact()
+    fig2_rftpu_architecture()
+    fig3_framework_flow()
+    fig4_sparsity_comparison()
+    fig5_pareto_curves()
+    fig6_unitarity_scaling()
+    fig7_timing_scaling()
+    fig8_quantization_impact()
     
     print()
     print("="*60)
@@ -561,19 +557,15 @@ def main():
     
     # Summary of figures
     print()
-    print("Figures USED in paper:")
+    print("Figures USED in paper (sequential 1-8):")
     print("  ✓ fig1_operator_structure.pdf")
-    print("  ✓ fig3_rftpu_architecture.pdf")
-    print("  ✓ fig4_framework_flow.pdf")
-    print("  ✓ fig5_sparsity_comparison.pdf")
-    print("  ✓ fig6_pareto_curves.pdf")
-    print("  ✓ fig7_unitarity_scaling.pdf")
-    print("  ✓ fig8_timing_scaling.pdf")
-    print("  ✓ fig10_quantization_impact.pdf")
-    print()
-    print("Figures NOT USED (can be deleted):")
-    print("  - fig2_transform_landscape.pdf")
-    print("  - fig9_signal_examples.pdf")
+    print("  ✓ fig2_rftpu_architecture.pdf")
+    print("  ✓ fig3_framework_flow.pdf")
+    print("  ✓ fig4_sparsity_comparison.pdf")
+    print("  ✓ fig5_pareto_curves.pdf")
+    print("  ✓ fig6_unitarity_scaling.pdf")
+    print("  ✓ fig7_timing_scaling.pdf")
+    print("  ✓ fig8_quantization_impact.pdf")
 
 
 if __name__ == "__main__":
