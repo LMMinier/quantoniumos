@@ -1,7 +1,8 @@
 NOTE ABOUT LICENSE SPLIT
 Some files in this repository are NOT under AGPL. Files listed in
-`CLAIMS_PRACTICING_FILES.txt` are licensed under `LICENSE-CLAIMS-NC.md`
-(research-only, non-commercial). All other files are under AGPL-3.0-or-later.
+`docs/project/CLAIMS_PRACTICING_FILES.txt` are licensed under
+`LICENSE-CLAIMS-NC.md` (research-only, non-commercial). All other files are
+under AGPL-3.0-or-later.
 
 
 GNU AFFERO GENERAL PUBLIC LICENSE

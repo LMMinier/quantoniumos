@@ -15,6 +15,12 @@
 
 **Scope note:** “QuantoniumOS” is a research branding name. This repository does **not** implement an OS kernel, scheduler, or filesystem. It provides a user‑space desktop UI and signal‑processing stack. Any OS‑level claims require explicit implementation and test evidence.
 
+## Licensing (dual)
+
+- Default license: AGPL-3.0-or-later for all files not listed as patent-practicing; see [LICENSE.md](LICENSE.md).
+- Patent-practicing files listed in [docs/project/CLAIMS_PRACTICING_FILES.txt](docs/project/CLAIMS_PRACTICING_FILES.txt) are under [LICENSE-CLAIMS-NC.md](LICENSE-CLAIMS-NC.md) (research/academic, non-commercial).
+- Contributions and PRs should keep the same split and preserve SPDX headers where present.
+
 ## Start here (10–15 lines)
 
 **What this is:** A research‑grade, reproducible codebase for RFT algorithms, hybrid codecs, and hardware/RTL experiments. No quantum speedups, no clinical claims, no production cryptography.
@@ -269,7 +275,7 @@ This repository includes a suite of scripts to verify the environment, reproduce
 **Quick installation:**
 ```bash
 # Clone and setup
-git clone https://github.com/mandcony/quantoniumos.git
+git clone https://github.com/LMMinier/quantoniumos.git
 cd quantoniumos
 ./quantoniumos-bootstrap.sh
 

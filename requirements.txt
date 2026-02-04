@@ -1,48 +1,40 @@
-# QuantoniumOS Requirements
-numpy>=1.21.0
-scipy>=1.7.0
-matplotlib>=3.4.0
-pandas>=1.3.0
-
-# Optional dependencies for extended functionality
-sympy>=1.8
-jupyter>=1.0.0
-qutip>=4.7.0  # Required for entanglement validation suites
+# QuantoniumOS Requirements (aligned with pyproject.toml)
+numpy==1.26.4
+scipy==1.12.0
+matplotlib==3.9.0
+pandas==2.2.2
+sympy==1.12
+qutip==4.7.6  # Required for entanglement validation suites
+PyQt5==5.15.10
+qtawesome==1.3.1
 
 # Development dependencies
-pytest>=6.0.0
-black>=21.0.0
-flake8>=3.9.0
+pytest==8.2.0
+black==24.4.2
+flake8==7.0.0
 hypothesis>=6.0.0  # For property-based testing
+jupyterlab==4.2.1
 
 # Real-data validation (biomedical datasets)
-wfdb>=4.0.0  # MIT-BIH ECG reader (PhysioNet)
-pyedflib>=0.1.30  # Sleep-EDF EEG reader
+wfdb==4.1.2  # MIT-BIH ECG reader (PhysioNet)
+pyedflib==0.1.35  # Sleep-EDF EEG reader
 
 # Hugging Face AI/ML Dependencies
-torch>=2.0.0
-transformers>=4.35.0
-datasets>=2.14.0
-accelerate>=0.24.0
-peft>=0.6.0
-trl>=0.7.0
-bitsandbytes>=0.41.0  # For quantization
-wandb>=0.15.0  # Optional: for experiment tracking
-safetensors>=0.4.2  # Streaming access to large Hugging Face checkpoints
+torch==2.3.0
+transformers==4.41.1
+datasets==2.19.1
+accelerate==0.30.1
+peft==0.11.1
+trl==0.9.4
+bitsandbytes==0.43.1  # For quantization
+wandb==0.17.0  # Optional: for experiment tracking
+safetensors==0.4.3  # Streaming access to large Hugging Face checkpoints
 
 # Image Generation Dependencies
-diffusers>=0.21.0  # Stable Diffusion and other generative models
-pillow>=9.0.0  # PIL for image handling
-controlnet-aux>=0.0.6  # Optional: for ControlNet support
-xformers>=0.0.20  # Optional: memory efficient attention (NVIDIA only)
-
-# Assembly interface (platform specific)  
-# Windows: Microsoft Visual C++ Build Tools
-# Linux: GCC compiler toolchain
-
-# Note: Large trained model files (1.9GB) are stored locally in ai/training/models/
-# Contains: fixed_fine_tuned_model/ and quantum_fine_tuned_model/
-# These models are preserved but excluded from Git due to GitHub size limits
+diffusers==0.27.2  # Stable Diffusion and other generative models
+pillow==10.3.0  # PIL for image handling
+controlnet-aux==0.0.7  # Optional: for ControlNet support
+xformers==0.0.26.post1  # Optional: memory efficient attention (NVIDIA only)
 
 # Benchmark Suite Dependencies
 pyfftw>=0.13.0
