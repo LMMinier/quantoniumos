@@ -7,45 +7,150 @@
 
 ## Core Terminology
 
-### RFT (Resonant Fourier Transform)
+### RFT (Resonant Fourier Transform) — Family Overview
 
-**Definition:** A multi-carrier transform that maps discrete data into a continuous waveform domain using golden-ratio frequency and phase spacing.
+The RFT is a family of transforms based on golden-ratio frequency spacing. There are **two main variants**:
 
-**Canonical Mathematical Definition:**
-```
-Ψₖ(t) = exp(2πi × fₖ × t + i × θₖ)
-
-Where:
-  fₖ = (k+1) × φ       — Resonant Frequency
-  θₖ = 2π × k / φ      — Golden Phase  
-  φ = (1+√5)/2         — Golden Ratio ≈ 1.618
-```
-
-**Forward Transform:**
-```
-RFT(x)[t] = Σₖ x[k] × Ψₖ(t)
-```
-
-**What it is:** A φ-OFDM framework for wave-domain symbolic computation.
-
-**What it is NOT:**
-- Not a replacement for FFT
-- Not faster asymptotically
-- Not universally optimal for compression
+| Variant | Complexity | Phase Schedule | Primary Use |
+|---------|------------|----------------|-------------|
+| **RFT-Wave** (Canonical) | O(N²) | `frac((k+1)×φ)` | Exact unitary basis |
+| **RFTMW-Hybrid** | O(N log N) | FFT + `exp(i·2π·frac((k+1)φ))` | Fast transforms |
 
 ---
 
-### BinaryRFT (Claim 1 Implementation)
+### RFT-Wave (Canonical Carrier Model)
 
-**Definition:** The symbolic transformation engine for encoding binary data as amplitude-phase modulated waveforms and performing logic operations in the wave domain.
+**Definition:** The canonical Resonant Fourier Transform using Gram-normalized golden-ratio frequency carriers.
 
-**Key Operations:**
-- `encode(value)` — Binary → Wave (BPSK on RFT carriers)
-- `decode(wave)` — Wave → Binary (matched filter detection)
-- `xor(w1, w2)` — XOR in wave domain
-- `and_(w1, w2)` — AND in wave domain
-- `or_(w1, w2)` — OR in wave domain
-- `not_(w)` — NOT in wave domain (phase inversion)
+**Phase Schedule: `PHI_FRAC`**
+```
+f_k = frac((k+1) × φ)     — Frequency (fractional part)
+Φ[n,k] = exp(j·2π·f_k·n) / √N
+Φ̃ = Φ (ΦᴴΦ)^(-1/2)        — Gram normalization for exact unitarity
+```
+
+**Implementation Files:**
+- `algorithms/rft/core/resonant_fourier_transform.py` — Core kernel (line 34-52)
+- `algorithms/rft/core/canonical_true_rft.py` — API wrapper with `CanonicalTrueRFT` class
+- `src/rftmw_native/core/rftmw_core.hpp::forward_canonical()` — C++ version
+
+**Complexity:** O(N²) for transform, O(N³) for basis construction (one-time)
+
+**When to use:** Research requiring exact unitary properties, small N, or when Gram normalization matters.
+
+**Test Command:**
+```bash
+python -c "
+from algorithms.rft.core.canonical_true_rft import CanonicalTrueRFT
+import numpy as np
+rft = CanonicalTrueRFT(64)
+x = np.random.randn(64) + 1j*np.random.randn(64)
+Y = rft.forward_transform(x)
+x_rec = rft.inverse_transform(Y)
+err = np.linalg.norm(x - x_rec) / np.linalg.norm(x)
+print(f'RFT-Wave roundtrip error: {err:.2e}')
+U = rft.get_rft_matrix()
+print(f'Unitarity: |U†U - I| = {np.linalg.norm(U.conj().T @ U - np.eye(64)):.2e}')
+"
+```
+
+---
+
+### RFTMW-Hybrid (FFT + Phase Modulation)
+
+**Definition:** Fast O(N log N) transform using FFT followed by golden-ratio phase modulation.
+
+**Phase Schedule: `PHI_POST_FFT`**
+```
+Y = FFT(x) / √N                              — Standard FFT
+E[k] = exp(j·2π·frac((k+1)×φ))               — Golden-ratio phase diagonal
+RFTMW(x) = E ⊙ Y                             — Element-wise multiplication
+```
+
+**Implementation Files:**
+- `src/rftmw_native/core/rftmw_core.hpp::forward_hybrid()` — C++ with AVX2/FMA (line 156-198)
+- `algorithms/rft/kernels/python_bindings/vertex_quantum_rft.py` — Python wrapper (line 567-600)
+
+**Complexity:** O(N log N) — same as FFT
+
+**Power-of-2 Requirement:** Native FFT requires power-of-2 sizes for O(N log N). Non-power-of-2 inputs are auto-padded.
+
+**When to use:** Production transforms, large N, real-time applications, when speed matters more than exact Gram normalization.
+
+**Test Command:**
+```bash
+python -c "
+import sys; sys.path.insert(0, 'src/rftmw_native/build')
+import rftmw_native
+import numpy as np
+x = np.random.randn(1024).astype(np.float64)
+Y = rftmw_native.forward_hybrid(x)
+x_rec = np.real(rftmw_native.inverse_hybrid(Y))
+err = np.linalg.norm(x - x_rec) / np.linalg.norm(x)
+print(f'RFTMW-Hybrid roundtrip error: {err:.2e}')
+print(f'Native: ASM={rftmw_native.HAS_ASM_KERNELS}, AVX2={rftmw_native.HAS_AVX2}')
+"
+```
+
+---
+
+### Vertex RFT (Classical Graph-Based Engine)
+
+**Definition:** A classical signal processing engine that combines RFTMW-Hybrid transforms with a vertex/edge graph topology for waveform storage.
+
+> ⚠️ **Important**: Despite historical naming, this is NOT quantum computing. It uses quantum-inspired mathematical structures (unitarity, geometric phases) running on classical CPUs.
+
+**Phase Schedule: `PHI_VERTEX`**
+```
+base_phase = -2πkn/N                         — Standard DFT phase
+phi_phase = φ·k/N                            — Golden ratio modulation  
+winding_phase = (k mod 7)·n/N                — Topological winding factor
+total_phase = base_phase + phi_phase + winding_phase
+```
+
+**Implementation:** `algorithms/rft/kernels/python_bindings/vertex_quantum_rft.py`
+
+**Key Properties:**
+- Uses RFTMW-Hybrid internally for O(N log N) transforms
+- Auto-pads to power-of-2 for FFT efficiency
+- Machine precision roundtrip (< 1e-12)
+- AVX2/FMA SIMD acceleration via native engine
+
+**What it is NOT:**
+- NOT quantum computing (no qubits, no quantum gates)
+- NOT exponential complexity
+- NOT a quantum simulator
+
+**Test Command:**
+```bash
+python -c "
+import sys; sys.path.insert(0, 'algorithms/rft/kernels/python_bindings')
+from vertex_quantum_rft import VertexQuantumRFT
+import numpy as np
+vrft = VertexQuantumRFT(1024)
+signal = np.random.randn(1024) + 1j * np.random.randn(1024)
+spectrum = vrft.forward_transform(signal)
+recon = vrft.inverse_transform(spectrum)
+err = np.linalg.norm(signal - recon) / np.linalg.norm(signal)
+print(f'Roundtrip error: {err:.2e}')
+"
+```
+
+---
+
+### Phase Schedules Reference
+
+All phase formulas used in the codebase:
+
+| Schedule Name | Formula | File:Line | Usage |
+|---------------|---------|-----------|-------|
+| **PHI_FRAC** | `frac((k+1)×φ)` | `resonant_fourier_transform.py:42` | Canonical RFT-Wave |
+| **PHI_POST_FFT** | `exp(i·2π·frac((k+1)φ))` after FFT | `rftmw_core.hpp:178` | RFTMW-Hybrid |
+| **PHI_VERTEX** | `φ·k/N + (k%7)·n/N` | `vertex_quantum_rft.py:582` | Vertex RFT |
+| **PHI_LEGACY** | `2π×k/φ` | `rft_kernels.py:18` | Legacy/deprecated |
+| **PHI_CHIRP** (deprecated) | `2πβ·frac(k/φ) + πσk²/n` | `rft_fused_kernel.hpp:87` | φ-Phase FFT |
+
+**Note:** `PHI_LEGACY` (`θₖ = 2π×k/φ`) is deprecated. Use `PHI_FRAC` for new code.
 
 ---
 
@@ -58,7 +163,9 @@ RFT(x)[t] = Σₖ x[k] × Ψₖ(t)
 Data → SHA3 Expansion → RFT Transform → SIS Quantization → Lattice Point → Final Hash
 ```
 
-**Security Basis:** SIS lattice problem (believed quantum-resistant)
+**Security Basis:** SIS lattice problem (conjectured hard, **NOT proven secure**)
+
+> ⚠️ **EXPERIMENTAL ONLY**: This is a research exploration, not a production cryptographic primitive. No security proofs exist. Use SHA-256/BLAKE3 for real applications.
 
 ---
 
@@ -193,8 +300,12 @@ winding = (phase_unwrapped[-1] - phase_unwrapped[0]) / (2π)
 | "Quantum-inspired" | "Symbolic waveform computation" | Avoids quantum computing confusion |
 | "Resonance" | "RFT" or "φ-OFDM" | Clearer technical description |
 | "Operating System" | "Research framework" | Accurate description |
-| "φ-phase FFT" | "BinaryRFT" | Old phase-tilted FFT, now deprecated |
+| "φ-phase FFT" | "RFTMW-Hybrid" | Clarifies FFT-based architecture |
 | "New paradigm" | (removed) | Empty marketing language |
+| "Vertex Quantum RFT" | "Vertex RFT (classical)" | Clarifies no quantum computing involved |
+| "Quantum simulation" | "Symbolic waveform simulation" | Avoids confusion with true quantum simulators |
+| "Golden Phase: 2πk/φ" | "PHI_LEGACY (deprecated)" | Replaced by PHI_FRAC schedule |
+| "VertexQuantumRFT" | "VertexRFT" | Class name cleanup |
 
 ---
 
@@ -204,8 +315,8 @@ winding = (phase_unwrapped[-1] - phase_unwrapped[0]) / (2π)
 |--------|---------|
 | φ | Golden ratio = (1 + √5)/2 ≈ 1.618 |
 | Ψₖ(t) | RFT basis function for carrier k |
-| fₖ | Resonant frequency = (k+1) × φ |
-| θₖ | Golden phase = 2πk / φ |
+| fₖ | Resonant frequency = frac((k+1) × φ) |
+| E[k] | Phase modulation diagonal = exp(j·2π·fₖ) |
 | W(t) | Complex waveform |
 | N | Number of bits/carriers |
 | T | Number of time samples |
@@ -226,5 +337,6 @@ winding = (phase_unwrapped[-1] - phase_unwrapped[0]) / (2π)
 
 ---
 
-*Last updated: December 2025*
+*Last updated: February 2026*
+*USPTO Application 19/169,399*
 *USPTO Application 19/169,399*

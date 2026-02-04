@@ -99,7 +99,97 @@ print(f'Correctness: {data == decrypted}')
 
 **Expected Output**: 64 rounds, successful encryption/decryption, measurable throughput
 
-### 4. Compression Ratio Analysis
+### 4. Vertex Quantum RFT Validation
+
+**Claim**: Classical vertex-based RFT achieves O(N log N) with machine precision  
+**Note**: This is NOT quantum computing - it's classical signal processing with quantum-inspired mathematical structures.
+
+```bash
+# Test Vertex Quantum RFT roundtrip accuracy
+python -c "
+import sys
+sys.path.insert(0, 'src/rftmw_native/build')
+sys.path.insert(0, 'algorithms/rft/kernels/python_bindings')
+import contextlib, io
+import numpy as np
+
+with contextlib.redirect_stdout(io.StringIO()):
+    from vertex_quantum_rft import VertexQuantumRFT
+
+print('Vertex Quantum RFT Validation')
+print('=' * 50)
+print('NOTE: This is CLASSICAL signal processing, NOT quantum computing')
+print()
+
+# Test various sizes including non-power-of-2
+for size in [256, 1000, 1024, 4096, 12800]:
+    with contextlib.redirect_stdout(io.StringIO()):
+        vrft = VertexQuantumRFT(size)
+    
+    signal = np.random.randn(size) + 1j * np.random.randn(size)
+    spectrum = vrft.forward_transform(signal)
+    recon = vrft.inverse_transform(spectrum)
+    
+    err = np.linalg.norm(signal - recon) / np.linalg.norm(signal)
+    status = '✅' if err < 1e-10 else '❌'
+    is_po2 = (size & (size - 1)) == 0
+    
+    print(f'N={size:>6} (po2={is_po2}): err={err:.2e} {status}')
+
+print()
+print('Expected: All errors < 1e-10')
+print('Non-power-of-2 sizes auto-pad to power-of-2 for FFT efficiency')
+"
+```
+
+**Expected Output**:
+- All sizes: roundtrip error < 1e-10
+- Non-power-of-2 sizes (1000, 12800) should be as fast as power-of-2 (automatic padding)
+- Native engine reports: ASM=1, AVX2=1, FMA=1
+
+### 5. Symbolic Waveform Qubit Validation
+
+**Claim**: O(N) memory scaling for symbolic qubit simulation (NOT true quantum)
+
+```bash
+# Test Symbolic Waveform Qubit throughput
+python -c "
+import sys
+sys.path.insert(0, 'algorithms/quantum')
+import numpy as np
+import time
+
+try:
+    from symbolic_waveform_qubit import SymbolicWaveformQubit
+    
+    print('Symbolic Waveform Qubit Validation')
+    print('=' * 50)
+    print('NOTE: These are CLASSICAL waveform representations, NOT real qubits')
+    print()
+    
+    for n_qubits in [100, 1000, 10000]:
+        t0 = time.perf_counter()
+        qubits = [SymbolicWaveformQubit(i) for i in range(n_qubits)]
+        elapsed = time.perf_counter() - t0
+        throughput = n_qubits / elapsed
+        
+        # Memory: O(N) not O(2^N)
+        print(f'{n_qubits:>6} symbolic qubits: {elapsed*1000:.1f}ms ({throughput:,.0f}/sec)')
+    
+    print()
+    print('Expected: O(N) scaling, 70,000+ qubits/sec')
+    print('True quantum simulation would be O(2^N) - exponentially slower')
+except ImportError as e:
+    print(f'Symbolic qubit module not available: {e}')
+"
+```
+
+**Expected Output**:
+- Linear scaling with number of qubits
+- Throughput: 70,000+ symbolic qubits/second
+- Memory: O(N) instead of O(2^N)
+
+### 6. Compression Ratio Analysis
 
 **Claim**: High compression ratios for quantum-encoded models  
 **Artifact**: `results/compression_analysis_*.json`
@@ -258,10 +348,23 @@ All test runs generate timestamped JSON files in `results/`:
 | Claim | Test Method | Expected Result | Artifact Location |
 |-------|-------------|-----------------|-------------------|
 | RFT Unitarity < 1e-12 | `print_rft_invariants.py` | Error < 1e-12 | `results/rft_invariants_*.json` |
+| Vertex RFT O(N log N) | Vertex quantum RFT timing | All sizes < 100ms | Console output |
+| Vertex RFT roundtrip | Forward/inverse transform | Error < 1e-10 | Console output |
+| Symbolic qubit O(N) | Waveform qubit scaling | Linear scaling | Console output |
 | Near-linear scaling | Quantum simulator timing | O(n) behavior | `results/QUANTUM_SCALING_BENCHMARK.json` |
 | 64-round crypto | Cipher inspection | `rounds = 64` | Source code verification |
 | Compression ratios | Model analysis | High compression | `results/compression_analysis_*.json` |
 | 25.02B parameters | Parameter counting | Total = 25.02B | `results/params_summary.json` |
+
+### Important Clarifications
+
+| What We Claim | What We Do NOT Claim |
+|---------------|----------------------|
+| O(N log N) classical transforms | Quantum speedup |
+| Quantum-inspired math structures | Actual qubits/quantum gates |
+| Linear memory scaling O(N) | Exponential quantum advantage |
+| Machine precision accuracy | Physical quantum simulation |
+| SIMD-accelerated native code | Quantum hardware execution |
 
 ## Contact & Issues
 

@@ -35,6 +35,14 @@
 #          - Zero-coherence routing
 #          - Adaptive basis selection
 #
+# Claim 5: Hybrid FFT/RFT Transform (O(N log N) Approximation)
+#          - Post-FFT golden-ratio phase modulation
+#          - Formula: Y = E · FFT(x) / √N
+#          - Phase: θ[k] = 2π·frac((k+1)·φ)
+#          - AVX2/FMA SIMD-accelerated phase rotation
+#          - Perfect invertibility via conjugate phases
+#          - See: docs/HYBRID_FFT_RFT_ALGORITHM.md
+#
 # ============================================================================
 # HOW TO CHECK COMPLIANCE
 # ============================================================================
@@ -108,13 +116,17 @@ tools/compression/rft_sparse_compressor.py
 tools/compression/compress_tinyllama.py
 
 # ============================================================================
-# SECTION D: NATIVE IMPLEMENTATIONS (Claim 1)
+# SECTION D: NATIVE IMPLEMENTATIONS (Claims 1, 5)
 # ============================================================================
 
-# --- C++/SIMD RFT Kernels ---
+# --- C++/SIMD RFT Kernels (includes Hybrid FFT/RFT - Claim 5) ---
 src/rftmw_native/rftmw_core.hpp
 src/rftmw_native/rft_fused_kernel.hpp
 src/rftmw_native/rftmw_python.cpp
+
+# --- Compiled Native Module (Claim 5 implementation) ---
+# Note: .so is built from above sources; claims apply to source
+# Key functions: forward_hybrid(), inverse_hybrid(), apply_phase_rotation_avx2()
 
 # --- Assembly Kernels ---
 algorithms/rft/kernels/engines/orchestrator/asm/rft_transform.asm
@@ -174,6 +186,7 @@ benchmarks/rft_realworld_benchmark.py
 
 docs/patent/USPTO_ALGORITHM_SPECIFICATIONS.md
 docs/theory/DEFINITION_FIREWALL.md
+docs/HYBRID_FFT_RFT_ALGORITHM.md
 algorithms/rft/README_RFT.md
 THEOREMS_RFT_IRONCLAD.md
 

@@ -15,6 +15,28 @@
 
 **Scope note:** “QuantoniumOS” is a research branding name. This repository does **not** implement an OS kernel, scheduler, or filesystem. It provides a user‑space desktop UI and signal‑processing stack. Any OS‑level claims require explicit implementation and test evidence.
 
+
+> ⚠️ **IMPORTANT: This is NOT Quantum Computing**
+> 
+> Despite "Quantum" appearing in the project name, this codebase performs **classical signal processing** only:
+> - No qubits, no quantum gates, no quantum entanglement
+> - No exponential quantum speedup claims
+> - "Quantum-inspired" refers to mathematical structures (unitarity, phases), not physics
+> - All "quantum" modules are classical simulations with O(N) or O(N log N) complexity
+> 
+> The term "quantum-inspired" means we use mathematical properties shared with quantum computing (unitary transforms, superposition-like waveform algebra) while running on standard CPUs. See [docs/NON_CLAIMS.md](docs/NON_CLAIMS.md) for explicit non-claims.
+
+
+> ⚠️ **IMPORTANT: This is NOT Quantum Computing**
+> 
+> Despite "Quantum" appearing in the project name, this codebase performs **classical signal processing** only:
+> - No qubits, no quantum gates, no quantum entanglement
+> - No exponential quantum speedup claims
+> - "Quantum-inspired" refers to mathematical structures (unitarity, phases), not physics
+> - All "quantum" modules are classical simulations with O(N) or O(N log N) complexity
+> 
+> The term "quantum-inspired" means we use mathematical properties shared with quantum computing (unitary transforms, superposition-like waveform algebra) while running on standard CPUs. See [docs/NON_CLAIMS.md](docs/NON_CLAIMS.md) for explicit non-claims.
+
 ## Licensing (dual)
 
 - Default license: AGPL-3.0-or-later for all files not listed as patent-practicing; see [LICENSE.md](LICENSE.md).

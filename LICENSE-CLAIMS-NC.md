@@ -4,6 +4,10 @@
 
 This license applies ONLY to the files explicitly listed in `docs/project/CLAIMS_PRACTICING_FILES.txt`. These files implement algorithms claimed in **U.S. Patent Application 19/169,399** ("Hybrid Computational Framework for Quantum and Resonance Simulation").
 
+> **Key Claimed Algorithm**: Hybrid FFT/RFT Transform  
+> Formula: $Y = E \odot \text{FFT}(x) / \sqrt{N}$ where $E[k] = e^{i \cdot 2\pi \cdot \text{frac}((k+1)\phi)}$  
+> See: `docs/HYBRID_FFT_RFT_ALGORITHM.md`
+
 ---
 
 ## PREAMBLE
