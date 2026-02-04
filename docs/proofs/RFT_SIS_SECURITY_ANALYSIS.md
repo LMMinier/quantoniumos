@@ -220,6 +220,50 @@ While not a proof, empirical evidence suggests no obvious weaknesses:
 
 ---
 
+## 6.1 Cryptanalysis Findings (February 2026)
+
+**Internal audit discovered the following:**
+
+### Finding 1: Actual Implementation Uses Random Matrix
+
+Contrary to Section 2.1's description, the actual `RFTSISHash` class uses:
+```python
+np.random.seed(42)
+self.A = np.random.randint(0, sis_q, size=(sis_m, sis_n))
+```
+
+**Implication**: The SIS matrix is pseudo-random (seeded), not φ-structured.
+This is **more secure** than φ-structured, but introduces a fixed-seed issue.
+
+### Finding 2: Fixed Seed Weakness
+
+The matrix A is identical for all users (seed=42). This means:
+- No per-user salt
+- Multi-target attacks may be easier
+- **Recommended fix**: Salt the seed with domain separator
+
+### Finding 3: Hypothetical φ-Matrix Has Structural Weakness
+
+If we were to use φ-structured matrix with formula:
+```
+A_φ[i,j] = floor(q * frac((i*j + 1) * φ))
+```
+
+**Vulnerability discovered**:
+- Row 0: All entries constant (i=0 → i*j=0 for all j)
+- Column 0: All entries constant (j=0 → i*j=0 for all i)
+- χ² uniformity 10x worse than random
+
+**Attack**: Row 0 provides no mixing, reducing effective security.
+
+**Fix if using φ-matrix**: Use `(i+1)*(j+1)` instead of `(i*j+1)`
+
+### Finding 4: RFT Uses Correct Formula
+
+The RFT basis uses `f_k = frac((k+1) * φ)` which does NOT have the constant-row issue.
+
+---
+
 ## 7. Conclusions
 
 ### 7.1 What We Have Proven
