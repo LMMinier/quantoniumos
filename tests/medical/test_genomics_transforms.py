@@ -11,14 +11,17 @@
 Genomics Transform Acceleration Tests
 ======================================
 
-Tests RFT variants for genomics/proteomics applications:
+Tests RFT variants for **synthetic** genomics/proteomics data patterns.
+
+⚠️ **WARNING: SYNTHETIC DATA ONLY**
+- These tests using `generate_random_dna` (random character strings).
+- They do NOT validate performance on real biological sequences (which have repeats, GC-bias, and evolutionary structure).
+- This is an **information-theoretic benchmark**, not a validated bioinformatics tool.
+
+Tests:
 - K-mer spectra transform acceleration
 - Contact map compression for protein structures
-- Sequence data compression benchmarks
-- Throughput comparison vs gzip/CRAM baselines
-
-Uses synthetic genomic data patterns. Real validation requires
-public datasets like NCBI SRA or PDB.
+- Sequence data compression benchmarks (Random Character)
 """
 
 import numpy as np

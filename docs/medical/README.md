@@ -39,13 +39,12 @@
 
 ## Overview
 
-QuantoniumOS provides a novel signal processing framework based on the **Reciprocal Fibonacci Transform (RFT)** that shows promise for various medical and biomedical applications. This guide covers:
+QuantoniumOS provides a novel signal processing framework based on the **Resonant Fourier Transform (RFT)**. This module contains **experimental simulations** exploring potential applications in:
 
-- **Medical Imaging**: MRI, CT, PET reconstruction and denoising
-- **Biosignals**: ECG, EEG, EMG compression and feature extraction
-- **Genomics**: K-mer analysis, protein contact maps, sequence compression
-- **Clinical Security**: Privacy-preserving hashing, federated learning
-- **Edge Devices**: Wearable and point-of-care processing
+- **Medical Imaging (Simulated)**: Synthetic Shepp-Logan phantom reconstruction (No real MRI hardware support).
+- **Biosignals (Benchmarks)**: Comparison of RFT vs Wavelets on MIT-BIH/Sleep-EDF datasets.
+- **Genomics (Synthetic)**: Information-theoretic compression tests on random/pseudo-random DNA strings (No support for FASTQ/BAM/SAM).
+- **Clinical Security (Prototype)**: Experimental hashing concepts (Non-compliant with HIPAA/GDPR).
 
 > **Research Disclaimer**: This software is for research and educational purposes only. It has NOT been validated for clinical use and should NOT be used for medical diagnosis or treatment decisions. See [Safety Considerations](#safety-considerations) below.
 

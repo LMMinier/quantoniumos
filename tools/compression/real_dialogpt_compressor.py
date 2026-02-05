@@ -6,10 +6,10 @@
 
 #!/usr/bin/env python3
 """
-🎯 REAL DialogGPT-Small Quantum Compressor
+🎯 REAL DialogGPT-Small RFT Compressor
 ==========================================
-Downloads and compresses REAL DialogGPT-small from HuggingFace using verified quantum streaming compression.
-Uses the same proven method that successfully compressed CodeGen-350M (304M→16K states, 18,616:1 ratio).
+Downloads and compresses REAL DialogGPT-small from HuggingFace using RFT-based streaming compression.
+Uses the RFT-sparsification method that successfully compressed CodeGen-350M (304M→16K coefficients).
 
 Author: QuantoniumOS Team
 Date: September 24, 2025

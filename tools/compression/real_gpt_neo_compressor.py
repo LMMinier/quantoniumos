@@ -6,13 +6,13 @@
 
 #!/usr/bin/env python3
 """
-🎯 REAL GPT-Neo 1.3B Quantum Compressor
+🎯 REAL GPT-Neo 1.3B RFT Compressor
 ========================================
-Downloads and compresses REAL GPT-Neo-1.3B from HuggingFace using verified quantum streaming compression.
-Uses the same proven method that successfully compressed CodeGen-350M (304M→16K states, 18,616:1 ratio).
+Downloads and compresses REAL GPT-Neo-1.3B from HuggingFace using RFT-based streaming compression.
+Uses the RFT-sparsification method that successfully compressed CodeGen-350M (304M→16K coefficients).
 
-Author: QuantoniumOS Team
-Date: September 24, 2025
+**NOTE:** "Quantum" in this context refers to "Quantum-Inspired" mathematical signal processing
+(using Golden Ratio basis functions), NOT quantum computing hardware.
 """
 
 import json
@@ -35,10 +35,10 @@ except ImportError as e:
     exit(1)
 
 class RealGPTNeoCompressor:
-    """Real GPT-Neo 1.3B quantum compressor using actual HuggingFace weights."""
+    """Real GPT-Neo 1.3B RFT compressor using actual HuggingFace weights."""
     
     def __init__(self):
-        self.phi = 1.618033988749895  # Golden ratio for quantum resonance
+        self.phi = 1.618033988749895  # Golden ratio for RFT basis
         self.model_id = "EleutherAI/gpt-neo-1.3B"
         self.model_name = "GPT-Neo-1.3B"
         self.expected_params = 1_300_000_000  # 1.3B parameters
@@ -63,7 +63,7 @@ class RealGPTNeoCompressor:
         
     def compress_with_rft_streaming(self, model_path):
         """Compress real model weights using RFT golden ratio streaming."""
-        print(f"⚛️ QUANTUM COMPRESSING: {self.model_name}")
+        print(f"📉 RFT COMPRESSING: {self.model_name}")
         print("Using REAL streaming compression method")
         print("=" * 50)
         
@@ -95,7 +95,7 @@ class RealGPTNeoCompressor:
             # Calculate streaming quantum states using golden ratio
             num_states = max(1, min(200, int(np.sqrt(weight_tensor.size))))
             
-            # Generate quantum states using RFT streaming compression
+            # Generate coefficients using RFT streaming compression
             for state_idx in range(num_states):
                 # Golden ratio harmonic frequency
                 resonance_freq = self.phi * (state_idx + 1)

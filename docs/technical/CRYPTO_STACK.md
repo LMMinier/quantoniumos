@@ -1,8 +1,15 @@
 # QuantoniumOS Cryptographic Implementation
 
+> **⚠️ ACADEMIC & SECURITY WARNING**  
+> This documentation describes **experimental, novel cryptographic constructions** (RFT-SIS, Enhanced RFT Cipher). These algorithms are **NOT** standard NIST-approved primitives (like AES or SHA-3) and have **NOT** undergone external cryptanalysis or peer review.  
+> 
+> *   **RFT-SIS Hash**: A novel, non-standard construction unique to this project. It is **NOT** a standard Short Integer Solution (SIS) hash.
+> *   **Security Status**: Research Prototype. **DO NOT** use for protecting sensitive production data, real-world financial assets, or high-security systems.
+> *   **Verification**: Security claims are based on internal empirical testing only, not on formal reduction proofs or standard compliance.
+
 ## Overview
 
-The QuantoniumOS cryptographic system implements a 64-round (previously 48) Feistel cipher with authenticated encryption. The system combines standard cryptographic primitives with RFT-derived components for key scheduling and entropy injection.
+The QuantoniumOS cryptographic system implements a custom 48-round Feistel cipher with authenticated encryption. The system combines standard cryptographic primitives (for plumbing) with novel RFT-inspired components (for core logic).
 
 ---
 
@@ -21,9 +28,8 @@ The QuantoniumOS cryptographic system implements a 64-round (previously 48) Feis
 ┌─────────────────────────────────────────┐
 │        Cryptographic API Layer          │
 │  ┌─────────────────────────────────────┐ │
-│  │    Enhanced RFT Crypto v2          │ │
-│  │  encrypt_authenticated() /          │ │
-│  │  decrypt_authenticated()           │ │
+│  │    Enhanced RFT Crypto v2           │ │
+│  │  encrypt_aead() / decrypt_aead()    │ │
 │  └─────────────────────────────────────┘ │
 └─────────────────────────────────────────┘
 ┌─────────────────────────────────────────┐
@@ -47,40 +53,40 @@ The QuantoniumOS cryptographic system implements a 64-round (previously 48) Feis
 
 ## Core Implementation
 
-### 🔐 **Enhanced RFT Crypto v2** (`src/core/enhanced_rft_crypto_v2.py`)
+### 🔐 **Enhanced RFT Crypto v2** (`algorithms/rft/crypto/enhanced_cipher.py`)
 
 **Implementation Features**:
 - 48-round Feistel cipher structure
 - Authenticated encryption with HMAC verification
-- RFT-derived key schedules and entropy injection
-- Standard AES components in F-function
+- RFT-inspired mixing and key-derived parameters
+- AES S-box and MixColumns-style diffusion in the round function
 - Domain separation for different use cases
 
 #### **API Functions**
 
 ```python
-def encrypt_authenticated(self, plaintext: bytes, associated_data: bytes = b"") -> dict:
+def encrypt_aead(self, plaintext: bytes, associated_data: bytes = b"") -> bytes:
     """
-    Authenticated encryption implementation
+    AEAD-style authenticated encryption
     
     Process:
-    1. Generate random nonce
-    2. Derive round keys using RFT components
+    1. Generate random salt
+    2. Derive per-message keys via HKDF
     3. Apply 48-round Feistel encryption
     4. Generate HMAC authentication tag
     
-    Returns: Dictionary with ciphertext, nonce, and authentication tag
+    Returns: version || salt || ciphertext || mac
     """
 ```
 
 ```python  
-def decrypt_authenticated(self, encrypted_data: dict, associated_data: bytes = b"") -> bytes:
+def decrypt_aead(self, encrypted_data: bytes, associated_data: bytes = b"") -> bytes:
     """
-    Authenticated decryption with verification
+    AEAD-style authenticated decryption with verification
     
     Process:
     1. Verify HMAC authentication tag
-    2. Reconstruct round keys from nonce
+    2. Reconstruct per-message keys from salt
     3. Apply 48-round Feistel decryption
     4. Return plaintext or raise AuthenticationError
     """
@@ -123,7 +129,7 @@ def _generate_round_keys(self, master_key: bytes, nonce: bytes) -> list:
     """
     Generate 48 round keys using:
     - HKDF key derivation
-    - RFT-derived entropy injection
+    - Key-derived phase/amplitude parameters
     - Domain separation
     """
 ```
@@ -171,29 +177,28 @@ def _domain_separate(self, context: str, data: bytes) -> bytes:
 ### 🔒 **Implemented Security Features**
 
 **Structural Security:**
-- 48-round Feistel structure provides security margin
-- AES S-box ensures nonlinear confusion
+- 48-round Feistel structure provides high mixing depth
+- AES S-box provides nonlinearity
 - HMAC provides authentication and integrity
-- Domain separation prevents key reuse
+- Domain separation mitigates key reuse
 
-**Operational Security:**
-- Random nonce generation for each encryption
+**Implementation Details:**
+- Random salt generation for each encryption (via `secrets`)
 - Key derivation using standard HKDF
 - Authenticated encryption (encrypt-then-MAC)
 
 ### ⚠️ **Security Limitations**
 
-**Current Validation Level:**
-- Basic statistical testing completed (1,000 trials)
-- No formal cryptographic analysis performed
-- No side-channel analysis conducted
-- No compliance testing against standards
+**Current Verification Status:**
+- **No external audit**: This system has not been reviewed by cryptographers.
+- **Novel primitive**: The "RFT-SIS Hash" interaction is unstudied and likely vulnerable.
+- **Python-based**: Not constant-time, vulnerable to timing attacks.
+- **Non-Standard**: Does not comply with any FIPS or ISO standard.
 
-**Areas for Enhancement:**
-- Large-scale statistical analysis (10⁶+ trials)
-- Formal security proofs and bounds
-- Constant-time implementation
-- Standards compliance validation
+**Areas for Research (Not Implementation):**
+- Proving any security bounds (currently zero proofs exist)
+- Converting to constant-time C/Rust
+- Removing `numpy` dependencies from all crypto paths
 
 ---
 
@@ -202,16 +207,16 @@ def _domain_separate(self, context: str, data: bytes) -> bytes:
 ### 🔧 **Basic Encryption**
 
 ```python
-from src.core.enhanced_rft_crypto_v2 import EnhancedRFTCryptoV2
+from algorithms.rft.crypto.enhanced_cipher import EnhancedRFTCryptoV2
 
 # Initialize with 256-bit key
 crypto = EnhancedRFTCryptoV2(b'32-byte-master-key-exactly-256bit')
 
 # Encrypt data
 plaintext = b"Message to encrypt"
-result = crypto.encrypt_authenticated(plaintext)
+result = crypto.encrypt_aead(plaintext)
 
-# Result contains: ciphertext, nonce, authentication_tag
+# Result contains: version || salt || ciphertext || mac
 ```
 
 ### 🔓 **Decryption with Verification**
@@ -219,7 +224,7 @@ result = crypto.encrypt_authenticated(plaintext)
 ```python
 # Decrypt and verify
 try:
-    decrypted = crypto.decrypt_authenticated(result)
+    decrypted = crypto.decrypt_aead(result)
     print(f"Decrypted: {decrypted}")
 except AuthenticationError:
     print("Authentication failed - data may be tampered")
@@ -249,12 +254,12 @@ except AuthenticationError:
 
 ### � **Implementation Details**
 
-**File Location**: `src/core/enhanced_rft_crypto_v2.py`
+**File Location**: `algorithms/rft/crypto/enhanced_cipher.py` (shim at `algorithms/rft/core/enhanced_rft_crypto_v2.py`)
 **Dependencies**: Standard Python cryptographic libraries
 **Integration**: Used by Q-Vault and other secure applications
 **Testing**: Basic unit tests and statistical validation
 
-**RFT Integration**: The system incorporates RFT-derived components for:
+**RFT Integration**: The system incorporates RFT-inspired components for:
 - Key schedule generation
 - Entropy injection
 - Phase modulation

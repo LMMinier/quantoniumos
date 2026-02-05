@@ -4,7 +4,7 @@
 """
 Enhanced RFT-based Cryptography Engine
 
-Working implementation using the validated RFT kernel.
+Working implementation using the standard RFT kernel.
 """
 
 import sys

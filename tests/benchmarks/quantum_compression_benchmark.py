@@ -2,15 +2,19 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2025 Luis M. Minier / quantoniumos
 """
-Quantum-State Compression Benchmark
-====================================
+Quantum-Inspired State Compression Benchmark
+=============================================
 
 Test hypothesis: RFT better compresses quantum-inspired states with
 golden-ratio / quasi-periodic structure than FFT/DCT.
 
-Quantum states of interest:
-1. Fibonacci-based quasi-periodic states (φ appears in eigenvalues)
-2. Golden-ratio phase-modulated coherent states
+**Note:** "Quantum-inspired states" here refers to complex wavefunctions $\psi(x)$
+simulated on classical hardware, widely used in quantum simulation methods (e.g. split-step).
+This is NOT a benchmark of quantum bits (qubits) or quantum error correction.
+
+State classes tested:
+1. Fibonacci-based quasi-periodic waveforms
+2. Golden-ratio phase-modulated coherent states (Glauber states with $\phi$ phase)
 3. Graph states on Penrose tilings (φ symmetry)
 4. Quasi-crystal-like superposition states
 

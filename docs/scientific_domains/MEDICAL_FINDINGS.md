@@ -21,13 +21,14 @@ QuantoniumOS provides a rigorous benchmarking suite for medical signal processin
 
 ## 2. MRI Reconstruction (Imaging)
 **Benchmark:** Shepp-Logan Phantom (Synthetic)
-**Application:** Compressed Sensing (reconstructing images from few samples).
+**Application:** Compressed Sensing Simulation.
 
 **Hypothesis:** RFT's sparsity in "edge-like" features might allow for faster MRI scans (undersampling).
 **Current Status:**
-- **Simulation:** RFT shows promise in reconstructing specific phantom features (ellipses) from sparse k-space data.
-- **Real Data:** Not yet validated on raw k-space data from MRI machines.
+- **Simulation Only:** Validated ONLY on `numpy` generated phantoms.
+- **No Real Data:** No verification on raw k-space data from clinical scanners (GE/Siemens/Philips).
+- **Novelty:** "RFT MRI" is a project-specific experimental interaction, not an established modality.
 
 ## Recommendation
 - **Clinical ECG:** Use **DCT**.
-- **Research MRI:** Investigate **RFT** for sparse reconstruction of non-Cartesian trajectories.
+- **Research MRI:** RFT is valid for **theoretical simulation** of non-Cartesian sampling trajectories. Use standard methods for real patients.

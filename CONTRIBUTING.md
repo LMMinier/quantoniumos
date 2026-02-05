@@ -1,6 +1,9 @@
 # Contributing
 
-Canonical contribution guide: docs/technical/guides/CONTRIBUTING.md
+## ⚠️ Licensing Warning
+**Check the headers!** This repo uses a split license:
+- **AGPL-3.0**: Most files. Open source.
+- **Non-Commercial (NC)**: Files listed in `docs/project/CLAIMS_PRACTICING_FILES.txt`. These utilize patent-pending algorithms.
 
 ## Quick workflow
 
@@ -9,5 +12,4 @@ Canonical contribution guide: docs/technical/guides/CONTRIBUTING.md
 - Run relevant checks (tests / benchmarks)
 - Open a PR back to `main`
 
-See the full guide here:
-- docs/technical/guides/CONTRIBUTING.md
+See `NOTICE` and `LICENSE` for details.

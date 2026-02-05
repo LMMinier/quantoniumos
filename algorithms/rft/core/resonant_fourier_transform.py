@@ -477,40 +477,50 @@ def irft(W: np.ndarray, N: int) -> np.ndarray:
 # =============================================================================
 
 class RFTSISHash:
-    """
-    Experimental hash using RFT + SIS-style lattice compression.
+        """
+        Hybrid RFT-SIS hash (research prototype): φ-structured + pseudo-random matrix.
     
-    Security (empirical only):
-    - Avalanche: ~50% bit flip for 1-bit input change (test observation)
-    - No formal security reduction or PQ claim
-    - Not an LWE/Ring-LWE sampler (no explicit noise distribution)
+        Construction: A = A_φ + R (mod q)
+        - A_φ: Deterministic φ-structured matrix (golden ratio equidistribution)
+        - R: Pseudo-random matrix from NumPy RNG (seeded for reproducibility)
     
-    Process:
-    1. Expand input via SHA3 hash chain (amplifies tiny differences)
-    2. Transform through RFT (golden-ratio structure)
-    3. Quantize to SIS short vector
-    4. Compute A @ s mod q (lattice point)
-    5. Final SHA3 compression
-    """
+        Security notes:
+        - Any SIS-style argument depends on R being uniform and unpredictable.
+            This implementation uses NumPy RNG for reproducible experiments, which
+            is NOT a CSPRNG and should not be used for security claims.
+        - Avalanche results are empirical only.
+        - Per-domain salting is a research convenience, not a formal guarantee.
+    
+        Process:
+        1. Expand input via SHA3 hash chain (amplifies tiny differences)
+        2. Transform through RFT (golden-ratio structure)
+        3. Quantize to SIS short vector
+        4. Compute A @ s mod q (lattice point)
+        5. Final SHA3 compression
+    
+        WARNING: Research implementation only. Not audited for production use.
+        For production, use standard, reviewed primitives.
+        """
     
     def __init__(self, 
                  sis_n: int = 512,
                  sis_m: int = 1024,
                  sis_q: int = 3329,
-                 sis_beta: int = 100):
+                 sis_beta: int = 100,
+                 domain_salt: bytes = b"RFT_SIS_DEFAULT_DOMAIN_2026"):
         import hashlib
         
         self.sis_n = sis_n
         self.sis_m = sis_m
         self.sis_q = sis_q
         self.sis_beta = sis_beta
+        self.domain_salt = domain_salt
         
         # Build RFT basis matrix
         self._build_rft_matrix()
         
-        # SIS matrix (deterministic from seed)
-        np.random.seed(42)
-        self.A = np.random.randint(0, sis_q, size=(sis_m, sis_n), dtype=np.int32)
+        # Build hybrid SIS matrix: A = A_φ + R (mod q)
+        self.A = self._build_hybrid_sis_matrix()
     
     def _build_rft_matrix(self):
         """Build N×N RFT basis matrix."""
@@ -519,6 +529,48 @@ class RFTSISHash:
         t = np.arange(N) / N
         for k in range(N):
             self._rft_matrix[k, :] = rft_basis_function(k, t)
+    
+    def _build_hybrid_sis_matrix(self) -> np.ndarray:
+        """
+        Build hybrid SIS matrix: A = A_φ + R (mod q)
+        
+        This construction provides:
+        - A_φ: Deterministic φ-structured matrix (equidistribution from golden ratio)
+        - R: Pseudo-random matrix from a reproducible NumPy RNG seed
+        
+        Security note:
+        Any reduction to standard SIS assumes R is uniform and unpredictable.
+        Here R is generated for research reproducibility and should not be
+        treated as a cryptographic randomness source.
+        
+        The φ-structure in A_φ is retained for mathematical aesthetics and
+        potential future algorithmic applications; security assumptions are
+        explicitly out of scope for this implementation.
+        """
+        import hashlib
+        
+        m, n, q = self.sis_m, self.sis_n, self.sis_q
+        
+        # Build A_φ: deterministic φ-structured matrix
+        # Use (i+1)*(j+1) to avoid zero row/column at i=0 or j=0
+        A_phi = np.zeros((m, n), dtype=np.int64)
+        for i in range(m):
+            for j in range(n):
+                # φ equidistribution: floor(q * frac((i+1)*(j+1) * φ))
+                val = (i + 1) * (j + 1) * PHI
+                A_phi[i, j] = int((val % 1.0) * q)
+        
+        # Build R: random matrix from salted PRNG
+        # Derive seed from domain salt via SHA3 to get reproducible but unique per-domain
+        seed_hash = hashlib.sha3_256(self.domain_salt).digest()
+        seed_int = int.from_bytes(seed_hash[:4], 'little')
+        rng = np.random.default_rng(seed_int)
+        R = rng.integers(0, q, size=(m, n), dtype=np.int64)
+        
+        # Combine: A = A_φ + R (mod q)
+        A = (A_phi + R) % q
+        
+        return A.astype(np.int32)
     
     def _expand_input(self, data: bytes) -> np.ndarray:
         """

@@ -14,7 +14,7 @@ EPIC 1: User-facing audio configuration with:
 - Performance monitoring (XRuns, CPU load)
 - Persistent settings that survive restarts
 
-This is the production-grade audio settings UI.
+This is the in-development audio settings UI.
 """
 
 from typing import Optional, Callable
@@ -370,7 +370,7 @@ class AudioMeterWidgetExpanded(QWidget):
 
 class AudioSettingsDialog(QDialog):
     """
-    Production-grade audio settings dialog.
+    In-development audio settings dialog.
     
     Features:
     - Input/output device selection with refresh

@@ -2,7 +2,7 @@
 
 ## Overview
 
-**QuantSoundDesign** is a professional sound design studio built on QuantoniumOS with native Φ-RFT (Recursive Fibonacci Transform) integration. It provides an FL Studio/Ableton-inspired workflow for music production, audio synthesis, and pattern-based composition.
+**QuantSoundDesign** is an in-development sound design studio prototype built on QuantoniumOS with native Φ-RFT (Recursive Fibonacci Transform) integration. It provides an FL Studio/Ableton-inspired workflow for music production, audio synthesis, and pattern-based composition.
 
 > **STATUS: TESTING / IN DEVELOPMENT**  
 > QuantSoundDesign is functional but still under active development. Features may change.

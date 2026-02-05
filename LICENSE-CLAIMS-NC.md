@@ -13,9 +13,9 @@ This license applies ONLY to the files explicitly listed in `docs/project/CLAIMS
 ## PREAMBLE
 
 This dual-license structure is designed to:
-1. **Protect IP:** Ensure commercial exploitation requires explicit authorization
-2. **Enable Research:** Allow unrestricted academic verification and reproducibility
-3. **Support Open Science:** Maintain transparency for peer review and validation
+1. **Protect IP:** Ensure commercial exploitation requires explicit authorization from the independent inventor.
+2. **Enable Research:** Allow unrestricted academic verification and reproducibility.
+3. **Support Open Science:** Maintain transparency for peer review and validation.
 
 ---
 

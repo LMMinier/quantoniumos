@@ -177,13 +177,13 @@ The canonical raw kernel is Fourier-like, but it is not the N-point DFT kernel i
 ## Theorem 7 (Crypto: what reductions you can and cannot claim)
 
 ### D6 (Standard SIS collision formulation)
-Let q≥2. For A ∈ ℤ_q^{n×m}, SIS asks for a nonzero “short” vector s ∈ ℤ^m such that
+Let q≥2. For A ∈ ℤ_q^{m×n}, SIS asks for a nonzero “short” vector s ∈ ℤ^n such that
 A s ≡ 0 (mod q),
-with ||s|| bounded (depending on the parameter set).  [Standard SIS references]
+with ||s||₂ ≤ β (ℓ₂ bound; other norms require specifying β accordingly).  [Standard SIS references]
 
 ### Theorem 7.1 (Collision ⇒ SIS for *uniform* A)
 **Statement.**
-Let A be uniform in ℤ_q^{n×m}. Define h(x)=A x (mod q) over a bounded domain X ⊂ ℤ^m (e.g., {0,1}^m).
+Let A be uniform in ℤ_q^{m×n}. Define h(x)=A x (mod q) over a bounded domain X ⊂ ℤ^n (e.g., {0,1}^n).
 If x≠x' and h(x)=h(x'), then s:=x-x' is a nonzero short vector satisfying A s ≡ 0 (mod q), i.e., an SIS solution.
 
 **Proof.**
@@ -213,43 +213,53 @@ Therefore avalanche-like behavior does not imply cryptographic pseudorandomness 
 
 **Alignment with your paper.**
 Your own threat-model section explicitly states no reduction-based security and no IND-CPA/IND-CCA/preimage claims; keep that language until you have Theorem 7.2’s missing indistinguishability/assumption.  [Source: RFT PDF]
-### Theorem 7.4 (Hybrid Construction A = A_φ + R Provides Standard SIS Security)
+### Theorem 7.4 (Hybrid Construction A = A_φ + R is Uniform When R is Uniform)
 **Statement.**
-Let A_φ ∈ ℤ_q^{m×n} be the deterministic φ-structured matrix with
-A_φ[i,j] = ⌊q · frac((i+1)(j+1)φ)⌋.
-Let R ∈ ℤ_q^{m×n} be uniformly random (from salted PRNG).
+Let A_φ ∈ ℤ_q^{m×n} be deterministic with A_φ[i,j] = ⌊q · frac((i+1)(j+1)φ)⌋.
+Let R ∈ ℤ_q^{m×n} be sampled **uniformly over the full matrix space** (e.g., from a CSPRNG modeled as uniform).
 Define A := A_φ + R (mod q).
 
-Then A is computationally indistinguishable from uniform random, and collision resistance
-of h_A(x) = Ax (mod q) reduces to standard SIS with parameters (n, m, q, β).
+Then A is **exactly uniform** over ℤ_q^{m×n}; collision resistance of h_A(x)=A x (mod q) reduces to standard SIS with parameters (n, m, q, β).
 
 **Proof.**
-For any fixed A_φ, the mapping f: R → A_φ + R (mod q) is a bijection on ℤ_q^{m×n}.
-Therefore if R is uniform, A = A_φ + R is also uniform (group-shift invariance).
-By Theorem 7.1, collision resistance then reduces to standard SIS. ∎
+For fixed A_φ, the map f: R ↦ A_φ + R (mod q) is a bijection on ℤ_q^{m×n}. Uniform R implies uniform A by group-shift invariance. Apply Theorem 7.1 to obtain the SIS reduction. ∎
+
+**Scope note.** If R is sampled from any non-uniform distribution (e.g., sparse, low-rank, small-noise, structured), the conclusion “A is uniform” no longer holds; a separate indistinguishability analysis would be required.
 
 ### Theorem 7.5 (Concrete Security Estimate for RFT-SIS Parameters)
-**Statement.**
-For parameters (n=512, m=1024, q=3329, β=100), the hybrid RFT-SIS construction requires
-BKZ block size b ≥ 2000 to find a collision, yielding:
-- Classical security: ~584 bits (sieving: 0.292 × b)
-- Quantum security: ~531 bits (quantum sieving: 0.2655 × b)
+**Parameters.** n=512, m=1024, q=3329, β=100; lattice dimension for BKZ = m.
 
-This exceeds NIST Post-Quantum Level 5 (256-bit security).
+**Estimated cost (heuristic).** Using the Chen–Nguyen root-Hermite-factor model + Core-SVP cost 0.292·b (classical sieving), the required δ is
+δ_needed = (β / q^{n/m})^{1/(m-1)} = (100 / 57.69749)^{1/1023} ≈ **1.00053774**.
+
+Under the Chen–Nguyen δ(b) curve, achieving δ≈1.00053774 corresponds to **b ≈ 5348** (well beyond the calibrated range), yielding a heuristic cost of ~2^{1562} classical operations and ~2^{1420} quantum operations. See scripts/estimate_sis_security.py for a reproducible computation.
 
 **Proof sketch.**
-Using the Chen-Nguyen root Hermite factor formula:
-1. Lattice Λ⊥_q(A) has det(Λ)^{1/m} = q^{n/m} = 3329^{0.5} ≈ 57.70
-2. BKZ-b output length ≈ δ(b)^{m-1} × det^{1/m}
-3. Require output ≤ β = 100
-4. Solving: δ(b)^{1023} × 57.70 ≤ 100 ⟹ δ ≤ 1.00119
-5. BKZ achieves δ ≈ 1.00119 at b ≈ 2000
-6. Attack cost: 2^{0.292×2000} ≈ 2^{584} (classical sieving) ∎
+1. det(Λ)^{1/m} = q^{n/m} = 3329^{0.5} ≈ 57.69749.
+2. Require δ^{m-1} · det(Λ)^{1/m} ≤ β ⇒ δ ≤ (β / det(Λ)^{1/m})^{1/(m-1)} ≈ 1.00053774.
+3. Inverting δ(b) via Chen–Nguyen gives b ≈ 5348; this is far outside validated BKZ models.
+4. Cost ≈ 2^{0.292·b} (classical sieving heuristic) and 2^{0.2655·b} (quantum sieving heuristic).
 
-**Caveat.**
-The standard Ajtai worst-case→average-case reduction requires m ≥ n·log₂(q) ≈ 5991.
-Current parameters use m = 1024 < 5991, so no provable worst-case hardness.
-Security claim is based on concrete hardness of random SIS, not asymptotic reduction.
+**Assumptions and caveats.**
+- δ(b) and Core-SVP cost are **heuristic** and not calibrated for b in the thousands; treat the numbers as upper-bound-style placeholders, not trusted estimates.
+- Worst-case→average-case reduction does not apply: m < n·log₂(q) (1024 < ~5991). Security relies on concrete hardness of random SIS.
+- “Above Level 5” language removed: attack cost is reported explicitly instead of relative levels.
+- The estimator caps search at b=10,000; if δ_needed were smaller, results would be marked out-of-range.
+
+**Security/Narrative split.** Hardness is standard SIS with uniform A (by masking A_φ with uniform R). The φ-structure remains as a mixing/engineering layer, not the hardness source.
+
+**Parameter snapshot.**
+| Parameter | Value | Note |
+|-----------|-------|------|
+| n | 512 | secret/solution dimension |
+| m | 1024 | lattice dimension for BKZ |
+| q | 3329 | Kyber prime |
+| β | 100 | SIS norm bound |
+| det(Λ)^{1/m} | 57.69749 | q^{n/m} |
+| δ target | 1.00053774 | (β / det_root)^{1/(m-1)} |
+| b (heuristic) | 5348 | Chen–Nguyen inversion (extrapolated) |
+| Cost classical | ~2^{1562} | Core-SVP 0.292·b (heuristic) |
+| Cost quantum | ~2^{1420} | 0.2655·b (heuristic) |
 ---
 
 ## What is still missing for the specific “iron-clad” claims you listed
@@ -582,139 +592,54 @@ This proves that **canonical RFT normalization is mathematically forced**, not a
 
 ---
 
-## Theorem 11 (Impossibility of exact joint diagonalization of golden-shift powers)
+## Theorem 11 (Unitary diagonalization criterion for C_φ)
 
 ### Statement
 
-Let C_φ ∈ ℂ^{N×N} be the golden companion shift operator whose eigenvalues are
-
-```
-z_k = exp(i 2π f_k),    f_k = frac((k+1)φ).
-```
-
-There does **not** exist a unitary matrix U such that
-
-```
-U† C_φ^m U
-```
-
-is diagonal for all integers m ≥ 1.
+There exists a unitary U such that U† C_φ U is diagonal **iff** C_φ is normal (C_φ C_φ† = C_φ† C_φ). Moreover, if such a U exists for C_φ, then the same U diagonalizes all powers C_φ^m.
 
 ### Proof
+(⇒) If U† C_φ U = D is diagonal, then C_φ = U D U† and C_φ C_φ† = U D D† U† = U D† D U† = C_φ† C_φ, so C_φ is normal.
 
-Assume, for contradiction, that such a unitary U exists.
+(⇐) If C_φ is normal, the spectral theorem gives a unitary eigenbasis U with U† C_φ U diagonal. Then U† C_φ^m U = D^m is diagonal for all m. ∎
 
-Then all matrices U† C_φ^m U are diagonal and hence **commute** with one another.
-Conjugating back by U, this implies that the family {C_φ^m : m ≥ 1} is pairwise commuting.
-
-However,
-
-```
-C_φ^m = V diag(z_k^m) V^{-1},
-```
-
-where V is the Vandermonde eigenvector matrix associated with {z_k}.
-The diagonal matrices diag(z_k^m) commute, but the similarity transform by the **non-unitary** Vandermonde matrix V does not preserve commutativity in finite dimension unless all C_φ^m are simultaneously normal with respect to a common unitary basis.
-
-This would require that the eigenvalue phases z_k^m lie on a rational lattice modulo 1.
-But since f_k = frac((k+1)φ) is irrational for every k, the set
-
-```
-{ m·f_k mod 1 : m ∈ ℕ }
-```
-
-is dense in [0,1).
-Therefore the operator family {C_φ^m} generates arbitrarily fine phase interference and cannot admit a finite-dimensional unitary joint diagonalizer.
-
-This contradicts the assumption. ∎
-
-### Interpretation
-
-This theorem **legitimizes approximate diagonalization** as the strongest possible goal. Any claim of exact diagonalization of golden-shift dynamics is mathematically impossible.
+### Remark (non-normality of the implemented C_φ)
+Numerically, the companion construction used here yields ‖C_φ C_φ† − C_φ† C_φ‖_F > 0 for tested N (see tests/proofs/test_rft_transform_theorems.py), so it is **not** unitarily diagonalizable; this is test-backed, not a closed-form proof.
 
 ---
 
-## Theorem 12 (Restricted variational minimality of the canonical RFT basis)
+## Conjecture 12 (Empirical variational minimality of the canonical RFT basis)
 
-### Statement
+### Statement (empirical/test-backed)
 
 Let C_φ be the golden companion shift operator and define
 
 ```
-J(U) := Σ_{m=0}^{∞} 2^{-m} ||off(U† C_φ^m U)||_F²
+J(U) := Σ_{m=0}^{∞} 2^{-m} ||off(U† C_φ^m U)||_F².
 ```
 
-Let 𝒰_Φ be the class of unitary matrices whose columns lie in the span of Φ-generated eigenmodes (Definition D1).
-
-Then the canonical RFT basis
+Empirically (via tests/proofs/test_rft_transform_theorems.py), the canonical basis
 
 ```
-U = Φ(Φ†Φ)^{-1/2}
+U_φ = Φ(Φ†Φ)^{-1/2}
 ```
 
-minimizes J(U) over 𝒰_Φ.
+achieves lower J(U) than permutation/phase variants and than several random Haar baselines for tested N. This is **not proven**; it is a conjecture supported by numerical evidence.
 
-### Proof
-
-Let U ∈ 𝒰_Φ.
-Then there exists a unitary matrix W such that
-
-```
-U = U_φ W,    U_φ := Φ(Φ†Φ)^{-1/2}.
-```
-
-Compute
-
-```
-U† C_φ^m U = W† (U_φ† C_φ^m U_φ) W.
-```
-
-Write
-
-```
-A_m := U_φ† C_φ^m U_φ.
-```
-
-By construction, the columns of U_φ are Gram-balanced across the irrational phases z_k^m.
-Thus A_m has **minimal phase-coherent off-diagonal alignment** among all bases in 𝒰_Φ.
-
-Conjugation by W redistributes off-diagonal mass without changing the Frobenius norm:
-
-```
-||off(W† A_m W)||_F² ≥ ||off(A_m)||_F²,
-```
-
-with equality iff W is diagonal (phase-only).
-
-Summing over m with positive weights 2^{-m} preserves the inequality:
-
-```
-J(U_φ W) ≥ J(U_φ),
-```
-
-with equality only for diagonal W.
-
-Therefore U_φ minimizes J over 𝒰_Φ. ∎
-
-### Important Limitation
-
-This theorem **does not** claim global optimality over all unitaries.
-It establishes minimality **within the Φ-induced invariant class**, which is exactly what the golden-native operator family lives in.
+### Status
+- Not a theorem. Use only as a test-backed conjecture until a formal proof or counterexample is provided.
 
 ---
 
 ## Summary of Theorems 10–12
 
-| Theorem | Claim | Status |
-|---------|-------|--------|
-| **Theorem 10** | Polar normalization uniqueness | ✓ Fully proven |
-| **Theorem 11** | No exact golden joint diagonalization | ✓ Fully proven |
-| **Theorem 12** | Variational minimality (restricted to 𝒰_Φ) | ✓ Fully proven |
+| Result | Claim | Status |
+|--------|-------|--------|
+| **Theorem 10** | Polar normalization uniqueness | ✓ Proven |
+| **Theorem 11** | Normality criterion for unitary diagonalization; implemented C_φ is empirically non-normal | ✓ Proven (criterion) / test-backed (non-normality) |
+| **Conjecture 12** | Variational minimality (empirical) | ⚠ Conjecture/test-backed |
 
-These three theorems close the logical gaps in the foundation:
-- **Theorem 10** proves the canonical basis is *forced*, not chosen.
-- **Theorem 11** proves exact diagonalization is *impossible*, legitimizing approximation.
-- **Theorem 12** proves the canonical basis is *optimal* within its natural class.
+These close the formal pieces (Theorem 10–11) and isolate the empirical claim (Conjecture 12) so it is not misread as proven.
 
 ---## References used (external)
 - DLCT/LCT decomposition literature (chirp multiplication / convolution / FT factorization).

@@ -2,7 +2,9 @@
 
 ## Overview
 
-Production-grade vibration analysis system using **Φ-RFT (Golden-Ratio Resonant Fourier Transform)** for structural health monitoring across five specialized domains.
+Research-grade vibration analysis prototype using **Φ-RFT (Golden-Ratio Resonant Fourier Transform)** for structural health monitoring across five specialized domains.
+
+**Disclaimer:** Standards referenced below are for contextual mapping only. This prototype is not certified, calibrated, or validated for regulatory or safety-critical use.
 
 ## Domains
 

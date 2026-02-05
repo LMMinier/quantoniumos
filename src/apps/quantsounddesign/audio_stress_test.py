@@ -337,7 +337,7 @@ def run_full_test_suite(
     
     print(f"\n  {'='*50}")
     if all_stable:
-        print("  ✓ ALL TESTS PASSED - Audio backend is production-ready")
+        print("  ✓ ALL TESTS PASSED - Audio backend stress tests passed")
     else:
         print("  ⚠ SOME TESTS FAILED - Review results above")
     print(f"  {'='*50}\n")

@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: LicenseRef-QuantoniumOS-Claims-NC
 # Copyright (C) 2025 Luis M. Minier / quantoniumos
 """
-🎯 REAL TinyLlama Quantum Compressor
+🎯 REAL TinyLlama RFT Compressor
 ====================================
-Downloads and compresses TinyLlama-1.1B-Chat-v1.0 using verified quantum streaming compression.
+Downloads and compresses TinyLlama-1.1B-Chat-v1.0 using RFT-based streaming compression.
 Adapts the RFT Golden Ratio Streaming method for the Llama architecture.
 
 Author: QuantoniumOS Team (Adapted by Copilot)
@@ -17,16 +17,16 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
 
 class RealTinyLlamaCompressor:
-    """TinyLlama quantum compressor using actual HuggingFace weights."""
+    """TinyLlama RFT compressor using actual HuggingFace weights."""
     
     def __init__(self):
-        self.phi = 1.618033988749895  # Golden ratio for quantum resonance
+        self.phi = 1.618033988749895  # Golden ratio for RFT basis
         self.model_id = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
         self.model_name = "TinyLlama-1.1B-Chat"
         
     def compress_with_rft_streaming(self):
         """Compress real model weights using RFT golden ratio streaming."""
-        print(f"⚛️ QUANTUM COMPRESSING: {self.model_name}")
+        print(f"📉 RFT COMPRESSING: {self.model_name}")
         print("Using REAL streaming compression method")
         print("=" * 50)
         

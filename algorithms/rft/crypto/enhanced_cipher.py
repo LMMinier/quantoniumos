@@ -42,7 +42,7 @@ class EnhancedRFTCryptoV2:
     """
     Enhanced RFT Crypto v2: 48-round Feistel with RFT-informed design.
     
-    As specified in the QuantoniumOS research paper with:
+    Experimental implementation of the QuantoniumOS internal design with:
     - Domain-separated key derivation
     - Golden-ratio parameterization
     - Comprehensive diffusion layers
@@ -125,7 +125,7 @@ class EnhancedRFTCryptoV2:
         return okm[:length]
     
     def _derive_round_keys(self) -> list:
-        """Derive 64 round keys with golden-ratio parameterization."""
+        """Derive 48 round keys with golden-ratio parameterization."""
         round_keys = []
         
         for r in range(self.rounds):
@@ -376,16 +376,16 @@ class EnhancedRFTCryptoV2:
 
     def _round_function(self, right: bytes, round_key: bytes, round_num: int) -> bytes:
         """
-        Enhanced 64-round Feistel function with true cryptographic randomness.
+        Enhanced 48-round Feistel round function with key-dependent mixing.
         
         Implements: C_{r+1} = F(C_r, K_r) ⊕ RFT(C_r, φ_r, A_r, W_r)
         
-        Key improvements:
-        1. True 4-phase lock (I/Q/Q'/Q'') randomized per round via HKDF
+        Key components:
+        1. 4-phase lock (I/Q/Q'/Q'') derived per round via HKDF
         2. Key-dependent amplitude modulation (not static)
         3. Keyed MDS diffusion layers (sandwich AES S-box)
         4. Pre/post whitening per round with domain separation
-        5. Full RFT phase+amplitude+wave entropy injection
+        5. RFT-inspired phase+amplitude+wave mixing
         """
         # Ensure right half is exactly 8 bytes
         if len(right) != 8:

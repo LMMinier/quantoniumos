@@ -68,18 +68,18 @@ A = A_φ + R (mod q)
 
 Where:
 - **A_φ[i,j]** = ⌊q · frac((i+1)·(j+1) · φ)⌋ — deterministic φ-structured matrix
-- **R** ∈ ℤ_q^{m×n} — random matrix from salted PRNG
+- **R** ∈ ℤ_q^{n×m} — random matrix sampled **uniformly** over ℤ_q^{n×m} (implemented via salted CSPRNG; modeled as uniform)
 
 **Implementation** (as of v2026.02):
 ```python
 # A_φ: Golden ratio equidistribution (Weyl)
-for i in range(m):
-    for j in range(n):
+for i in range(n):
+   for j in range(m):
         A_phi[i,j] = int(((i+1)*(j+1)*PHI % 1.0) * q)
 
-# R: Random matrix from salted PRNG
+# R: Random matrix from salted CSPRNG (modeled as uniform over ℤ_q^{n×m})
 seed = SHA3(domain_salt)[:4]
-R = RandomIntegers(seed, 0, q, shape=(m, n))
+R = RandomIntegers(seed, 0, q, shape=(n, m))
 
 # Hybrid: A = A_φ + R (mod q)
 A = (A_phi + R) % q
@@ -306,7 +306,7 @@ The RFT basis uses `f_k = frac((k+1) * φ)` which correctly avoids the constant-
 
 ❌ **Tight security bounds**: Need formal analysis of expansion/compression loss  
 ❌ **IND-CPA for encryption**: Would require additional construction  
-✅ **Concrete bit-security**: ~584 bits classical, ~531 bits quantum (see Appendix B)
+✅ **Concrete bit-security**: ~1562 bits classical, ~1420 bits quantum (heuristic; extrapolated far beyond calibrated BKZ range)
 
 ### 7.3 Honest Assessment
 
@@ -316,7 +316,8 @@ The RFT basis uses `f_k = frac((k+1) * φ)` which correctly avoids the constant-
 | "Provably collision-resistant" | ✅ TRUE (under SIS assumption) |
 | "No known attacks" | ✅ TRUE (as of Feb 2026) |
 | "Passes statistical tests" | ✅ TRUE (KS test, avalanche, independence) |
-| "Has concrete security estimate" | ✅ TRUE (~584 bits classical) |
+| "Has concrete security estimate" | ✅ TRUE (~1562 bits classical; heuristic, extrapolated) |
+| "Hardness source is φ-structure" | ❌ FALSE — hardness relies on uniform A (SIS); φ-layer is mixing/engineering |
 | "Ready for production" | ❌ FALSE (not audited) |
 | "Pure φ-SIS was ever deployed" | ❌ FALSE (always used random matrix) |
 | "Has worst-case SIVP reduction" | ❌ FALSE (m < n·log₂(q)) |
@@ -346,7 +347,7 @@ The RFT basis uses `f_k = frac((k+1) * φ)` which correctly avoids the constant-
 
 4. **Optimal parameter selection?**
    - What (n, m, q, β) gives 128-bit security?
-   - **Status**: SOLVED — current params give ~584 bits (see Appendix B)
+   - **Status**: SOLVED — current params give ~1562 bits classical (heuristic; extrapolated, see Appendix B)
    - Note: Parameters are over-provisioned; could reduce for efficiency
 
 5. **Worst-case SIVP reduction?**
@@ -389,10 +390,10 @@ Current parameters (n=512, m=1024, q=3329, β=100):
 Using the Chen-Nguyen root Hermite factor formula and Core-SVP methodology:
 
 **BKZ Analysis:**
-- Lattice Λ⊥_q(A) with det(Λ)^{1/m} = q^{n/m} = 3329^{0.5} ≈ 57.70
-- Target: find s with ‖s‖ ≤ β = 100
+- Lattice Λ⊥_q(A) with det(Λ)^{1/m} = q^{n/m} = 3329^{0.5} ≈ 57.69749
+- Target: find s with ‖s‖₂ ≤ β = 100
 - BKZ output length: δ(b)^{m-1} × det^{1/m}
-- Required δ such that output ≤ β: δ ≤ 1.00119
+- Required δ such that output ≤ β: δ ≤ (100 / 57.69749)^{1/1023} ≈ **1.00053774**
 
 **BKZ Block Size Table:**
 
@@ -400,17 +401,18 @@ Using the Chen-Nguyen root Hermite factor formula and Core-SVP methodology:
 |---------|------|---------------|--------|
 | 500 | 1.00340 | 1,866 | Too long |
 | 1000 | 1.00204 | 466 | Too long |
-| 2000 | 1.00119 | 195 | Break point |
+| 2000 | 1.00119 | 195 | Too long |
+| 5348 | 1.00054 | ~100 | First ≤ β (Chen–Nguyen; extrapolated) |
 
-**Security Estimates:**
-- Required BKZ block size: b ≥ 2000
-- Classical security (sieving): 0.292 × 2000 = **~584 bits**
-- Quantum security (quantum sieving): 0.2655 × 2000 = **~531 bits**
+**Security Estimates (heuristic/extrapolated):**
+- Required BKZ block size (Chen–Nguyen inversion): b ≈ 5348 (far outside calibrated range)
+- Classical sieving cost: 0.292 × 5348 ≈ **~1562 bits** (upper-bound style)
+- Quantum sieving cost: 0.2655 × 5348 ≈ **~1420 bits** (upper-bound style)
 
-**NIST Comparison:**
+**NIST Comparison (for scale, not calibration):**
 - NIST Level 1 (AES-128): BKZ-380 (~111 bits)
 - NIST Level 5 (AES-256): BKZ-720 (~210 bits)
-- **RFT-SIS: BKZ-2000 (~584 bits) — FAR EXCEEDS Level 5**
+- **RFT-SIS heuristic: BKZ ~5348 (model extrapolated; not a calibrated security level)**
 
 ### B.2 Parameter Validation
 
@@ -429,14 +431,16 @@ Hybrid matrix A = A_φ + R (mod q) tested against pure random baseline:
 
 | Test | Hybrid A | Pure Random | Status |
 |------|----------|-------------|--------|
-| KS uniformity (p-value) | 0.284 | 0.287 | ✓ PASS |
-| Row correlation (mean) | 0.036 | ~0.03 | ✓ PASS |
-| Column correlation (mean) | 0.024 | ~0.03 | ✓ PASS |
+| KS uniformity (p-value) | 0.284 | 0.287 | ✓ No marginal bias detected |
+| Row correlation | mean 0.036 (pairwise on 100 sampled row pairs; m=1024, n=512) | ~0.03 | ⚠ Requires null calibration |
+| Column correlation | mean 0.024 (pairwise on 100 sampled column pairs) | ~0.03 | ⚠ Requires null calibration |
 | Avalanche effect | 50.0% | N/A | ✓ PASS |
 
-**Conclusion**: Hybrid construction is statistically indistinguishable from uniform random.
-The χ² test with 50 bins fails for BOTH hybrid AND pure random (test too sensitive
-at 524K samples). The KS test correctly shows uniformity.
+**Notes on correlation metrics**
+- Correlations were computed between random row (or column) pairs, not across 524K i.i.d. samples; null variance is not 1/√524K. A proper permutation/bootstrap test is needed; do **not** interpret 0.03 as “expected noise.”
+- KS on entries only addresses marginal bias; it does **not** imply pseudorandomness or SIS hardness.
+
+**Conclusion**: No marginal bias observed (KS). χ² with 50 bins is hypersensitive at this sample size and fails even on pure random; it is not used for security assessment here.
 
 ---
 

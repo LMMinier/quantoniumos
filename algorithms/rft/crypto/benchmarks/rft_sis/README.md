@@ -1,13 +1,14 @@
 # RFT–SIS Hybrid Geometric Hash (v3.1)
 
 **Status:** Research prototype. Empirical validation only.  
-**License:** AGPL-3.0-or-later.  
+**License:** LICENSE-CLAIMS-NC.md (research/academic use only).  
 **Patent:** Practices claims of USPTO App. #19/169,399 (RFT). Commercial use requires a license.
 
 ## What this is
 A hash construction that combines:
-- A unitary Resonance Fourier Transform (RFT) front-end (golden-ratio phase + QR orthonormalization)
+- A unitary Resonance Fourier Transform (RFT) front-end (golden-ratio phase + Gram normalization)
 - Lattice SIS mixing (n=512, m=1024, q=3329) with coordinate expansion via SHA3-256
+- Reproducible matrix sampling via NumPy RNG (not a CSPRNG)
 
 ## What we’ve measured (empirical)
 - Avalanche: **~50% ± 3%** down to 1e-15 perturbations  

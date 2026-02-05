@@ -1,0 +1,22 @@
+QUANTONIUMOS LICENSING NOTICE
+===========================
+
+This repository utilizes a **Dual License** structure to allow for open research while protecting patent-pending intellectual property.
+
+**Affiliation Disclaimer:** 
+Luis M. Minier is the **sole inventor** and an **independent researcher** building this platform with the assistance of AI tools. This project is **NOT** affiliated with, endorsed by, or sponsored by any university, corporation, government agency, or other institution.
+
+1. **DEFAULT LICENSE: AGPL-3.0-or-later**
+   By default, all files in this repository are licensed under the GNU Affero General Public License v3.0 (see `LICENSE`).
+
+2. **EXCEPTION: PATENT-PRACTICING FILES**
+   Files explicitly listed in `docs/project/CLAIMS_PRACTICING_FILES.txt` are **NOT** under AGPL.
+   These files are licensed under the terms in `LICENSE-CLAIMS-NC.md`.
+   
+   **Terms for these files:**
+   - **Research/Education:** Free to use (see LICENSE-CLAIMS-NC.md)
+   - **Commercial Use:** Requires a separate patent license.
+   - **Identifier:** These files contain the header:
+     `SPDX-License-Identifier: LicenseRef-QuantoniumOS-Claims-NC`
+
+Please check the file header before copying code into a commercial project.

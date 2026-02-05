@@ -26,17 +26,6 @@
 > 
 > The term "quantum-inspired" means we use mathematical properties shared with quantum computing (unitary transforms, superposition-like waveform algebra) while running on standard CPUs. See [docs/NON_CLAIMS.md](docs/NON_CLAIMS.md) for explicit non-claims.
 
-
-> ⚠️ **IMPORTANT: This is NOT Quantum Computing**
-> 
-> Despite "Quantum" appearing in the project name, this codebase performs **classical signal processing** only:
-> - No qubits, no quantum gates, no quantum entanglement
-> - No exponential quantum speedup claims
-> - "Quantum-inspired" refers to mathematical structures (unitarity, phases), not physics
-> - All "quantum" modules are classical simulations with O(N) or O(N log N) complexity
-> 
-> The term "quantum-inspired" means we use mathematical properties shared with quantum computing (unitary transforms, superposition-like waveform algebra) while running on standard CPUs. See [docs/NON_CLAIMS.md](docs/NON_CLAIMS.md) for explicit non-claims.
-
 ## Licensing (dual)
 
 - Default license: AGPL-3.0-or-later for all files not listed as patent-practicing; see [LICENSE.md](LICENSE.md).
@@ -51,6 +40,17 @@
 1) Environment check: [verify_setup.sh](verify_setup.sh)
 2) Quick demo: [run_demo.sh](run_demo.sh)
 3) Full reproducibility: [reproduce_results.sh](reproduce_results.sh)
+
+---
+
+## 🏛 Independent Research Statement
+
+This project is the work of **Luis M. Minier**, an independent researcher.
+- **Affiliation**: None. Not associated with any university, corporation, or government lab.
+- **Funding**: Self-funded independent research.
+- **Methodology**: Built with extensive use of AI coding assistants (Copilot, Gemini, GPT-4) for implementation and verification, under human architectural direction.
+
+---
 
 **Where the details live:** The canonical RFT definition and proofs are in [algorithms/rft/README_RFT.md](algorithms/rft/README_RFT.md) and [THEOREMS_RFT_IRONCLAD.md](THEOREMS_RFT_IRONCLAD.md). Hardware RTL and reports are in [hardware/](hardware/).
 
