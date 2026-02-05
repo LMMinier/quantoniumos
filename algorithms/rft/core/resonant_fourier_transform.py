@@ -477,31 +477,31 @@ def irft(W: np.ndarray, N: int) -> np.ndarray:
 # =============================================================================
 
 class RFTSISHash:
-        """
-        Hybrid RFT-SIS hash (research prototype): φ-structured + pseudo-random matrix.
-    
-        Construction: A = A_φ + R (mod q)
-        - A_φ: Deterministic φ-structured matrix (golden ratio equidistribution)
-        - R: Pseudo-random matrix from NumPy RNG (seeded for reproducibility)
-    
-        Security notes:
-        - Any SIS-style argument depends on R being uniform and unpredictable.
-            This implementation uses NumPy RNG for reproducible experiments, which
-            is NOT a CSPRNG and should not be used for security claims.
-        - Avalanche results are empirical only.
-        - Per-domain salting is a research convenience, not a formal guarantee.
-    
-        Process:
-        1. Expand input via SHA3 hash chain (amplifies tiny differences)
-        2. Transform through RFT (golden-ratio structure)
-        3. Quantize to SIS short vector
-        4. Compute A @ s mod q (lattice point)
-        5. Final SHA3 compression
-    
-        WARNING: Research implementation only. Not audited for production use.
-        For production, use standard, reviewed primitives.
-        """
-    
+    """
+    Hybrid RFT-SIS hash (research prototype): φ-structured + pseudo-random matrix.
+
+    Construction: A = A_φ + R (mod q)
+    - A_φ: Deterministic φ-structured matrix (golden ratio equidistribution)
+    - R: Pseudo-random matrix from NumPy RNG (seeded for reproducibility)
+
+    Security notes:
+    - Any SIS-style argument depends on R being uniform and unpredictable.
+        This implementation uses NumPy RNG for reproducible experiments, which
+        is NOT a CSPRNG and should not be used for security claims.
+    - Avalanche results are empirical only.
+    - Per-domain salting is a research convenience, not a formal guarantee.
+
+    Process:
+    1. Expand input via SHA3 hash chain (amplifies tiny differences)
+    2. Transform through RFT (golden-ratio structure)
+    3. Quantize to SIS short vector
+    4. Compute A @ s mod q (lattice point)
+    5. Final SHA3 compression
+
+    WARNING: Research implementation only. Not audited for production use.
+    For production, use standard, reviewed primitives.
+    """
+
     def __init__(self, 
                  sis_n: int = 512,
                  sis_m: int = 1024,
