@@ -8,6 +8,10 @@ on:
         required: false
         default: 'main'
 
+concurrency:
+  group: spdx-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write

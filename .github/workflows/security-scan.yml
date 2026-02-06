@@ -3,12 +3,28 @@ name: Security & Supply Chain
 on:
   push:
     branches: [main]
+    paths:
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+      - 'Dockerfile*'
+      - '.github/workflows/security-scan.yml'
+      - 'quantonium-mobile/package*.json'
   pull_request:
     branches: [main]
+    paths:
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+      - 'Dockerfile*'
+      - '.github/workflows/security-scan.yml'
+      - 'quantonium-mobile/package*.json'
   schedule:
     # Run weekly on Sundays at 00:00 UTC
     - cron: '0 0 * * 0'
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
