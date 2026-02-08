@@ -23,7 +23,7 @@ def sparsity(x, threshold=0.01):
     """Fraction of coefficients > threshold of max."""
     return 1.0 - np.count_nonzero(np.abs(x) > threshold * np.max(np.abs(x))) / len(x)
 
-def test_signal_class(signal, name):
+def _check_signal_class(signal, name):
     """Compare RFT/FFT/DCT sparsity on a signal."""
     N = len(signal)
     
@@ -62,28 +62,28 @@ def run_benchmark():
     t = np.arange(N) / N
     for f in [PHI, PHI**2, PHI**3]:
         signal = np.sin(2*np.pi*f*t)
-        winner = test_signal_class(signal, f"Golden freq {f:.3f}")
+        winner = _check_signal_class(signal, f"Golden freq {f:.3f}")
         wins[winner] += 1
     
     # Test 2: Integer frequencies (FFT should win)
     for k in [5, 10, 20]:
         signal = np.sin(2*np.pi*k*t)
-        winner = test_signal_class(signal, f"Integer freq {k}")
+        winner = _check_signal_class(signal, f"Integer freq {k}")
         wins[winner] += 1
     
     # Test 3: DC + few harmonics (DCT might win)
     signal = 1.0 + 0.5*np.cos(2*np.pi*t) + 0.3*np.cos(4*np.pi*t)
-    winner = test_signal_class(signal, "DC + low harmonics")
+    winner = _check_signal_class(signal, "DC + low harmonics")
     wins[winner] += 1
     
     # Test 4: White noise (all should fail)
     signal = np.random.randn(N)
-    winner = test_signal_class(signal, "White noise")
+    winner = _check_signal_class(signal, "White noise")
     wins[winner] += 1
     
     # Test 5: Quasi-periodic chirp
     signal = np.sin(2*np.pi*t*PHI*t)
-    winner = test_signal_class(signal, "φ-chirp")
+    winner = _check_signal_class(signal, "φ-chirp")
     wins[winner] += 1
     
     # Test 6: Fibonacci sequence (quasi-periodic)
@@ -92,7 +92,7 @@ def run_benchmark():
         fib.append(fib[-1] + fib[-2])
     signal = np.array(fib[:N], dtype=float)
     signal = (signal - np.mean(signal)) / np.std(signal)  # Normalize
-    winner = test_signal_class(signal, "Fibonacci sequence")
+    winner = _check_signal_class(signal, "Fibonacci sequence")
     wins[winner] += 1
     
     print("-" * 80)
