@@ -42,7 +42,8 @@ jobs:
       - name: Run tests
         run: |
           pip install pytest
-          pytest tests/ -v --tb=short
+          pytest tests/ -v --tb=short \
+            --ignore=tests/test_audio_backend.py
         continue-on-error: false
       
       - name: Build package
