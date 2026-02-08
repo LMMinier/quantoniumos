@@ -1,0 +1,27 @@
+# QuantoniumOS ML/Image-Gen Dependencies (optional, large)
+# Hugging Face, diffusion models, and training infrastructure.
+# These are NOT required for core RFT functionality or CI.
+# Install separately: pip install -r requirements-ml-extra.txt
+
+-r requirements-core.txt
+
+# Hugging Face AI/ML
+torch>=2.3.0
+transformers>=4.41.0
+datasets>=2.19.0
+accelerate>=0.30.0
+peft>=0.11.0
+trl>=0.9.0
+bitsandbytes>=0.43.0
+wandb>=0.17.0
+safetensors>=0.4.0
+
+# Image generation
+diffusers>=0.27.0
+pillow>=10.3.0
+controlnet-aux>=0.0.7
+xformers>=0.0.26  # NVIDIA GPUs only
+
+# Real-data validation (biomedical datasets)
+wfdb>=4.1.0
+pyedflib>=0.1.35

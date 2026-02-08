@@ -160,3 +160,14 @@ results/
 *.pyc
 __pycache__/
 papers_backup/*.pdf
+
+# Compiled test binaries and build artifacts
+test_feistel_debug
+*.out
+*.elf
+
+# Hardware test vector hex files (regenerate from scripts)
+hardware_test_vectors/**/*.hex
+
+# Auto-generated SBOM (regenerate with cyclonedx-py)
+sbom.json
