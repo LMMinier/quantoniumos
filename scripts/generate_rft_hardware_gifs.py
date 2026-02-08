@@ -12,8 +12,8 @@ from matplotlib.animation import PillowWriter
 from pathlib import Path
 import time
 
-from algorithms.rft.core.phi_phase_fft_optimized import (
-    rft_forward, rft_inverse, rft_matrix, rft_phase_vectors, PHI
+from algorithms.rft.core.resonant_fourier_transform import (
+    rft_forward_square as rft_forward, rft_inverse_square as rft_inverse, rft_matrix_canonical as rft_matrix, rft_phase_vectors_canonical as rft_phase_vectors, PHI
 )
 
 OUTPUT_DIR = Path("./figures/gifs")

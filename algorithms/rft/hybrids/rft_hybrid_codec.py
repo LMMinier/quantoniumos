@@ -75,7 +75,7 @@ from typing import Dict, List, Optional, Tuple, Iterable
 
 import numpy as np
 
-from algorithms.rft.core.phi_phase_fft_optimized import rft_forward, rft_inverse
+from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward, rft_inverse_square as rft_inverse
 from algorithms.rft.compression.rft_vertex_codec import _generate_seed  # deterministic seed for size
 from .hybrid_residual_predictor import TinyResidualPredictor
 from .cascade_hybrids import H3HierarchicalCascade, FH5EntropyGuided, H6DictionaryLearning

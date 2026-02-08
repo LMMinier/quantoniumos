@@ -144,7 +144,7 @@ class QuantoniumBootSystem:
         """Fallback: compile Python-based assembly engines"""
         try:
             import numpy as np
-            from algorithms.rft.core.phi_phase_fft_optimized import rft_forward, rft_inverse
+            from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward, rft_inverse_square as rft_inverse
 
             size = 64
             signal = np.random.randn(size).astype(np.float64)

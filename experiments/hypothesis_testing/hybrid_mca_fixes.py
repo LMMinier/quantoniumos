@@ -29,7 +29,7 @@ from dataclasses import dataclass
 # Add parent to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from algorithms.rft.core.phi_phase_fft_optimized import rft_forward, rft_inverse
+from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward, rft_inverse_square as rft_inverse
 
 
 @dataclass

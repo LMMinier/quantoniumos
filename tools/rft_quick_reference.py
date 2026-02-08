@@ -74,7 +74,7 @@ Example 1: Run all tests and generate all figures
   $ python visualize_rft_analysis.py
 
 Example 2: Test RFT on custom signal
-  >>> from algorithms.rft.core.phi_phase_fft_optimized import rft_forward, rft_inverse
+  >>> from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward, rft_inverse_square as rft_inverse
   >>> import numpy as np
   >>> x = np.sin(2 * np.pi * 5 * np.arange(64) / 64)
   >>> X = rft_forward(x)
@@ -83,13 +83,13 @@ Example 2: Test RFT on custom signal
   >>> print(f"Reconstruction error: {error:.2e}")
 
 Example 3: Generate RFT matrix
-  >>> from algorithms.rft.core.phi_phase_fft_optimized import rft_matrix
+  >>> from algorithms.rft.core.resonant_fourier_transform import rft_matrix_canonical as rft_matrix
   >>> Psi = rft_matrix(64)  # 64×64 unitary matrix
   >>> print(f"Matrix shape: {Psi.shape}")
   >>> print(f"Is unitary: {np.allclose(Psi.conj().T @ Psi, np.eye(64))}")
 
 Example 4: Measure unitarity error
-  >>> from algorithms.rft.core.phi_phase_fft_optimized import rft_unitary_error
+  >>> from algorithms.rft.core.resonant_fourier_transform import rft_unitary_error_canonical as rft_unitary_error
   >>> error = rft_unitary_error(128, trials=20)
   >>> print(f"Unitarity error for N=128: {error:.2e}")
 

@@ -43,9 +43,9 @@ from algorithms.rft.core.rft_optimized import (
     rft_inverse_optimized as rft_inverse,
 )
 # Also import original for comparison
-from algorithms.rft.core.phi_phase_fft_optimized import (
-    rft_forward as rft_forward_orig,
-    rft_inverse as rft_inverse_orig,
+from algorithms.rft.core.resonant_fourier_transform import (
+    rft_forward_square as rft_forward_orig,
+    rft_inverse_square as rft_inverse_orig,
 )
 from experiments.entropy.datasets import (
     load_ascii_corpus,

@@ -11,7 +11,7 @@ Focus on specific use cases where golden-ratio phase structure provides benefits
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import fftpack
-from algorithms.rft.core.phi_phase_fft_optimized import rft_forward, rft_inverse, PHI
+from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward, rft_inverse_square as rft_inverse, PHI
 
 def test_golden_ratio_signals():
     """Test RFT on signals with Fibonacci/golden-ratio structure"""

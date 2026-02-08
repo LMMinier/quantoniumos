@@ -19,7 +19,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")
 
 import numpy as np
 from scipy.optimize import minimize, differential_evolution
-from algorithms.rft.core.phi_phase_fft_optimized import rft_matrix, rft_phase_vectors, PHI, rft_forward
+from algorithms.rft.core.resonant_fourier_transform import rft_matrix_canonical as rft_matrix, rft_phase_vectors_canonical as rft_phase_vectors, PHI, rft_forward_square as rft_forward
 import json
 
 def unwrap_phase(z: np.ndarray) -> np.ndarray:

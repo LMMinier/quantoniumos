@@ -38,7 +38,7 @@ from dataclasses import dataclass
 from typing import Tuple, List, Dict, Optional
 import numpy as np
 
-from algorithms.rft.core.phi_phase_fft_optimized import rft_forward, rft_inverse
+from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward, rft_inverse_square as rft_inverse
 from algorithms.rft.compression.ans import ans_encode, ans_decode, RANS_PRECISION_DEFAULT
 
 # Magic bytes for container identification

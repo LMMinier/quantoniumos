@@ -81,7 +81,7 @@ except ImportError as e:
     print(f"Warning: RFT Hybrid not available: {e}")
 
 try:
-    from algorithms.rft.core.phi_phase_fft_optimized import rft_forward as cf_rft_forward, rft_inverse as cf_rft_inverse
+    from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as cf_rft_forward, rft_inverse_square as cf_rft_inverse
     HAS_CLOSED_FORM = True
 except ImportError as e:
     HAS_CLOSED_FORM = False

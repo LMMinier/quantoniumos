@@ -40,11 +40,11 @@ except ImportError:
     print("⚠️  Assembly kernels not available - build with `make` in algorithms/rft/kernels/")
 
 # Import Python reference implementations
-from algorithms.rft.core.phi_phase_fft_optimized import (
-    rft_forward, 
-    rft_inverse, 
-    rft_unitary_error,
-    rft_matrix
+from algorithms.rft.core.resonant_fourier_transform import (
+    rft_forward_square as rft_forward, 
+    rft_inverse_square as rft_inverse, 
+    rft_unitary_error_canonical as rft_unitary_error,
+    rft_matrix_canonical as rft_matrix
 )
 from algorithms.rft.variants import VARIANTS, PHI
 

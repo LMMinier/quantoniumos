@@ -101,7 +101,7 @@ def fft_vs_rft_speed_reality():
     print()
     
     try:
-        from algorithms.rft.core.phi_phase_fft_optimized import rft_forward
+        from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward
         
         print("  FFT is faster than RFT (this is expected and by design):")
         print()

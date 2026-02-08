@@ -67,7 +67,7 @@ from algorithms.rft.variants.registry import (
     generate_phi_chaotic_hybrid,
     generate_hyperbolic_phase,
 )
-from algorithms.rft.core.phi_phase_fft_optimized import rft_forward, rft_inverse
+from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward, rft_inverse_square as rft_inverse
 
 # Check for required dependencies
 try:

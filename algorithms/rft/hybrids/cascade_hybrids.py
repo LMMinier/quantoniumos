@@ -188,8 +188,8 @@ class H3HierarchicalCascade:
                 # Trim back to original length
                 C_rft_texture = C_rft_full[:orig_len]
             else:
-                from algorithms.rft.core.phi_phase_fft_optimized import rft_forward
-                C_rft_texture = rft_forward(residual.astype(np.complex128))
+                from algorithms.rft.core.resonant_fourier_transform import rft_forward_square
+                C_rft_texture = rft_forward_square(residual.astype(np.complex128))
         except Exception:
             C_rft_texture = np.fft.fft(residual)
         
@@ -283,8 +283,8 @@ class H3HierarchicalCascade:
                 texture_full = self.rft.inverse(C_texture_pow2)
                 texture_recon = np.real(texture_full[:n])
             else:
-                from algorithms.rft.core.phi_phase_fft_optimized import rft_inverse
-                texture_recon = np.real(rft_inverse(C_texture_padded))
+                from algorithms.rft.core.resonant_fourier_transform import rft_inverse_square
+                texture_recon = np.real(rft_inverse_square(C_texture_padded))
         except Exception:
             texture_recon = np.real(np.fft.ifft(C_texture_padded))
         
@@ -467,8 +467,8 @@ class H6DictionaryLearning(H3HierarchicalCascade):
         C_dct = np.fft.rfft(signal, norm='ortho')
         
         try:
-            from algorithms.rft.core.phi_phase_fft_optimized import rft_forward
-            C_rft = rft_forward(signal.astype(np.complex128))
+            from algorithms.rft.core.resonant_fourier_transform import rft_forward_square
+            C_rft = rft_forward_square(signal.astype(np.complex128))
         except ImportError:
             C_rft = np.fft.fft(signal)
         

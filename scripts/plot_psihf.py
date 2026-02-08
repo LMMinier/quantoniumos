@@ -6,7 +6,7 @@ Optional plot showing non-trivial structure of Ψ†F matrix
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from algorithms.rft.core.phi_phase_fft_optimized import rft_forward
+from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward
 
 def main(n=128, beta=0.83, sigma=1.25, out="docs/figs/psiH_F.png"):
     E = np.eye(n, dtype=np.complex128)

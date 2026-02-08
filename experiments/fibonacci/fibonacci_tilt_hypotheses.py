@@ -39,7 +39,7 @@ import json
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Import RFT core
-from algorithms.rft.core.phi_phase_fft_optimized import rft_forward, rft_inverse
+from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward, rft_inverse_square as rft_inverse
 
 # Golden ratio
 PHI = (1 + np.sqrt(5)) / 2

@@ -310,6 +310,79 @@ def rft_inverse(
 
 
 # =============================================================================
+# SQUARE-MODE CONVENIENCE (drop-in for deprecated phi_phase_fft_optimized)
+# =============================================================================
+
+def rft_forward_square(x: np.ndarray, **kw) -> np.ndarray:
+    """
+    Canonical square-mode forward RFT: input N → output N.
+
+    Drop-in replacement for the deprecated
+    ``phi_phase_fft_optimized.rft_forward(x)``.  Uses the Gram-normalized
+    φ-grid basis (unitary).
+    """
+    return rft_forward(np.asarray(x, dtype=np.complex128), T=len(x), **kw)
+
+
+def rft_inverse_square(y: np.ndarray, **kw) -> np.ndarray:
+    """
+    Canonical square-mode inverse RFT: input N → output N.
+
+    Drop-in replacement for the deprecated
+    ``phi_phase_fft_optimized.rft_inverse(y)``.  Uses the Gram-normalized
+    φ-grid basis (unitary).
+    """
+    return rft_inverse(np.asarray(y, dtype=np.complex128), N=len(y), **kw)
+
+
+def rft_matrix_canonical(
+    n: int, *, use_gram_normalization: bool = True, **_kw
+) -> np.ndarray:
+    """
+    Return the n×n canonical RFT forward-transform matrix M (Gram-normalized).
+
+    Satisfies Y = M @ x  (forward transform), matching the convention of the
+    deprecated ``phi_phase_fft_optimized.rft_matrix(n)``.
+
+    The matrix is Φ^H where Φ is the Gram-normalized basis.
+    Callers passing ``beta`` / ``sigma`` / ``phi`` keyword arguments will
+    be silently accepted but ignored — the canonical basis is parameter-free.
+    """
+    Phi = rft_basis_matrix(n, n, use_gram_normalization=use_gram_normalization)
+    return Phi.conj().T
+
+
+def rft_unitary_error_canonical(
+    n: int, **_kw
+) -> float:
+    """
+    Frobenius unitarity error ||Ψ†Ψ − I|| for the canonical basis.
+
+    Drop-in replacement for ``phi_phase_fft_optimized.rft_unitary_error(n)``.
+    Because the canonical basis is Gram-normalized, this should be ≈ 0
+    (machine epsilon).
+    """
+    Psi = rft_basis_matrix(n, n, use_gram_normalization=True)
+    return float(np.linalg.norm(Psi.conj().T @ Psi - np.eye(n)))
+
+
+def rft_phase_vectors_canonical(
+    n: int, **_kw
+) -> tuple:
+    """
+    Return (D_fwd, D_inv) diagonal phase vectors derived from the
+    canonical Gram-normalized basis.
+
+    Drop-in replacement for ``phi_phase_fft_optimized.rft_phase_vectors(n)``.
+    Extracts the first-row phases of the canonical basis for diagnostic use.
+    """
+    Psi = rft_basis_matrix(n, n, use_gram_normalization=True)
+    D_fwd = Psi[0, :]
+    D_inv = np.conj(D_fwd)
+    return D_fwd, D_inv
+
+
+# =============================================================================
 # BINARY RFT (for computation)
 # =============================================================================
 

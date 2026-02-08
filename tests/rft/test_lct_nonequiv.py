@@ -5,7 +5,7 @@ LCT/FrFT Non-Equivalence Test
 Tests that Φ-RFT's golden-ratio phase is NOT purely quadratic
 """
 import numpy as np
-from algorithms.rft.core.phi_phase_fft_optimized import rft_phase_vectors, PHI
+from algorithms.rft.core.resonant_fourier_transform import rft_phase_vectors_canonical as rft_phase_vectors, PHI
 
 def _unwrap_phase(z: np.ndarray) -> np.ndarray:
     return np.unwrap(np.angle(z))

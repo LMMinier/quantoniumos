@@ -28,7 +28,7 @@ from scipy.optimize import minimize_scalar
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from algorithms.rft.core.phi_phase_fft_optimized import rft_forward as phi_rft_forward, rft_inverse as phi_rft_inverse
+from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as phi_rft_forward, rft_inverse_square as phi_rft_inverse
 
 
 # =============================================================================

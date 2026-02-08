@@ -40,7 +40,7 @@ except ImportError as e:
 
 # Import RFT compression
 try:
-    from algorithms.rft.core.phi_phase_fft_optimized import rft_forward, rft_inverse
+    from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward, rft_inverse_square as rft_inverse
     RFT_AVAILABLE = True
     print("✅ RFT Transform available")
 except ImportError:

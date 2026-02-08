@@ -81,7 +81,7 @@ from .ans import RANS_PRECISION_DEFAULT, ans_decode, ans_encode
 # ans_decode = None
 # ans_encode = None
 
-from algorithms.rft.core.phi_phase_fft_optimized import rft_forward, rft_inverse
+from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward, rft_inverse_square as rft_inverse
 
 try:  # pragma: no cover - optional assembly backend
     from unitary_rft import UnitaryRFT  # type: ignore
