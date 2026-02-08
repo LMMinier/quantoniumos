@@ -138,37 +138,63 @@ References in this repo:
 
 ---
 
-## 5. Key Innovation: Wave-Domain Computation
+## 5. Binary-to-Wave Encoding (φ-OFDM)
 
-The RFT is designed for **computation IN the wave domain**:
+### ⚠️ Reality Check: What This Actually Is
 
-### 5.1 Binary Encoding (BPSK)
+**What the previous documentation claimed:** "Operations work directly on the waveform without decoding"
+
+**What the code actually does:**
+```python
+def wave_xor(self, w1, w2):
+    for k in range(self.num_bits):
+        sym1 = self._get_symbol(w1, k)  # ← DECODES bit via correlation
+        sym2 = self._get_symbol(w2, k)  # ← DECODES bit via correlation  
+        sym_xor = -sym1 * sym2          # ← CLASSICAL Python logic
+        result += sym_xor * carriers[k] # ← RE-ENCODES result
+```
+
+**This is:** Standard BPSK-OFDM modulation (textbook since 1960s) + classical computation + re-modulation.
+
+**This is NOT:** "Post-binary computation", "wave-domain logic", or a new computational paradigm.
+
+**The only genuinely direct wave operation is `wave_not(w) = -w`** (trivial negation).
+
+---
+
+### 5.1 Binary Encoding (Standard BPSK)
 
 | Bit | Symbol |
 |-----|--------|
 | 0   | -1     |
 | 1   | +1     |
 
-Binary data encodes as amplitude/phase modulation on resonant carriers:
+Binary data encodes as amplitude-phase modulated waveforms:
 
 ```python
 waveform = Σ_k symbol[k] × Ψ_k(t)
 ```
 
-### 5.2 Logic Operations on Waveforms
+This is **standard BPSK modulation** (Proakis & Salehi, "Digital Communications", Ch 4).
 
-Operations work **directly** on the waveform without decoding:
+### 5.2 Logic Operations
 
-| Operation | Formula | Description |
-|-----------|---------|-------------|
-| **XOR**   | $-s_1 \times s_2$ | Negate product in BPSK |
-| **AND**   | $+1$ if both $+1$ | Both bits set |
-| **OR**    | $+1$ if either $+1$ | Either bit set |
-| **NOT**   | $-w$ | Negate waveform |
+**Reality:** These operations DECODE → COMPUTE CLASSICALLY → RE-ENCODE.
 
-### 5.3 Chained Operations
+| Operation | Implementation | Actual Behavior |
+|-----------|----------------|------------------|
+| **XOR**   | decode, -s1*s2, encode | NOT direct wave op |
+| **AND**   | decode, classical AND, encode | NOT direct wave op |
+| **OR**    | decode, classical OR, encode | NOT direct wave op |
+| **NOT**   | `-w` | ✓ Direct (trivial) |
 
-Complex expressions like `(A XOR B) AND (NOT C)` execute entirely in the wave domain, then decode once at the end.
+### 5.3 What "φ-OFDM" Actually Contributes
+
+The **only** novel aspect is using golden-ratio frequency spacing instead of integer spacing:
+- Standard OFDM: f_k = k/N (integer harmonics)
+- φ-OFDM: f_k = frac((k+1)φ) (irrational frequencies)
+
+This is a **minor variation** on well-known OFDM, not a paradigm shift.
 
 ---
 

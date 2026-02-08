@@ -345,10 +345,17 @@ class TestSpectralFlatness:
     
     @pytest.mark.parametrize("signal_type", ['impulse', 'sine', 'noise'])
     def test_energy_spread_threshold(self, signal_type: str):
-        """Verify RFT spreads energy for structured inputs."""
+        """Verify RFT energy distribution matches signal structure.
+
+        - Impulse (broadband in time): energy should spread across many RFT
+          coefficients, confirming the transform distributes broadband inputs.
+        - Sine (narrowband): energy should concentrate in few coefficients.
+          A correct transform *compacts* a pure tone; spreading would be a defect.
+        - Noise (broadband): energy should spread broadly, similar to impulse.
+        """
         N = 256
         t = np.arange(N) / N
-        
+
         if signal_type == 'impulse':
             x = np.zeros(N, dtype=np.complex128)
             x[N//2] = 1.0
@@ -356,17 +363,32 @@ class TestSpectralFlatness:
             x = np.sin(2 * np.pi * 10 * t).astype(np.complex128)
         else:
             x = np.random.default_rng(42).standard_normal(N).astype(np.complex128)
-        
+
         X = rft_forward(x, T=N, use_gram_normalization=True)
-        
-        # 90% of energy should be spread across multiple coefficients
+
+        # How many coefficients capture 90% of energy?
         mags_sorted = np.sort(np.abs(X)**2)[::-1]
         cumsum = np.cumsum(mags_sorted) / np.sum(mags_sorted)
         num_90 = np.searchsorted(cumsum, 0.9) + 1
-        
-        # For structured signals, energy should spread (not concentrated in few coeffs)
-        if signal_type in ['impulse', 'sine']:
-            assert num_90 > N * 0.1, f"Energy too concentrated for {signal_type}"
+
+        if signal_type == 'impulse':
+            # Broadband input → energy should spread (>10% of coefficients)
+            assert num_90 > N * 0.1, (
+                f"Energy too concentrated for impulse: {num_90}/{N}"
+            )
+        elif signal_type == 'sine':
+            # Narrowband input → energy should concentrate (<10% of coefficients).
+            # A pure sine at a single frequency has its energy in O(1) bins;
+            # the RFT's irrational grid may spread it across a few more, but
+            # it must remain well below N/4.
+            assert num_90 < N * 0.25, (
+                f"Energy too spread for sine (transform not compacting): {num_90}/{N}"
+            )
+        else:
+            # White noise → energy should spread broadly
+            assert num_90 > N * 0.3, (
+                f"Noise energy too concentrated: {num_90}/{N}"
+            )
 
 
 # =============================================================================

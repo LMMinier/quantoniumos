@@ -4,16 +4,29 @@
 # under LICENSE-CLAIMS-NC.md (research/education only). Commercial
 # rights require a separate patent license from the author.
 """
-Symbolic Wave Computer (SWC)
-============================
+Symbolic Wave Computer (SWC) — HONEST DOCUMENTATION
+====================================================
 
 USPTO Patent 19/169,399: "Hybrid Computational Framework for Quantum and Resonance Simulation"
 
-This implements the core patent vision:
-- Binary data encoded as amplitude-phase modulated waveforms
-- Golden ratio (φ) frequency and phase spacing
-- Logic operations performed directly on waveforms
-- Perfect reconstruction of binary data from waves
+⚠️  REALITY CHECK ⚠️
+-------------------
+This module implements STANDARD BPSK-OFDM modulation with golden-ratio frequency
+spacing. Despite the name "wave-domain computation":
+
+1. wave_xor/wave_and/wave_or DO NOT compute "directly on waveforms"
+2. They DECODE bits via matched filtering, COMPUTE CLASSICALLY, then RE-ENCODE
+3. Only wave_not(w) = -w is a true direct wave operation (trivial)
+
+This is NOT:
+- "Post-binary computation"
+- "Wave-domain logic"
+- A new computational paradigm
+
+This IS:
+- Standard BPSK modulation (Proakis & Salehi, "Digital Communications", Ch 4)
+- Modified OFDM with irrational frequency spacing (φ-OFDM)
+- Encode → Classic compute → Decode cycle with extra steps
 
 Mathematical Foundation:
 -----------------------
@@ -21,10 +34,10 @@ Reference: Proakis & Salehi, "Digital Communications" (5th ed), Ch 4, 12
            - BPSK modulation theory
            - Orthogonal frequency division multiplexing (OFDM)
 
-The innovation (φ-OFDM):
+The variation (φ-OFDM):
 - Standard OFDM uses integer frequency spacing: f_k = k
 - φ-OFDM uses golden ratio spacing: f_k = k·φ where φ = (1+√5)/2
-- This creates non-harmonic, quasi-periodic wave structure
+- This is a minor variation on a well-known technique
 
 Why Golden Ratio:
 ----------------

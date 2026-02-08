@@ -355,35 +355,50 @@ inline void apply_phase_rotation_avx2(
     size_t n
 ) {
     // Process 2 complex numbers at a time (4 doubles = 2 complex)
-    for (size_t k = 0; k < n; k += 2) {
-        if (k + 2 <= n) {
-            // Load 2 complex numbers (4 doubles: r0, i0, r1, i1)
-            __m256d v_in = _mm256_loadu_pd(reinterpret_cast<const double*>(input + k));
-            
-            // Compute cos/sin of phases
-            double c0 = std::cos(phases[k]);
-            double s0 = std::sin(phases[k]);
-            double c1 = std::cos(phases[k + 1]);
-            double s1 = std::sin(phases[k + 1]);
-            
-            // Complex multiply: (a+bi)(c+di) = (ac-bd) + (ad+bc)i
-            // input = [r0, i0, r1, i1]
-            // rotation = [c0, s0, c1, s1]
-            
-            double r0 = input[k].real(), i0 = input[k].imag();
-            double r1 = input[k+1].real(), i1 = input[k+1].imag();
-            
-            output[k] = Complex(r0*c0 - i0*s0, r0*s0 + i0*c0);
-            output[k+1] = Complex(r1*c1 - i1*s1, r1*s1 + i1*c1);
-        } else {
-            // Handle last element if n is odd
-            double c = std::cos(phases[k]);
-            double s = std::sin(phases[k]);
-            output[k] = Complex(
-                input[k].real()*c - input[k].imag()*s,
-                input[k].real()*s + input[k].imag()*c
-            );
-        }
+    size_t k = 0;
+    for (; k + 2 <= n; k += 2) {
+        // Load 2 complex numbers: [r0, i0, r1, i1]
+        __m256d v_in = _mm256_loadu_pd(reinterpret_cast<const double*>(input + k));
+        
+        // Compute cos/sin of phases (scalar — no portable SIMD sincos)
+        double c0 = std::cos(phases[k]);
+        double s0 = std::sin(phases[k]);
+        double c1 = std::cos(phases[k + 1]);
+        double s1 = std::sin(phases[k + 1]);
+        
+        // Swap real/imaginary pairs: [i0, r0, i1, r1]
+        __m256d v_swap = _mm256_permute_pd(v_in, 0b0101);
+        
+        // Build cos/sin vectors matching complex layout
+        __m256d v_cs = _mm256_set_pd(c1, c1, c0, c0);     // [c0, c0, c1, c1]
+        __m256d v_ss = _mm256_set_pd(s1, s1, s0, s0);     // [s0, s0, s1, s1]
+        __m256d v_sign = _mm256_set_pd(1.0, -1.0, 1.0, -1.0); // negate sin for real part
+        __m256d v_ss_signed = _mm256_mul_pd(v_ss, v_sign);
+        
+        // Complex multiply: (r + i*j)(c + s*j) = (r*c - i*s) + (r*s + i*c)*j
+        // v_in * v_cs = [r0*c0, i0*c0, r1*c1, i1*c1]
+        // v_swap * v_ss_signed = [-i0*s0, r0*s0, -i1*s1, r1*s1]
+        // sum = [r0*c0 - i0*s0, i0*c0 + r0*s0, r1*c1 - i1*s1, i1*c1 + r1*s1]
+#ifdef __FMA__
+        __m256d v_out = _mm256_fmadd_pd(v_in, v_cs,
+                            _mm256_mul_pd(v_swap, v_ss_signed));
+#else
+        __m256d v_out = _mm256_add_pd(
+            _mm256_mul_pd(v_in, v_cs),
+            _mm256_mul_pd(v_swap, v_ss_signed));
+#endif
+        
+        _mm256_storeu_pd(reinterpret_cast<double*>(output + k), v_out);
+    }
+    
+    // Handle remainder if n is odd
+    for (; k < n; ++k) {
+        double c = std::cos(phases[k]);
+        double s = std::sin(phases[k]);
+        output[k] = Complex(
+            input[k].real()*c - input[k].imag()*s,
+            input[k].real()*s + input[k].imag()*c
+        );
     }
 }
 

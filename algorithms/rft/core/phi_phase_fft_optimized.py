@@ -31,10 +31,21 @@ Mathematical equivalence:
   where E[k] = D_φ[k] · C_σ[k] = exp(i · θ_fused[k])
 """
 from __future__ import annotations
+import warnings
 import numpy as np
 from numpy.typing import ArrayLike
 from functools import lru_cache
 from typing import Tuple, Optional
+
+warnings.warn(
+    "phi_phase_fft_optimized is DEPRECATED and is NOT the canonical RFT. "
+    "Use algorithms.rft.core.resonant_fourier_transform instead. "
+    "This module implements a phase-tilted FFT (Ψ = D_φ C_σ F) with NO "
+    "sparsity or compression advantage over standard FFT. "
+    "It will be removed in a future release.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 PHI = (1.0 + 5.0 ** 0.5) / 2.0
 PHI_INV = PHI - 1.0  # = 1/φ = φ - 1
@@ -202,10 +213,17 @@ def rft_forward(
     phi: float = PHI
 ) -> np.ndarray:
     """
-    Drop-in replacement for closed_form_rft.rft_forward.
+    DEPRECATED: Drop-in replacement for closed_form_rft.rft_forward.
     
-    Note: phi parameter is ignored (always uses golden ratio).
+    Use ``from algorithms.rft.core.resonant_fourier_transform import rft_forward``
+    for the canonical RFT.
     """
+    warnings.warn(
+        "phi_phase_fft_optimized.rft_forward is deprecated. "
+        "Use algorithms.rft.core.resonant_fourier_transform.rft_forward instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return rft_forward_optimized(x, beta=beta, sigma=sigma)
 
 
@@ -217,8 +235,17 @@ def rft_inverse(
     phi: float = PHI
 ) -> np.ndarray:
     """
-    Drop-in replacement for closed_form_rft.rft_inverse.
+    DEPRECATED: Drop-in replacement for closed_form_rft.rft_inverse.
+    
+    Use ``from algorithms.rft.core.resonant_fourier_transform import rft_inverse``
+    for the canonical RFT.
     """
+    warnings.warn(
+        "phi_phase_fft_optimized.rft_inverse is deprecated. "
+        "Use algorithms.rft.core.resonant_fourier_transform.rft_inverse instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return rft_inverse_optimized(y, beta=beta, sigma=sigma)
 
 

@@ -9,9 +9,11 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     QT_QPA_PLATFORM=offscreen
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 python3-pip python3-venv \
     build-essential nasm git ca-certificates && \
+    apt-get upgrade -y && \
+    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /qos

@@ -117,6 +117,21 @@ test: run-tb-rft run-tb-rftpu
 TB_CROSSVAL := $(TB_DIR)/tb_canonical_rft_crossval.sv
 CROSSVAL_PY := $(TB_DIR)/verify_rtl_vs_python.py
 
+# Theorem 8 Option A (energy dump)
+TB_THEOREM8 := $(TB_DIR)/tb_theorem8_energy_dump.sv
+THEOREM8_VEC_PY := $(TB_DIR)/theorem8_vectors_q15.py
+THEOREM8_KERNEL_PY := $(TB_DIR)/theorem8_kernel_uconj_q15.py
+THEOREM8_VERIFY_PY := $(TB_DIR)/verify_theorem8_option_a.py
+
+THEOREM8_N ?= 64
+THEOREM8_CASES ?= 1000
+THEOREM8_SEED ?= 42
+
+THEOREM8_MEMH := $(TB_DIR)/theorem8_vectors_N$(THEOREM8_N)_q15.memh
+THEOREM8_KREAL := $(TB_DIR)/theorem8_kernel_uconj_real_N$(THEOREM8_N)_q15.memh
+THEOREM8_KIMAG := $(TB_DIR)/theorem8_kernel_uconj_imag_N$(THEOREM8_N)_q15.memh
+THEOREM8_CSV := $(TB_DIR)/theorem8_hw_energies.csv
+
 .PHONY: build-crossval
 build-crossval: $(TEST_VEC_SVH)
 	@echo "=== Building Cross-Validation Testbench ==="
@@ -137,6 +152,53 @@ run-crossval: build-crossval
 	@echo ""
 	@echo "=== Verifying against Python reference ==="
 	cd $(TB_DIR) && $(PYTHON) verify_rtl_vs_python.py
+
+.PHONY: theorem8-vectors
+theorem8-vectors:
+	@echo "=== Generating Theorem 8 Q1.15 vectors ==="
+	cd $(TB_DIR) && $(PYTHON) theorem8_vectors_q15.py \
+		--N $(THEOREM8_N) --cases $(THEOREM8_CASES) --seed $(THEOREM8_SEED) \
+		--out-memh theorem8_vectors_N$(THEOREM8_N)_q15.memh \
+		--out-json theorem8_vectors_N$(THEOREM8_N)_q15.json
+	@echo "Generated: $(THEOREM8_MEMH)"
+
+.PHONY: theorem8-kernel
+theorem8-kernel:
+	@echo "=== Generating Theorem 8 canonical kernel (conj(U) Q1.15) ==="
+	cd $(TB_DIR) && $(PYTHON) theorem8_kernel_uconj_q15.py \
+		--N $(THEOREM8_N) \
+		--out-real theorem8_kernel_uconj_real_N$(THEOREM8_N)_q15.memh \
+		--out-imag theorem8_kernel_uconj_imag_N$(THEOREM8_N)_q15.memh
+	@echo "Generated: $(THEOREM8_KREAL)"
+	@echo "Generated: $(THEOREM8_KIMAG)"
+
+.PHONY: build-theorem8
+build-theorem8: theorem8-vectors theorem8-kernel
+	@echo "=== Building Theorem 8 energy-dump testbench ==="
+	mkdir -p $(RESULTS_DIR)
+	$(VERILATOR) --binary -j 0 \
+		--Wno-IMPLICIT --Wno-WIDTHEXPAND --Wno-UNUSEDSIGNAL \
+		--Wno-DECLFILENAME --Wno-UNDRIVEN --Wno-BLKSEQ \
+		-I$(TB_DIR) \
+		-DTHEOREM8_N=$(THEOREM8_N) -DTHEOREM8_CASES=$(THEOREM8_CASES) \
+		--top-module tb_theorem8_energy_dump \
+		$(TB_THEOREM8) \
+		-Mdir $(RESULTS_DIR)/obj_theorem8
+	@echo "Built: $(RESULTS_DIR)/obj_theorem8/Vtb_theorem8_energy_dump"
+
+.PHONY: theorem8-run
+theorem8-run: build-theorem8
+	@echo "=== Running Theorem 8 energy-dump simulation ==="
+	cd $(TB_DIR) && $(RESULTS_DIR)/obj_theorem8/Vtb_theorem8_energy_dump \
+		+VEC=$(notdir $(THEOREM8_MEMH)) \
+		+KREAL=$(notdir $(THEOREM8_KREAL)) \
+		+KIMAG=$(notdir $(THEOREM8_KIMAG)) \
+		+OUT=$(notdir $(THEOREM8_CSV)) \
+		+CASES=$(THEOREM8_CASES)
+	@echo "Wrote: $(THEOREM8_CSV)"
+	@echo ""
+	@echo "=== Verifying dump (Option A host) ==="
+	$(PYTHON) $(THEOREM8_VERIFY_PY) --csv $(THEOREM8_CSV) --memh $(THEOREM8_MEMH) --num-cases $(THEOREM8_CASES) --n $(THEOREM8_N) --fail-on warn
 
 # Formal verification (requires SymbiYosys)
 .PHONY: formal

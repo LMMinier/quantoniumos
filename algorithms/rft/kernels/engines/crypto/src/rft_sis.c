@@ -182,8 +182,9 @@ rft_sis_error_t rft_sis_init(rft_sis_ctx_t* ctx, const uint8_t* seed, rft_varian
     
     // Pre-compute RFT phases using golden ratio
     for (size_t k = 0; k < RFT_SIS_N; k++) {
-        // φ-RFT phase: θ_k = 2π * {k/φ} where {x} is fractional part
-        double frac = fmod((double)k / PHI, 1.0);
+        // Canonical RFT phase: θ_k = 2π * frac((k+1)·φ)
+        double freq = (double)(k + 1) * PHI;
+        double frac = freq - floor(freq);
         ctx->rft_phases[k] = TWO_PI * frac;
     }
     

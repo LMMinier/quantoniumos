@@ -278,20 +278,10 @@ inline void apply_fused_diagonal_avx2(
 #endif
         
         // Interleave: [out_r0, out_i0, out_r1, out_i1]
-        __m256d v_out = _mm256_blend_pd(
-            _mm256_permute4x64_pd(v_out_real, 0b11011000), // [r0,?,r1,?]
-            _mm256_permute4x64_pd(v_out_imag, 0b01110010), // [?,i0,?,i1]
-            0b1010  // blend pattern
-        );
-        
-        // Simpler approach - just compute directly
-        double c0 = cos_table[k], s0 = sin_table[k];
-        double c1 = cos_table[k+1], s1 = sin_table[k+1];
-        double r0 = input[k].real(), i0 = input[k].imag();
-        double r1 = input[k+1].real(), i1 = input[k+1].imag();
-        
-        output[k] = Complex(r0*c0 - i0*s0, r0*s0 + i0*c0);
-        output[k+1] = Complex(r1*c1 - i1*s1, r1*s1 + i1*c1);
+        // v_out_real/v_out_imag have duplicated elements from the permuted inputs,
+        // so unpacklo within 128-bit lanes gives the correct interleave.
+        __m256d v_out = _mm256_unpacklo_pd(v_out_real, v_out_imag);
+        _mm256_storeu_pd(reinterpret_cast<double*>(output + k), v_out);
     }
     
     // Scalar remainder

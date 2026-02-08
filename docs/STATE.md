@@ -1,16 +1,17 @@
 # QuantoniumOS Operational State
 
 **Status:** Active Research
-**Current Session:** [2025-12-17](sessions/2025-12-17_SESSION.md)
+**Last Updated:** 2026-02-07
 
 ---
 
 ## 1. Active Goals (Max 5)
 
-1.  **Establish Operational Rigor:** Implement and enforce "Two-File Rule" (STATE + SESSION) to bind intent to artifacts.
-2.  **Formalize Canonical RFT:** Solidify the "Gram-normalized irrational-frequency exponential basis" as the single source of truth for RFT v2.0.0.
-3.  **Release Management:** Maintain v2.0.0 stability and documentation alignment.
+1.  **Audit Remediation:** Address findings from Feb 2026 full-repo audit (2,264 tests: 1844 pass, 6 fail, 415 skip).
+2.  **Canonical φ Alignment:** Ensure all components use canonical θ[k] = 2π·frac((k+1)·φ) — not legacy frac(k/φ).
+3.  **Release Management:** Maintain v2.0.0+ stability and documentation alignment.
 4.  **Hardware Validation:** Verify RFTPU RTL matches the new Canonical RFT definition.
+5.  **Deprecation Lifecycle:** Move consumers off `phi_phase_fft_optimized.py` to canonical RFT.
 
 ---
 
@@ -30,8 +31,9 @@
 ## 3. Open Questions
 
 1.  **LCT Conjecture:** Is the Canonical RFT structurally distinct from the Linear Canonical Transform (LCT) group? (Status: OPEN)
-2.  **Structural Distinctness:** Is RFT distinct from the DFT orbit for all $N$? (Proven for $N \le 32$, Open for general $N$)
+2.  **Structural Distinctness:** RFT is proven distinct from the DFT orbit for **all** $N$ (Theorem 6). ✅ RESOLVED.
 3.  **Large-N Scalability:** Gram normalization is $O(N^3)$. Can we achieve $O(N \log N)$ unitarity for $N > 4096$?
+4.  **Theorem 8 Sublinear Conjecture:** $O(\log N)$ concentration advantage is empirically observed (3-8%) but not formally proven. Constant-factor advantage is proven.
 
 ---
 

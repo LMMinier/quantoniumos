@@ -12,11 +12,27 @@ import { StatusBar } from 'expo-status-bar';
 import LauncherScreen from '../screens/LauncherScreen';
 import AIChatScreen from '../screens/AIChatScreen';
 import StructuralHealthScreen from '../screens/StructuralHealthScreen';
+import ChipViewer3DScreen from '../screens/ChipViewer3DScreen';
+import QNotesScreen from '../screens/QNotesScreen';
+import QVaultScreen from '../screens/QVaultScreen';
+import QuantumCryptographyScreen from '../screens/QuantumCryptographyScreen';
+import QuantumSimulatorScreen from '../screens/QuantumSimulatorScreen';
+import RFTVisualizerScreen from '../screens/RFTVisualizerScreen';
+import SystemMonitorScreen from '../screens/SystemMonitorScreen';
+import ValidationScreen from '../screens/ValidationScreen';
 
 export type RootStackParamList = {
   Launcher: undefined;
   AIChat: undefined;
   StructuralHealth: undefined;
+  ChipViewer3D: undefined;
+  QNotes: undefined;
+  QVault: undefined;
+  QuantumCryptography: undefined;
+  QuantumSimulator: undefined;
+  RFTVisualizer: undefined;
+  SystemMonitor: undefined;
+  Validation: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -58,6 +74,46 @@ export default function AppNavigator() {
             name="StructuralHealth"
             component={StructuralHealthScreen}
             options={{ title: 'Structural Health Monitor' }}
+          />
+          <Stack.Screen
+            name="ChipViewer3D"
+            component={ChipViewer3DScreen}
+            options={{ title: 'RFTPU 3D Viewer' }}
+          />
+          <Stack.Screen
+            name="QNotes"
+            component={QNotesScreen}
+            options={{ title: 'Quantum Notes' }}
+          />
+          <Stack.Screen
+            name="QVault"
+            component={QVaultScreen}
+            options={{ title: 'Quantum Vault' }}
+          />
+          <Stack.Screen
+            name="QuantumCryptography"
+            component={QuantumCryptographyScreen}
+            options={{ title: 'Quantum Cryptography' }}
+          />
+          <Stack.Screen
+            name="QuantumSimulator"
+            component={QuantumSimulatorScreen}
+            options={{ title: 'Quantum Simulator' }}
+          />
+          <Stack.Screen
+            name="RFTVisualizer"
+            component={RFTVisualizerScreen}
+            options={{ title: 'RFT Visualizer' }}
+          />
+          <Stack.Screen
+            name="SystemMonitor"
+            component={SystemMonitorScreen}
+            options={{ title: 'System Monitor' }}
+          />
+          <Stack.Screen
+            name="Validation"
+            component={ValidationScreen}
+            options={{ title: 'Validation Suite' }}
           />
         </Stack.Navigator>
       </NavigationContainer>

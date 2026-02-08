@@ -15,6 +15,7 @@ import numpy as np
 import pytest
 from typing import Dict, List, Tuple
 from scipy import stats
+from scipy.special import erfc
 from algorithms.rft.core.resonant_fourier_transform import (
     rft_forward,
     rft_basis_matrix,
@@ -63,7 +64,7 @@ class TestStatisticalProperties:
         s_obs = np.abs(s_n) / np.sqrt(n)
         
         # P-value using complementary error function
-        p_value = stats.erfc(s_obs / np.sqrt(2))
+        p_value = erfc(s_obs / np.sqrt(2))
         
         return p_value, p_value > 0.01
     
@@ -90,7 +91,7 @@ class TestStatisticalProperties:
             return 0.0, False
         
         z = (runs - expected) / variance
-        p_value = stats.erfc(np.abs(z) / np.sqrt(2))
+        p_value = erfc(np.abs(z) / np.sqrt(2))
         
         return p_value, p_value > 0.01
     

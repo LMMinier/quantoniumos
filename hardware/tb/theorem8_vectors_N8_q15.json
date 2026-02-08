@@ -1,0 +1,413 @@
+{
+  "theorem": "Theorem 8 Option A (hardware energy dump)",
+  "date_context": "2026-02-06",
+  "N": 8,
+  "num_cases": 100,
+  "seed": 42,
+  "ensemble_spec": {
+    "generator": "algorithms.rft.core.transform_theorems.golden_drift_ensemble",
+    "note": "Signals may be per-case scaled to avoid Q1.15 saturation (scale recorded)."
+  },
+  "cases": [
+    {
+      "id": 0,
+      "scale": 1.0
+    },
+    {
+      "id": 1,
+      "scale": 1.0
+    },
+    {
+      "id": 2,
+      "scale": 1.0
+    },
+    {
+      "id": 3,
+      "scale": 1.0
+    },
+    {
+      "id": 4,
+      "scale": 1.0
+    },
+    {
+      "id": 5,
+      "scale": 1.0
+    },
+    {
+      "id": 6,
+      "scale": 1.0
+    },
+    {
+      "id": 7,
+      "scale": 1.0
+    },
+    {
+      "id": 8,
+      "scale": 1.0
+    },
+    {
+      "id": 9,
+      "scale": 1.0
+    },
+    {
+      "id": 10,
+      "scale": 1.0
+    },
+    {
+      "id": 11,
+      "scale": 1.0
+    },
+    {
+      "id": 12,
+      "scale": 1.0
+    },
+    {
+      "id": 13,
+      "scale": 1.0
+    },
+    {
+      "id": 14,
+      "scale": 1.0
+    },
+    {
+      "id": 15,
+      "scale": 1.0
+    },
+    {
+      "id": 16,
+      "scale": 1.0
+    },
+    {
+      "id": 17,
+      "scale": 1.0
+    },
+    {
+      "id": 18,
+      "scale": 1.0
+    },
+    {
+      "id": 19,
+      "scale": 1.0
+    },
+    {
+      "id": 20,
+      "scale": 1.0
+    },
+    {
+      "id": 21,
+      "scale": 1.0
+    },
+    {
+      "id": 22,
+      "scale": 1.0
+    },
+    {
+      "id": 23,
+      "scale": 1.0
+    },
+    {
+      "id": 24,
+      "scale": 1.0
+    },
+    {
+      "id": 25,
+      "scale": 1.0
+    },
+    {
+      "id": 26,
+      "scale": 1.0
+    },
+    {
+      "id": 27,
+      "scale": 1.0
+    },
+    {
+      "id": 28,
+      "scale": 1.0
+    },
+    {
+      "id": 29,
+      "scale": 1.0
+    },
+    {
+      "id": 30,
+      "scale": 1.0
+    },
+    {
+      "id": 31,
+      "scale": 1.0
+    },
+    {
+      "id": 32,
+      "scale": 1.0
+    },
+    {
+      "id": 33,
+      "scale": 1.0
+    },
+    {
+      "id": 34,
+      "scale": 1.0
+    },
+    {
+      "id": 35,
+      "scale": 1.0
+    },
+    {
+      "id": 36,
+      "scale": 1.0
+    },
+    {
+      "id": 37,
+      "scale": 1.0
+    },
+    {
+      "id": 38,
+      "scale": 1.0
+    },
+    {
+      "id": 39,
+      "scale": 1.0
+    },
+    {
+      "id": 40,
+      "scale": 1.0
+    },
+    {
+      "id": 41,
+      "scale": 1.0
+    },
+    {
+      "id": 42,
+      "scale": 1.0
+    },
+    {
+      "id": 43,
+      "scale": 1.0
+    },
+    {
+      "id": 44,
+      "scale": 1.0
+    },
+    {
+      "id": 45,
+      "scale": 1.0
+    },
+    {
+      "id": 46,
+      "scale": 1.0
+    },
+    {
+      "id": 47,
+      "scale": 1.0
+    },
+    {
+      "id": 48,
+      "scale": 1.0
+    },
+    {
+      "id": 49,
+      "scale": 1.0
+    },
+    {
+      "id": 50,
+      "scale": 1.0
+    },
+    {
+      "id": 51,
+      "scale": 1.0
+    },
+    {
+      "id": 52,
+      "scale": 1.0
+    },
+    {
+      "id": 53,
+      "scale": 1.0
+    },
+    {
+      "id": 54,
+      "scale": 1.0
+    },
+    {
+      "id": 55,
+      "scale": 1.0
+    },
+    {
+      "id": 56,
+      "scale": 1.0
+    },
+    {
+      "id": 57,
+      "scale": 1.0
+    },
+    {
+      "id": 58,
+      "scale": 1.0
+    },
+    {
+      "id": 59,
+      "scale": 1.0
+    },
+    {
+      "id": 60,
+      "scale": 1.0
+    },
+    {
+      "id": 61,
+      "scale": 1.0
+    },
+    {
+      "id": 62,
+      "scale": 1.0
+    },
+    {
+      "id": 63,
+      "scale": 1.0
+    },
+    {
+      "id": 64,
+      "scale": 1.0
+    },
+    {
+      "id": 65,
+      "scale": 1.0
+    },
+    {
+      "id": 66,
+      "scale": 1.0
+    },
+    {
+      "id": 67,
+      "scale": 1.0
+    },
+    {
+      "id": 68,
+      "scale": 1.0
+    },
+    {
+      "id": 69,
+      "scale": 1.0
+    },
+    {
+      "id": 70,
+      "scale": 1.0
+    },
+    {
+      "id": 71,
+      "scale": 1.0
+    },
+    {
+      "id": 72,
+      "scale": 1.0
+    },
+    {
+      "id": 73,
+      "scale": 1.0
+    },
+    {
+      "id": 74,
+      "scale": 1.0
+    },
+    {
+      "id": 75,
+      "scale": 1.0
+    },
+    {
+      "id": 76,
+      "scale": 1.0
+    },
+    {
+      "id": 77,
+      "scale": 1.0
+    },
+    {
+      "id": 78,
+      "scale": 1.0
+    },
+    {
+      "id": 79,
+      "scale": 1.0
+    },
+    {
+      "id": 80,
+      "scale": 1.0
+    },
+    {
+      "id": 81,
+      "scale": 1.0
+    },
+    {
+      "id": 82,
+      "scale": 1.0
+    },
+    {
+      "id": 83,
+      "scale": 1.0
+    },
+    {
+      "id": 84,
+      "scale": 1.0
+    },
+    {
+      "id": 85,
+      "scale": 1.0
+    },
+    {
+      "id": 86,
+      "scale": 1.0
+    },
+    {
+      "id": 87,
+      "scale": 1.0
+    },
+    {
+      "id": 88,
+      "scale": 1.0
+    },
+    {
+      "id": 89,
+      "scale": 1.0
+    },
+    {
+      "id": 90,
+      "scale": 1.0
+    },
+    {
+      "id": 91,
+      "scale": 1.0
+    },
+    {
+      "id": 92,
+      "scale": 1.0
+    },
+    {
+      "id": 93,
+      "scale": 1.0
+    },
+    {
+      "id": 94,
+      "scale": 1.0
+    },
+    {
+      "id": 95,
+      "scale": 1.0
+    },
+    {
+      "id": 96,
+      "scale": 1.0
+    },
+    {
+      "id": 97,
+      "scale": 1.0
+    },
+    {
+      "id": 98,
+      "scale": 1.0
+    },
+    {
+      "id": 99,
+      "scale": 1.0
+    }
+  ]
+}

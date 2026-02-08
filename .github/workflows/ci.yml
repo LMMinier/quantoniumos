@@ -179,6 +179,10 @@ jobs:
         run: |
           pytest tests/codec_tests/ -v --tb=short
 
+      - name: "Test: Absolute transform novelty certificate (DFT family)"
+        run: |
+          pytest tests/validation/test_transform_absolute_novelty.py -v --tb=short
+
   # Build verification
   build:
     name: Build Package

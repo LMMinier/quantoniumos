@@ -17,15 +17,16 @@ FORBIDDEN_PATTERNS = [
 ]
 
 INCLUDE_EXTENSIONS = {".md", ".tex", ".txt", ".py"}
-EXCLUDE_DIRS = {".git", "node_modules", "dist", "build", "__pycache__"}
+EXCLUDE_DIRS = {".git", "node_modules", "dist", "build", "__pycache__", ".venv", "venv", ".tox", "site-packages"}
 
 
 def iter_text_files(root: Path):
-    for path in root.rglob("*"):
+    for path in root.iterdir():
         if path.is_dir():
             if path.name in EXCLUDE_DIRS:
                 continue
-        if path.is_file() and path.suffix in INCLUDE_EXTENSIONS:
+            yield from iter_text_files(path)
+        elif path.is_file() and path.suffix in INCLUDE_EXTENSIONS:
             yield path
 
 
