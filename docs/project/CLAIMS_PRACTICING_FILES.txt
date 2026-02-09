@@ -133,7 +133,7 @@ algorithms/rft/kernels/engines/orchestrator/asm/rft_transform.asm
 
 # --- Operator-based Kernels ---
 algorithms/rft/kernels/operator_arft_kernel.py
-algorithms/rft/kernels/resonant_fourier_transform.py
+algorithms/rft/kernels/operator_eigenbasis_rft.py
 
 # ============================================================================
 # SECTION E: VARIANT IMPLEMENTATIONS (Claim 1)
@@ -159,7 +159,6 @@ algorithms/rft/quantum/quantum_gates.py
 # ============================================================================
 # These files are superseded but still practice patent claims
 
-algorithms/rft/core/phi_phase_fft_optimized.py
 algorithms/rft/core/rft_phi_legacy.py
 
 # ============================================================================
