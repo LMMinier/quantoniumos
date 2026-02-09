@@ -17,7 +17,7 @@ from typing import Dict, List, Tuple
 from algorithms.rft.core.resonant_fourier_transform import (
     rft_forward_square as rft_forward, rft_inverse_square as rft_inverse, rft_matrix_canonical as rft_matrix, PHI
 )
-from algorithms.rft.hybrid_basis import (
+from algorithms.rft.hybrids.legacy_mca import (
     adaptive_hybrid_compress,
     hybrid_decomposition,
     braided_hybrid_mca,

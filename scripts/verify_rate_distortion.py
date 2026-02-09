@@ -17,7 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from scipy.fftpack import dct, idct
-from algorithms.rft.hybrid_basis import adaptive_hybrid_compress, rft_forward, rft_inverse, PHI
+from algorithms.rft.hybrids.legacy_mca import adaptive_hybrid_compress, rft_forward, rft_inverse, PHI
 from algorithms.rft.compression.entropy import estimate_bitrate, uniform_quantizer
 
 def generate_mixed_signal(n=512):

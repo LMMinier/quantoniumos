@@ -15,7 +15,7 @@ import numpy as np
 import pytest
 from scipy.fftpack import dct, idct
 from numpy.fft import fft, ifft
-from algorithms.rft.hybrid_basis import adaptive_hybrid_compress, rft_forward, rft_inverse
+from algorithms.rft.hybrids.legacy_mca import adaptive_hybrid_compress, rft_forward, rft_inverse
 
 def test_boundary_discontinuity_reconstruction():
     """

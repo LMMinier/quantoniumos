@@ -23,7 +23,7 @@ from typing import Dict, Tuple
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from algorithms.rft.hybrid_basis import (
+from algorithms.rft.hybrids.legacy_mca import (
     adaptive_hybrid_compress,
     braided_hybrid_mca,
     rft_forward,

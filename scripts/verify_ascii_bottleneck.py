@@ -28,7 +28,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import irrevocable_truths as it
-from algorithms.rft.hybrid_basis import adaptive_hybrid_compress, braided_hybrid_mca
+from algorithms.rft.hybrids.legacy_mca import adaptive_hybrid_compress, braided_hybrid_mca
 
 def gini_coefficient(x):
     """Calculate the Gini coefficient of a numpy array."""

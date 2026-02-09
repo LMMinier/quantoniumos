@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import numpy as np
 from scipy.fft import dct, idct
-from algorithms.rft.hybrid_basis import (
+from algorithms.rft.hybrids.legacy_mca import (
     adaptive_hybrid_compress,
     braided_hybrid_mca,
     soft_braided_hybrid_mca,

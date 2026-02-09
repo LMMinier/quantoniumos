@@ -28,7 +28,7 @@ from numpy.fft import fft, ifft
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from algorithms.rft.hybrid_basis import (
+from algorithms.rft.hybrids.legacy_mca import (
     PHI,
     rft_forward,
     rft_inverse,

@@ -10,7 +10,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from algorithms.rft.hybrid_basis import PHI, adaptive_hybrid_compress
+from algorithms.rft.hybrids.legacy_mca import PHI, adaptive_hybrid_compress
 
 
 def _relative_error(x: np.ndarray, y: np.ndarray) -> float:
