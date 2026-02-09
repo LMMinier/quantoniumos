@@ -495,14 +495,6 @@ class QuantoniumDesktop(QMainWindow):
                 "category": "DATA",
                 "description": "Secure data storage",
                 "icon": "q_vault.svg"
-            },
-            # === QuantSoundDesign ===
-            {
-                "name": "QuantSoundDesign",
-                "path": os.path.join(project_root, "src", "apps", "quantsounddesign", "gui.py"),
-                "category": "STUDIO",
-                "description": "Φ-RFT Sound Design Studio",
-                "icon": "quantsounddesign.svg"
             }
         ]
     
@@ -675,9 +667,6 @@ class QuantoniumDesktop(QMainWindow):
                 self.launch_ai_chat()
             elif "rft_validation" in app_path.lower():
                 self.launch_rft_validator()
-            # QuantSoundDesign
-            elif "quantsounddesign" in app_path.lower():
-                self.launch_quantsounddesign()
             else:
                 # Fallback to subprocess for unknown apps
                 self.launch_app_subprocess(app_data)
@@ -970,21 +959,6 @@ class QuantoniumDesktop(QMainWindow):
             
         except Exception as e:
             print(f"Error launching RFT Validator: {e}")
-            import traceback
-            traceback.print_exc()
-    
-    def launch_quantsounddesign(self):
-        """Launch QuantSoundDesign - Φ-RFT Sound Design Studio"""
-        try:
-            import sys
-            project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            if project_root not in sys.path:
-                sys.path.insert(0, project_root)
-            from src.apps.quantsounddesign.gui import QuantSoundDesign
-            self.quantsounddesign_window = QuantSoundDesign()
-            self.quantsounddesign_window.show()
-        except Exception as e:
-            print(f"Error launching QuantSoundDesign: {e}")
             import traceback
             traceback.print_exc()
     

@@ -27,18 +27,8 @@ def main():
     except ImportError as e:
         print(f"    ✗ Import failed: {e}")
 
-    # Test 2: Pattern Editor (PyQt5)
-    print("\n[2] Testing pattern_editor import...")
-    try:
-        from src.apps.quantsounddesign.pattern_editor import DrumSynthesizer, DrumType, HAS_PYQT5
-        print(f"    ✓ Import successful")
-        print(f"    PyQt5 available: {HAS_PYQT5}")
-        print(f"    DrumSynthesizer: {DrumSynthesizer}")
-    except Exception as e:
-        print(f"    ✗ Import failed: {e}")
-
-    # Test 3: Bell Violations Test
-    print("\n[3] Testing bell_violations imports...")
+    # Test 2: Bell Violations Test
+    print("\n[2] Testing bell_violations imports...")
     try:
         from tests.validation.test_bell_violations import EntangledVertexEngine, OpenQuantumSystem
         print("    ✓ Import successful (using stub classes)")
@@ -47,7 +37,7 @@ def main():
         print(f"    ✗ Import failed: {e}")
 
     # Test 4: Entanglement Protocols
-    print("\n[4] Testing entanglement_protocols import...")
+    print("\n[3] Testing entanglement_protocols import...")
     try:
         from tests.proofs.test_entanglement_protocols import BellTestProtocol
         print("    ✓ Import successful")
@@ -56,7 +46,7 @@ def main():
         print(f"    ✗ Import failed: {e}")
 
     # Test 5: Hypothesis for property testing
-    print("\n[5] Testing hypothesis import...")
+    print("\n[4] Testing hypothesis import...")
     try:
         import hypothesis
         print(f"    ✓ Import successful")

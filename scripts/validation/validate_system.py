@@ -38,55 +38,8 @@ def main():
     except Exception as e:
         print(f'    FAILED: {e}')
 
-    # Test 2: QuantSoundDesign RFT Engine
-    print('\n[2] QuantSoundDesign Engine:')
-    try:
-        from src.apps.quantsounddesign import engine
-        status = engine.get_rft_status()
-        print(f'    UnitaryRFT Available: {status["unitary_available"]}')
-        print(f'    Is Mock: {status["is_mock"]}')
-        print(f'    Variant: {status["current_variant"]} (HARMONIC)')
-        x = np.random.randn(512)
-        y = engine.rft_forward(x.reshape(1, -1))
-        z = engine.rft_inverse(y)
-        error = np.max(np.abs(x - z[0]))
-        print(f'    Roundtrip Error: {error:.2e}')
-        print(f'    Pass: {error < 1e-10}')
-    except Exception as e:
-        print(f'    FAILED: {e}')
-
-    # Test 3: QuantSoundDesign Synth Engine
-    print('\n[3] QuantSoundDesign Synth Engine:')
-    try:
-        from src.apps.quantsounddesign.synth_engine import rft_additive_synthesis, UNITARY_RFT_AVAILABLE
-        print(f'    UnitaryRFT Available: {UNITARY_RFT_AVAILABLE}')
-        
-        # Quick test with small parameters to avoid hanging
-        if not args.quiet:
-            waveform = rft_additive_synthesis(440.0, 0.01, 44100, num_harmonics=4)  # Reduced from 0.1s and 8 harmonics
-            print(f'    Waveform Shape: {waveform.shape}')
-            print(f'    Max Amplitude: {np.max(np.abs(waveform)):.4f}')
-        print(f'    Pass: True')
-    except Exception as e:
-        print(f'    FAILED: {e}')
-
-    # Test 4: QuantSoundDesign Drum Synthesizer
-    print('\n[4] QuantSoundDesign Drum Synthesizer:')
-    if args.quiet:
-        print('    SKIPPED: --quiet mode')
-    else:
-        try:
-            from src.apps.quantsounddesign.pattern_editor import DrumSynthesizer, DrumType
-            drums = DrumSynthesizer()
-            # Only test one drum type to avoid slowdown
-            kick = drums.synthesize_rft(DrumType.KICK)
-            print(f'    Kick Samples: {len(kick)}')
-            print(f'    Pass: True')
-        except Exception as e:
-            print(f'    FAILED: {e}')
-
-    # Test 5: All RFT Variants
-    print('\n[5] RFT Variants Test:')
+    # Test 2: All RFT Variants
+    print('\n[2] RFT Variants Test:')
     if args.skip_variants:
         print('    SKIPPED: --skip-variants flag set')
     else:
