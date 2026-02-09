@@ -104,6 +104,7 @@ algorithms/rft/theory/__init__.py
 algorithms/rft/theory/formal_framework.py
 algorithms/rft/theory/proof_engine.py
 algorithms/rft/theory/theorem8_formal_proof.py
+algorithms/rft/theory/theorem8_diophantine.py
 algorithms/rft/theory/theoretical_analysis.py
 algorithms/rft/theorems/__init__.py
 
@@ -282,6 +283,7 @@ tests/proofs/test_golden_uncertainty_principle.py
 tests/proofs/test_maassen_uffink_uncertainty.py
 tests/proofs/test_formal_proofs.py
 tests/proofs/test_theorem8_formal_proof.py
+tests/proofs/test_theorem8_diophantine.py
 tests/proofs/test_theorem_8_eigen_tail_from_truncation.py
 tests/proofs/test_theorem_8_rank_truncation.py
 tests/proofs/test_diophantine_rft_extension.py

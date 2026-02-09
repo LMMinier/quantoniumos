@@ -1,5 +1,30 @@
 # QuantoniumOS Release Notes
 
+## v2.0.3 — Theorem 8 Diophantine Upgrade
+
+### Theorem 8: CONSTRUCTIVE + COMPUTATIONAL → CONSTRUCTIVE + DIOPHANTINE
+
+The golden spectral concentration inequality (Theorem 8) has been upgraded from constructive + computational to **constructive + Diophantine** by grounding the DFT spectral leakage in classical number theory.
+
+**What changed:**
+1. **New Diophantine proof module** — `algorithms/rft/theory/theorem8_diophantine.py` implements 6 lemmas (8.4a–f) proving that DFT spectral leakage on golden-quasi-periodic signals is a **number-theoretic theorem**, not merely a computational observation.
+2. **Classical foundations** — Hurwitz (1891), Steinhaus-Sós (1957), Weyl (1916), Erdős-Turán (1948), Roth (1955).
+3. **Key insight** — The DFT **must** leak energy because golden frequencies never align with DFT bins — this is Hurwitz's theorem, with optimal constant 1/√5 for the golden ratio.
+4. **Test suite** — 46 new tests in `tests/proofs/test_theorem8_diophantine.py` (9 test classes), integrated into `FormalProofEngine` with DIOPHANTINE status.
+5. **Documentation updated** — THEOREMS_RFT_IRONCLAD.md, MATHEMATICAL_CLAIMS_INVENTORY.md, TECHNICAL_DETAILS.md, DEFINITION_FIREWALL.md, STATE.md, RELEASE_NOTES.md.
+
+**Diophantine lemma chain (8.4a–f):**
+- 8.4a: Three-Distance Theorem (Steinhaus-Sós 1957)
+- 8.4b: Hurwitz Irrationality Bound (1891) — |φ − p/q| ≥ 1/(√5·q²)
+- 8.4c: Quantitative Weyl Discrepancy (Erdős-Turán 1948)
+- 8.4d: Per-Harmonic DFT Leakage (Dirichlet kernel + Hurwitz)
+- 8.4e: RFT Zero-Misalignment Principle (constructive)
+- 8.4f: Diophantine Gap Theorem (punchline)
+
+**Proof status summary:** All 11 theorems (1–11) now have formal proofs. Theorem 8 is the strongest: CONSTRUCTIVE + DIOPHANTINE. Only Conjecture 12 (variational minimality) remains empirical.
+
+---
+
 ## v2.0.2 — Theorem 8 Formal Proof Upgrade
 
 ### Theorem 8: PARTIALLY PROVEN → CONSTRUCTIVE + COMPUTATIONAL

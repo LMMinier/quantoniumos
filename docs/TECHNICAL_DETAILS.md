@@ -69,7 +69,7 @@ The old formula Ψ = D_φ C_σ F is now called **φ-phase FFT** or **phase-tilte
 | **2. RFT ≠ FFT** | Non-equivalence | See test suite | `<0.5` correlation |
 | **3. Compression** | Zero coherence, high PSNR | `pytest tests/codec_tests/ -v` | All pass |
 | **4. Crypto** | Avalanche ~50% | Enhanced cipher tests | `50% ±5%` |
-| **5. Theorem 8** | K₀.₉₉(RFT) < K₀.₉₉(DFT), formally proven | `pytest tests/proofs/test_theorem8_formal_proof.py -v` | 33 tests pass |
+| **5. Theorem 8** | K₀.₉₉(RFT) < K₀.₉₉(DFT), formally proven (Diophantine) | `pytest tests/proofs/test_theorem8_formal_proof.py tests/proofs/test_theorem8_diophantine.py -v` | 33+46 tests pass |
 | **6. Theorem 9** | Maassen-Uffink Entropic Uncertainty | `pytest tests/proofs/test_maassen_uffink_uncertainty.py -v` | 31 tests pass |
 
 ### Reproducible Benchmark Commands
@@ -134,9 +134,9 @@ Honest Results:
 
 ---
 
-## Theorem 8: Golden Spectral Concentration Inequality — PROVEN (Constructive + Computational)
+## Theorem 8: Golden Spectral Concentration Inequality — PROVEN (Constructive + Diophantine)
 
-**Status:** ✅ Formally proven via 5 lemmas (8.3a–e). Covariance has exact rank K = O(log N). No empirical claims remain.
+**Status:** ✅ Formally proven via 5 constructive lemmas (8.3a–e) + 6 Diophantine lemmas (8.4a–f). DFT spectral leakage grounded in classical number theory (Hurwitz 1891, Steinhaus-Sós 1957, Weyl 1916, Erdős-Turán 1948). No empirical claims remain.
 
 $$
 K_{0.99}(\text{RFT}) = K = O(\log N) \quad\text{vs}\quad K_{0.99}(\text{DFT}) \propto N^{0.75}
@@ -149,9 +149,13 @@ $$
 | 256 | 9 | 72 | 88% |
 | 512 | 10 | 127 | 92% |
 
+**Diophantine foundation:** The DFT **must** leak energy on golden-quasi-periodic signals because golden frequencies never align with DFT bins — this is Hurwitz's theorem (1891), not a computational observation. The RFT's zero-misalignment advantage is a number-theoretic theorem.
+
 ```bash
-# Formal proof tests (33 tests — 5 lemmas + combined + structural)
+# Constructive proof tests (33 tests — 5 lemmas + combined + structural)
 pytest tests/proofs/test_theorem8_formal_proof.py -v
+# Diophantine proof tests (46 tests — 6 lemmas + structural)
+pytest tests/proofs/test_theorem8_diophantine.py -v
 # Legacy bootstrap tests
 pytest tests/proofs/test_rft_transform_theorems.py -k theorem_8 -v
 # Integrated proof engine

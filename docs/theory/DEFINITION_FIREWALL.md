@@ -93,7 +93,7 @@ U_φ^H C_φ U_φ = diag(z_k)      ← FALSE (off-diagonal ~ O(1))
 | "$U_\varphi$ is unitary" | ✅ Proven | Theorem 2 |
 | "$U_\varphi$ is the nearest unitary to $\Phi$" | ✅ Proven | Theorem A |
 | "$U_\varphi \neq$ permuted/phased DFT" | ✅ Proven | Theorem 6 |
-| "RFT concentrates golden QP signals better than FFT" | ✅ Proven (Constructive) | Theorem 8 (5 lemmas, 33 tests) |
+| "RFT concentrates golden QP signals better than FFT" | ✅ Proven (Diophantine) | Theorem 8 (5+6 lemmas, 33+46 tests; Hurwitz 1891) |
 | "The Vandermonde $V$ diagonalizes $C_\varphi$" | ✅ Proven | Theorem B |
 | "$U_\varphi$ satisfies Maassen-Uffink uncertainty" | ✅ Proven | Theorem 9 |
 
