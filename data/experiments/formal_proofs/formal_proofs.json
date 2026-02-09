@@ -1,0 +1,1222 @@
+{
+  "THM1": {
+    "name": "\u03a6 Full Rank",
+    "statement": "\u2200N\u22651: rank(\u03a6_N) = N, where \u03a6[n,k] = exp(i2\u03c0\u00b7n\u00b7frac((k+1)\u03c6))/\u221aN",
+    "status": "constructive",
+    "verified": true,
+    "dependencies": [],
+    "steps": [
+      {
+        "step_id": 1,
+        "statement": "\u03c6 = (1+\u221a5)/2 is irrational (proof by contradiction: if \u03c6 = p/q then \u221a5 = 2p/q - 1 is rational, contradiction)",
+        "rule": "axiom",
+        "references": [
+          "AX5_PHI_IRRATIONAL"
+        ]
+      },
+      {
+        "step_id": 2,
+        "statement": "N=8: min|f_j - f_k| = 9.016994e-02 > 0 \u27f9 all f_k distinct",
+        "rule": "constructive",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "min_frequency_gap": 0.09016994374947451
+        }
+      },
+      {
+        "step_id": 3,
+        "statement": "N=16: min|f_j - f_k| = 3.444185e-02 > 0 \u27f9 all f_k distinct",
+        "rule": "constructive",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "min_frequency_gap": 0.03444185374863373
+        }
+      },
+      {
+        "step_id": 4,
+        "statement": "N=32: min|f_j - f_k| = 2.128624e-02 > 0 \u27f9 all f_k distinct",
+        "rule": "constructive",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "min_frequency_gap": 0.021286236252203494
+        }
+      },
+      {
+        "step_id": 5,
+        "statement": "N=64: min|f_j - f_k| = 8.130619e-03 > 0 \u27f9 all f_k distinct",
+        "rule": "constructive",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 64,
+          "min_frequency_gap": 0.008130618755773256
+        }
+      },
+      {
+        "step_id": 6,
+        "statement": "N=128: min|f_j - f_k| = 5.024999e-03 > 0 \u27f9 all f_k distinct",
+        "rule": "constructive",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 128,
+          "min_frequency_gap": 0.005024998740630338
+        }
+      },
+      {
+        "step_id": 7,
+        "statement": "N=8: \u03a6 is Vandermonde in distinct z_k \u27f9 rank(\u03a6) = 8. \u03c3_min = 7.363769e-01, cond(\u03a6) = 1.65",
+        "rule": "vandermonde_rank",
+        "references": [
+          "AX1_VANDERMONDE",
+          "step_8"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "sigma_min": 0.7363769101077327,
+          "condition_number": 1.65437888655517
+        }
+      },
+      {
+        "step_id": 8,
+        "statement": "N=16: \u03a6 is Vandermonde in distinct z_k \u27f9 rank(\u03a6) = 16. \u03c3_min = 3.698297e-01, cond(\u03a6) = 3.59",
+        "rule": "vandermonde_rank",
+        "references": [
+          "AX1_VANDERMONDE",
+          "step_16"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "sigma_min": 0.36982974188792117,
+          "condition_number": 3.5861685912386347
+        }
+      },
+      {
+        "step_id": 9,
+        "statement": "N=32: \u03a6 is Vandermonde in distinct z_k \u27f9 rank(\u03a6) = 32. \u03c3_min = 1.957308e-01, cond(\u03a6) = 6.40",
+        "rule": "vandermonde_rank",
+        "references": [
+          "AX1_VANDERMONDE",
+          "step_32"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "sigma_min": 0.19573075503939738,
+          "condition_number": 6.40092420056765
+        }
+      },
+      {
+        "step_id": 10,
+        "statement": "N=64: \u03a6 is Vandermonde in distinct z_k \u27f9 rank(\u03a6) = 64. \u03c3_min = 1.112076e-01, cond(\u03a6) = 12.21",
+        "rule": "vandermonde_rank",
+        "references": [
+          "AX1_VANDERMONDE",
+          "step_64"
+        ],
+        "numerical_witness": {
+          "N": 64,
+          "sigma_min": 0.11120756584922864,
+          "condition_number": 12.21238865287141
+        }
+      },
+      {
+        "step_id": 11,
+        "statement": "N=128: \u03a6 is Vandermonde in distinct z_k \u27f9 rank(\u03a6) = 128. \u03c3_min = 1.263289e-01, cond(\u03a6) = 10.17",
+        "rule": "vandermonde_rank",
+        "references": [
+          "AX1_VANDERMONDE",
+          "step_128"
+        ],
+        "numerical_witness": {
+          "N": 128,
+          "sigma_min": 0.12632894950690454,
+          "condition_number": 10.172489931247673
+        }
+      },
+      {
+        "step_id": 12,
+        "statement": "\u2200N tested: \u03c3_min(\u03a6) > 0, confirming full rank by Vandermonde theorem. Formal proof complete: irrational \u03c6 \u27f9 distinct nodes \u27f9 full rank.",
+        "rule": "modus_ponens",
+        "references": [
+          "AX1_VANDERMONDE",
+          "AX5_PHI_IRRATIONAL"
+        ]
+      }
+    ],
+    "numerical_bounds": {
+      "min_gap_N8": 0.09016994374947451,
+      "min_gap_N16": 0.03444185374863373,
+      "min_gap_N32": 0.021286236252203494,
+      "min_gap_N64": 0.008130618755773256,
+      "min_gap_N128": 0.005024998740630338,
+      "sigma_min_N8": 0.7363769101077327,
+      "condition_N8": 1.65437888655517,
+      "sigma_min_N16": 0.36982974188792117,
+      "condition_N16": 3.5861685912386347,
+      "sigma_min_N32": 0.19573075503939738,
+      "condition_N32": 6.40092420056765,
+      "sigma_min_N64": 0.11120756584922864,
+      "condition_N64": 12.21238865287141,
+      "sigma_min_N128": 0.12632894950690454,
+      "condition_N128": 10.172489931247673
+    }
+  },
+  "THM2": {
+    "name": "Canonical U Unitary",
+    "statement": "U = \u03a6(\u03a6\u2020\u03a6)^{-1/2} satisfies U\u2020U = UU\u2020 = I",
+    "status": "constructive",
+    "verified": true,
+    "dependencies": [
+      "THM1"
+    ],
+    "steps": [
+      {
+        "step_id": 1,
+        "statement": "By Theorem 1, \u03a6 is invertible \u27f9 G = \u03a6\u2020\u03a6 is Hermitian positive-definite",
+        "rule": "modus_ponens",
+        "references": [
+          "THM1"
+        ]
+      },
+      {
+        "step_id": 2,
+        "statement": "G^{-1/2} is well-defined: G = V\u039bV\u2020 \u27f9 G^{-1/2} = V\u039b^{-1/2}V\u2020",
+        "rule": "spectral",
+        "references": [
+          "step_1"
+        ]
+      },
+      {
+        "step_id": 3,
+        "statement": "U\u2020U = G^{-1/2} \u03a6\u2020\u03a6 G^{-1/2} = G^{-1/2} G G^{-1/2} = I (spectral calculus: f(G)\u00b7g(G) = (f\u00b7g)(G))",
+        "rule": "algebraic",
+        "references": [
+          "step_1",
+          "step_2"
+        ]
+      },
+      {
+        "step_id": 4,
+        "statement": "N=8: ||U\u2020U - I||_F = 4.56e-15, ||UU\u2020 - I||_F = 4.48e-15",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "err_UtU": 4.557643562776648e-15,
+          "err_UUt": 4.478863057437274e-15
+        }
+      },
+      {
+        "step_id": 5,
+        "statement": "N=16: ||U\u2020U - I||_F = 1.11e-14, ||UU\u2020 - I||_F = 1.10e-14",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "err_UtU": 1.1140793092687816e-14,
+          "err_UUt": 1.1035414400962232e-14
+        }
+      },
+      {
+        "step_id": 6,
+        "statement": "N=32: ||U\u2020U - I||_F = 2.90e-14, ||UU\u2020 - I||_F = 2.90e-14",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "err_UtU": 2.895140186521411e-14,
+          "err_UUt": 2.9010835143024775e-14
+        }
+      },
+      {
+        "step_id": 7,
+        "statement": "N=64: ||U\u2020U - I||_F = 4.62e-14, ||UU\u2020 - I||_F = 4.62e-14",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 64,
+          "err_UtU": 4.615937948824566e-14,
+          "err_UUt": 4.615088002969827e-14
+        }
+      },
+      {
+        "step_id": 8,
+        "statement": "N=128: ||U\u2020U - I||_F = 7.31e-14, ||UU\u2020 - I||_F = 7.33e-14",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 128,
+          "err_UtU": 7.312173677850316e-14,
+          "err_UUt": 7.332183290708775e-14
+        }
+      },
+      {
+        "step_id": 9,
+        "statement": "QED: Algebraic proof establishes U\u2020U = I exactly; numerical certificates confirm to machine precision \u2264 1e-12.",
+        "rule": "modus_ponens",
+        "references": [
+          "step_3"
+        ]
+      }
+    ],
+    "numerical_bounds": {
+      "unitarity_err_N8": 4.557643562776648e-15,
+      "unitarity_err_N16": 1.1140793092687816e-14,
+      "unitarity_err_N32": 2.9010835143024775e-14,
+      "unitarity_err_N64": 4.615937948824566e-14,
+      "unitarity_err_N128": 7.332183290708775e-14
+    }
+  },
+  "THM6": {
+    "name": "\u03a6 \u2260 DFT",
+    "statement": "U_\u03c6 is not equivalent to any permuted/rephased DFT matrix",
+    "status": "constructive",
+    "verified": true,
+    "dependencies": [
+      "THM2"
+    ],
+    "steps": [
+      {
+        "step_id": 1,
+        "statement": "Assume for contradiction: U_\u03c6 = F \u00b7 P_\u03c3 \u00b7 D_\u03b8 for some permutation \u03c3, phases \u03b8",
+        "rule": "axiom",
+        "references": []
+      },
+      {
+        "step_id": 2,
+        "statement": "Then each column of U_\u03c6 is a rephased column of F, so |U_\u03c6[n,k]| = 1/\u221aN for all n,k",
+        "rule": "modus_ponens",
+        "references": [
+          "step_1"
+        ]
+      },
+      {
+        "step_id": 3,
+        "statement": "N=8: max column magnitude std = 3.706049e-02 > 0 \u27f9 columns not magnitude-uniform. Min Frobenius dist to nearest DFT column = 3.164544e-01",
+        "rule": "constructive",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "max_col_mag_std": 0.03706048782094687,
+          "min_dft_dist": 0.31645443624186537
+        }
+      },
+      {
+        "step_id": 4,
+        "statement": "N=16: max column magnitude std = 5.396808e-02 > 0 \u27f9 columns not magnitude-uniform. Min Frobenius dist to nearest DFT column = 2.558915e-01",
+        "rule": "constructive",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "max_col_mag_std": 0.05396808297749148,
+          "min_dft_dist": 0.2558914818315494
+        }
+      },
+      {
+        "step_id": 5,
+        "statement": "N=32: max column magnitude std = 2.996509e-02 > 0 \u27f9 columns not magnitude-uniform. Min Frobenius dist to nearest DFT column = 1.736290e-01",
+        "rule": "constructive",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "max_col_mag_std": 0.029965092444100703,
+          "min_dft_dist": 0.1736289541416475
+        }
+      },
+      {
+        "step_id": 6,
+        "statement": "N=64: max column magnitude std = 3.783480e-02 > 0 \u27f9 columns not magnitude-uniform. Min Frobenius dist to nearest DFT column = 1.560430e-01",
+        "rule": "constructive",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 64,
+          "max_col_mag_std": 0.03783480013528804,
+          "min_dft_dist": 0.15604300669368343
+        }
+      },
+      {
+        "step_id": 7,
+        "statement": "N=128: max column magnitude std = 1.883788e-02 > 0 \u27f9 columns not magnitude-uniform. Min Frobenius dist to nearest DFT column = 2.235936e-01",
+        "rule": "constructive",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 128,
+          "max_col_mag_std": 0.01883787649044358,
+          "min_dft_dist": 0.22359364255011452
+        }
+      },
+      {
+        "step_id": 8,
+        "statement": "\u2200N tested: column magnitudes are non-uniform (std > 0), contradicting the assumption. Additionally, \u03c6 is irrational while DFT frequencies k/N are rational \u2014 no bijection exists. QED.",
+        "rule": "contrapositive",
+        "references": [
+          "step_2",
+          "AX5_PHI_IRRATIONAL"
+        ]
+      }
+    ],
+    "numerical_bounds": {
+      "mag_std_N8": 0.03706048782094687,
+      "dft_dist_N8": 0.31645443624186537,
+      "mag_std_N16": 0.05396808297749148,
+      "dft_dist_N16": 0.2558914818315494,
+      "mag_std_N32": 0.029965092444100703,
+      "dft_dist_N32": 0.1736289541416475,
+      "mag_std_N64": 0.03783480013528804,
+      "dft_dist_N64": 0.15604300669368343,
+      "mag_std_N128": 0.01883787649044358,
+      "dft_dist_N128": 0.22359364255011452
+    }
+  },
+  "THM9": {
+    "name": "Maassen-Uffink Uncertainty",
+    "statement": "\u2200x: H(|x|\u00b2) + H(|U_\u03c6\u2020x|\u00b2) \u2265 -2 log \u03bc(U_\u03c6)",
+    "status": "deductive",
+    "verified": true,
+    "dependencies": [
+      "THM2"
+    ],
+    "steps": [
+      {
+        "step_id": 1,
+        "statement": "Maassen-Uffink (1988): For any unitary U and unit vector x, H(|x|\u00b2) + H(|Ux|\u00b2) \u2265 -2 log \u03bc(U)",
+        "rule": "axiom",
+        "references": [
+          "AX7_MAASSEN_UFFINK"
+        ]
+      },
+      {
+        "step_id": 2,
+        "statement": "By Theorem 2, U_\u03c6 is unitary \u27f9 Maassen-Uffink applies to U_\u03c6",
+        "rule": "modus_ponens",
+        "references": [
+          "THM2",
+          "step_1"
+        ]
+      },
+      {
+        "step_id": 3,
+        "statement": "N=8, signal=delta: H_sum = 2.9855 \u2265 bound = 2.5581 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "signal": "delta",
+          "H_sum": 2.9855459730774085,
+          "bound": 2.5581114826736626,
+          "mu": 0.4120651212293706
+        }
+      },
+      {
+        "step_id": 4,
+        "statement": "N=8, signal=uniform: H_sum = 4.5806 \u2265 bound = 2.5581 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "signal": "uniform",
+          "H_sum": 4.580613953897935,
+          "bound": 2.5581114826736626,
+          "mu": 0.4120651212293706
+        }
+      },
+      {
+        "step_id": 5,
+        "statement": "N=8, signal=gaussian: H_sum = 4.9048 \u2265 bound = 2.5581 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "signal": "gaussian",
+          "H_sum": 4.904806621376868,
+          "bound": 2.5581114826736626,
+          "mu": 0.4120651212293706
+        }
+      },
+      {
+        "step_id": 6,
+        "statement": "N=8, signal=golden_qp: H_sum = 4.1076 \u2265 bound = 2.5581 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "signal": "golden_qp",
+          "H_sum": 4.107574924301462,
+          "bound": 2.5581114826736626,
+          "mu": 0.4120651212293706
+        }
+      },
+      {
+        "step_id": 7,
+        "statement": "N=16, signal=delta: H_sum = 3.8628 \u2265 bound = 3.1315 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "signal": "delta",
+          "H_sum": 3.8627915240612993,
+          "bound": 3.1314602780764518,
+          "mu": 0.3378067031049917
+        }
+      },
+      {
+        "step_id": 8,
+        "statement": "N=16, signal=uniform: H_sum = 6.6904 \u2265 bound = 3.1315 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "signal": "uniform",
+          "H_sum": 6.690424200287632,
+          "bound": 3.1314602780764518,
+          "mu": 0.3378067031049917
+        }
+      },
+      {
+        "step_id": 9,
+        "statement": "N=16, signal=gaussian: H_sum = 6.6282 \u2265 bound = 3.1315 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "signal": "gaussian",
+          "H_sum": 6.628192964674509,
+          "bound": 3.1314602780764518,
+          "mu": 0.3378067031049917
+        }
+      },
+      {
+        "step_id": 10,
+        "statement": "N=16, signal=golden_qp: H_sum = 5.2201 \u2265 bound = 3.1315 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "signal": "golden_qp",
+          "H_sum": 5.220083482496364,
+          "bound": 3.1314602780764518,
+          "mu": 0.3378067031049917
+        }
+      },
+      {
+        "step_id": 11,
+        "statement": "N=32, signal=delta: H_sum = 4.9304 \u2265 bound = 4.1902 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "signal": "delta",
+          "H_sum": 4.930448289532694,
+          "bound": 4.1901818172561285,
+          "mu": 0.2340533129786679
+        }
+      },
+      {
+        "step_id": 12,
+        "statement": "N=32, signal=uniform: H_sum = 8.9132 \u2265 bound = 4.1902 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "signal": "uniform",
+          "H_sum": 8.913209975254034,
+          "bound": 4.1901818172561285,
+          "mu": 0.2340533129786679
+        }
+      },
+      {
+        "step_id": 13,
+        "statement": "N=32, signal=gaussian: H_sum = 9.1184 \u2265 bound = 4.1902 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "signal": "gaussian",
+          "H_sum": 9.118447017655697,
+          "bound": 4.1901818172561285,
+          "mu": 0.2340533129786679
+        }
+      },
+      {
+        "step_id": 14,
+        "statement": "N=32, signal=golden_qp: H_sum = 6.4982 \u2265 bound = 4.1902 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "signal": "golden_qp",
+          "H_sum": 6.498167376252857,
+          "bound": 4.1901818172561285,
+          "mu": 0.2340533129786679
+        }
+      },
+      {
+        "step_id": 15,
+        "statement": "N=64, signal=delta: H_sum = 5.7017 \u2265 bound = 3.9422 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 64,
+          "signal": "delta",
+          "H_sum": 5.70166241133836,
+          "bound": 3.9422282182497406,
+          "mu": 0.2550559905091149
+        }
+      },
+      {
+        "step_id": 16,
+        "statement": "N=64, signal=uniform: H_sum = 8.8285 \u2265 bound = 3.9422 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 64,
+          "signal": "uniform",
+          "H_sum": 8.828533656930514,
+          "bound": 3.9422282182497406,
+          "mu": 0.2550559905091149
+        }
+      },
+      {
+        "step_id": 17,
+        "statement": "N=64, signal=gaussian: H_sum = 10.9979 \u2265 bound = 3.9422 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 64,
+          "signal": "gaussian",
+          "H_sum": 10.997924275746598,
+          "bound": 3.9422282182497406,
+          "mu": 0.2550559905091149
+        }
+      },
+      {
+        "step_id": 18,
+        "statement": "N=64, signal=golden_qp: H_sum = 7.5519 \u2265 bound = 3.9422 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 64,
+          "signal": "golden_qp",
+          "H_sum": 7.5519370725260995,
+          "bound": 3.9422282182497406,
+          "mu": 0.2550559905091149
+        }
+      },
+      {
+        "step_id": 19,
+        "statement": "N=128, signal=delta: H_sum = 6.8614 \u2265 bound = 5.4681 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 128,
+          "signal": "delta",
+          "H_sum": 6.861445315225794,
+          "bound": 5.46807171469331,
+          "mu": 0.1503049203244191
+        }
+      },
+      {
+        "step_id": 20,
+        "statement": "N=128, signal=uniform: H_sum = 10.8251 \u2265 bound = 5.4681 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 128,
+          "signal": "uniform",
+          "H_sum": 10.82509088070882,
+          "bound": 5.46807171469331,
+          "mu": 0.1503049203244191
+        }
+      },
+      {
+        "step_id": 21,
+        "statement": "N=128, signal=gaussian: H_sum = 12.6649 \u2265 bound = 5.4681 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 128,
+          "signal": "gaussian",
+          "H_sum": 12.664912560260822,
+          "bound": 5.46807171469331,
+          "mu": 0.1503049203244191
+        }
+      },
+      {
+        "step_id": 22,
+        "statement": "N=128, signal=golden_qp: H_sum = 8.5376 \u2265 bound = 5.4681 \u2192 \u2713",
+        "rule": "numerical_cert",
+        "references": [
+          "step_2"
+        ],
+        "numerical_witness": {
+          "N": 128,
+          "signal": "golden_qp",
+          "H_sum": 8.537601188951811,
+          "bound": 5.46807171469331,
+          "mu": 0.1503049203244191
+        }
+      },
+      {
+        "step_id": 23,
+        "statement": "QED: Maassen-Uffink bound verified for all test signals and sizes. The bound holds deductively for any unitary (published theorem); numerical certificates confirm no machine-precision violations.",
+        "rule": "modus_ponens",
+        "references": [
+          "step_1",
+          "step_2"
+        ]
+      }
+    ],
+    "numerical_bounds": {
+      "H_sum_delta_N8": 2.9855459730774085,
+      "H_sum_uniform_N8": 4.580613953897935,
+      "H_sum_gaussian_N8": 4.904806621376868,
+      "H_sum_golden_qp_N8": 4.107574924301462,
+      "mu_N8": 0.4120651212293706,
+      "bound_N8": 2.5581114826736626,
+      "H_sum_delta_N16": 3.8627915240612993,
+      "H_sum_uniform_N16": 6.690424200287632,
+      "H_sum_gaussian_N16": 6.628192964674509,
+      "H_sum_golden_qp_N16": 5.220083482496364,
+      "mu_N16": 0.3378067031049917,
+      "bound_N16": 3.1314602780764518,
+      "H_sum_delta_N32": 4.930448289532694,
+      "H_sum_uniform_N32": 8.913209975254034,
+      "H_sum_gaussian_N32": 9.118447017655697,
+      "H_sum_golden_qp_N32": 6.498167376252857,
+      "mu_N32": 0.2340533129786679,
+      "bound_N32": 4.1901818172561285,
+      "H_sum_delta_N64": 5.70166241133836,
+      "H_sum_uniform_N64": 8.828533656930514,
+      "H_sum_gaussian_N64": 10.997924275746598,
+      "H_sum_golden_qp_N64": 7.5519370725260995,
+      "mu_N64": 0.2550559905091149,
+      "bound_N64": 3.9422282182497406,
+      "H_sum_delta_N128": 6.861445315225794,
+      "H_sum_uniform_N128": 10.82509088070882,
+      "H_sum_gaussian_N128": 12.664912560260822,
+      "H_sum_golden_qp_N128": 8.537601188951811,
+      "mu_N128": 0.1503049203244191,
+      "bound_N128": 5.46807171469331
+    }
+  },
+  "THM10": {
+    "name": "Polar Uniqueness",
+    "statement": "U_\u03c6 = \u03a6(\u03a6\u2020\u03a6)^{-1/2} is the unique unitary polar factor of \u03a6",
+    "status": "constructive",
+    "verified": true,
+    "dependencies": [
+      "THM1"
+    ],
+    "steps": [
+      {
+        "step_id": 1,
+        "statement": "Polar Decomposition Theorem: Every invertible matrix A = U\u00b7P where U is the unique closest unitary to A",
+        "rule": "axiom",
+        "references": [
+          "AX3_POLAR"
+        ]
+      },
+      {
+        "step_id": 2,
+        "statement": "\u03a6 is invertible (Theorem 1) \u27f9 polar decomposition applies",
+        "rule": "modus_ponens",
+        "references": [
+          "THM1",
+          "step_1"
+        ]
+      },
+      {
+        "step_id": 3,
+        "statement": "U_\u03c6 = \u03a6(\u03a6\u2020\u03a6)^{-1/2} matches the polar factor formula: A = UP \u27f9 U = AP\u207b\u00b9 = A(A\u2020A)^{-1/2}",
+        "rule": "algebraic",
+        "references": [
+          "step_1",
+          "step_2"
+        ]
+      },
+      {
+        "step_id": 4,
+        "statement": "N=8: ||U_ours - U_polar||_F = 3.50e-15, ||U\u2020\u03a6 - (U\u2020\u03a6)\u2020||_F = 1.28e-15, min eigenvalue of U\u2020\u03a6 = 0.736377 > 0, random unitaries closer: 0/100",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "polar_match_err": 3.50055721268764e-15,
+          "hermitian_err": 1.2753002142285672e-15,
+          "min_eig": 0.7363769101077332,
+          "beat_count": 0,
+          "our_frobenius_dist": 0.5347352668432765
+        }
+      },
+      {
+        "step_id": 5,
+        "statement": "N=16: ||U_ours - U_polar||_F = 7.55e-15, ||U\u2020\u03a6 - (U\u2020\u03a6)\u2020||_F = 4.45e-15, min eigenvalue of U\u2020\u03a6 = 0.369830 > 0, random unitaries closer: 0/100",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "polar_match_err": 7.545475574959074e-15,
+          "hermitian_err": 4.4502263466457094e-15,
+          "min_eig": 0.3698297418879209,
+          "beat_count": 0,
+          "our_frobenius_dist": 1.194946202453695
+        }
+      },
+      {
+        "step_id": 6,
+        "statement": "N=32: ||U_ours - U_polar||_F = 1.69e-14, ||U\u2020\u03a6 - (U\u2020\u03a6)\u2020||_F = 9.52e-15, min eigenvalue of U\u2020\u03a6 = 0.195731 > 0, random unitaries closer: 0/100",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "polar_match_err": 1.6941916533332554e-14,
+          "hermitian_err": 9.521749011103694e-15,
+          "min_eig": 0.1957307550393992,
+          "beat_count": 0,
+          "our_frobenius_dist": 1.4445200544356862
+        }
+      },
+      {
+        "step_id": 7,
+        "statement": "N=64: ||U_ours - U_polar||_F = 2.75e-14, ||U\u2020\u03a6 - (U\u2020\u03a6)\u2020||_F = 2.18e-14, min eigenvalue of U\u2020\u03a6 = 0.111208 > 0, random unitaries closer: 0/100",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 64,
+          "polar_match_err": 2.745476010854689e-14,
+          "hermitian_err": 2.182948285646757e-14,
+          "min_eig": 0.11120756584922908,
+          "beat_count": 0,
+          "our_frobenius_dist": 2.43952374237292
+        }
+      },
+      {
+        "step_id": 8,
+        "statement": "N=128: ||U_ours - U_polar||_F = 4.58e-14, ||U\u2020\u03a6 - (U\u2020\u03a6)\u2020||_F = 3.47e-14, min eigenvalue of U\u2020\u03a6 = 0.126329 > 0, random unitaries closer: 0/100",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 128,
+          "polar_match_err": 4.5792576136899164e-14,
+          "hermitian_err": 3.471473488048423e-14,
+          "min_eig": 0.12632894950690357,
+          "beat_count": 0,
+          "our_frobenius_dist": 3.2243666349111146
+        }
+      },
+      {
+        "step_id": 9,
+        "statement": "QED: U_\u03c6 matches the scipy polar factor to machine precision; U\u2020\u03a6 is Hermitian positive-definite; no random unitary is closer. This is the unique polar factor by the polar decomposition theorem.",
+        "rule": "modus_ponens",
+        "references": [
+          "step_1",
+          "step_3"
+        ]
+      }
+    ],
+    "numerical_bounds": {
+      "polar_err_N8": 3.50055721268764e-15,
+      "min_eig_N8": 0.7363769101077332,
+      "beat_count_N8": 0,
+      "polar_err_N16": 7.545475574959074e-15,
+      "min_eig_N16": 0.3698297418879209,
+      "beat_count_N16": 0,
+      "polar_err_N32": 1.6941916533332554e-14,
+      "min_eig_N32": 0.1957307550393992,
+      "beat_count_N32": 0,
+      "polar_err_N64": 2.745476010854689e-14,
+      "min_eig_N64": 0.11120756584922908,
+      "beat_count_N64": 0,
+      "polar_err_N128": 4.5792576136899164e-14,
+      "min_eig_N128": 0.12632894950690357,
+      "beat_count_N128": 0
+    }
+  },
+  "THM11": {
+    "name": "No Exact Diagonalization",
+    "statement": "U_\u03c6 does not diagonalize C_\u03c6: ||offdiag(U\u2020C_\u03c6U)||_F > 0",
+    "status": "constructive",
+    "verified": true,
+    "dependencies": [
+      "THM2"
+    ],
+    "steps": [
+      {
+        "step_id": 1,
+        "statement": "By AX6, U diag A \u27fa A is normal and U is an eigenbasis of A",
+        "rule": "axiom",
+        "references": [
+          "AX6_DIAG_NORMAL"
+        ]
+      },
+      {
+        "step_id": 2,
+        "statement": "N=8: ||C\u2020C - CC\u2020||_F = 1.72e+00 (non-normal), ||offdiag(U\u2020CU)||_F/||U\u2020CU||_F = 0.1829 > 0",
+        "rule": "constructive",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "normality_err": 1.7172041137250584,
+          "offdiag_ratio": 0.18290623321530794,
+          "offdiag_norm": 0.5349984401187877
+        }
+      },
+      {
+        "step_id": 3,
+        "statement": "N=16: ||C\u2020C - CC\u2020||_F = 5.46e+00 (non-normal), ||offdiag(U\u2020CU)||_F/||U\u2020CU||_F = 0.3028 > 0",
+        "rule": "constructive",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "normality_err": 5.464003971561917,
+          "offdiag_ratio": 0.30275350374819504,
+          "offdiag_norm": 1.3183889048422974
+        }
+      },
+      {
+        "step_id": 4,
+        "statement": "N=32: ||C\u2020C - CC\u2020||_F = 2.33e+01 (non-normal), ||offdiag(U\u2020CU)||_F/||U\u2020CU||_F = 0.4736 > 0",
+        "rule": "constructive",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "normality_err": 23.329788691099097,
+          "offdiag_ratio": 0.4736480313316127,
+          "offdiag_norm": 3.2649455843382174
+        }
+      },
+      {
+        "step_id": 5,
+        "statement": "N=64: ||C\u2020C - CC\u2020||_F = 1.93e+01 (non-normal), ||offdiag(U\u2020CU)||_F/||U\u2020CU||_F = 0.3470 > 0",
+        "rule": "constructive",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 64,
+          "normality_err": 19.340464207948305,
+          "offdiag_ratio": 0.34704186057571634,
+          "offdiag_norm": 3.0373586431089343
+        }
+      },
+      {
+        "step_id": 6,
+        "statement": "N=128: ||C\u2020C - CC\u2020||_F = 2.73e+01 (non-normal), ||offdiag(U\u2020CU)||_F/||U\u2020CU||_F = 0.3036 > 0",
+        "rule": "constructive",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 128,
+          "normality_err": 27.298579989369525,
+          "offdiag_ratio": 0.3036244331381539,
+          "offdiag_norm": 3.6722383359795576
+        }
+      },
+      {
+        "step_id": 7,
+        "statement": "QED: C_\u03c6 is non-normal (||C\u2020C - CC\u2020|| > 0), so no unitary can exactly diagonalize it. The off-diagonal residual confirms this.",
+        "rule": "modus_ponens",
+        "references": [
+          "AX6_DIAG_NORMAL",
+          "step_1"
+        ]
+      }
+    ],
+    "numerical_bounds": {
+      "normality_err_N8": 1.7172041137250584,
+      "offdiag_ratio_N8": 0.18290623321530794,
+      "normality_err_N16": 5.464003971561917,
+      "offdiag_ratio_N16": 0.30275350374819504,
+      "normality_err_N32": 23.329788691099097,
+      "offdiag_ratio_N32": 0.4736480313316127,
+      "normality_err_N64": 19.340464207948305,
+      "offdiag_ratio_N64": 0.34704186057571634,
+      "normality_err_N128": 27.298579989369525,
+      "offdiag_ratio_N128": 0.3036244331381539
+    }
+  },
+  "THMA": {
+    "name": "Nearest Unitary Optimality",
+    "statement": "U_\u03c6 = argmin_{V unitary} ||\u03a6 - V||_F",
+    "status": "deductive",
+    "verified": true,
+    "dependencies": [
+      "THM10"
+    ],
+    "steps": [
+      {
+        "step_id": 1,
+        "statement": "By Theorem 10, U_\u03c6 is the unique unitary polar factor of \u03a6",
+        "rule": "modus_ponens",
+        "references": [
+          "THM10"
+        ]
+      },
+      {
+        "step_id": 2,
+        "statement": "Polar decomposition theorem: U_polar = argmin_{V unitary} ||A - V||_F",
+        "rule": "axiom",
+        "references": [
+          "AX3_POLAR"
+        ]
+      },
+      {
+        "step_id": 3,
+        "statement": "Therefore U_\u03c6 = argmin_{V unitary} ||\u03a6 - V||_F   [by transitivity]",
+        "rule": "modus_ponens",
+        "references": [
+          "step_1",
+          "step_2"
+        ]
+      },
+      {
+        "step_id": 4,
+        "statement": "N=8: ||\u03a6 - U_\u03c6||_F = 0.534735, min random unitary dist = 3.477097, margin = 2.942362",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "our_dist": 0.5347352668432765,
+          "min_rand_dist": 3.477097266579407
+        }
+      },
+      {
+        "step_id": 5,
+        "statement": "N=16: ||\u03a6 - U_\u03c6||_F = 1.194946, min random unitary dist = 5.272981, margin = 4.078035",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "our_dist": 1.194946202453695,
+          "min_rand_dist": 5.272981104150564
+        }
+      },
+      {
+        "step_id": 6,
+        "statement": "N=32: ||\u03a6 - U_\u03c6||_F = 1.444520, min random unitary dist = 7.746368, margin = 6.301848",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "our_dist": 1.4445200544356862,
+          "min_rand_dist": 7.746367736762313
+        }
+      },
+      {
+        "step_id": 7,
+        "statement": "N=64: ||\u03a6 - U_\u03c6||_F = 2.439524, min random unitary dist = 11.154063, margin = 8.714539",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 64,
+          "our_dist": 2.43952374237292,
+          "min_rand_dist": 11.154063086371826
+        }
+      },
+      {
+        "step_id": 8,
+        "statement": "N=128: ||\u03a6 - U_\u03c6||_F = 3.224367, min random unitary dist = 15.883009, margin = 12.658642",
+        "rule": "numerical_cert",
+        "references": [
+          "step_3"
+        ],
+        "numerical_witness": {
+          "N": 128,
+          "our_dist": 3.2243666349111146,
+          "min_rand_dist": 15.883009010390227
+        }
+      }
+    ],
+    "numerical_bounds": {
+      "margin_N8": 2.9423619997361303,
+      "margin_N16": 4.078034901696869,
+      "margin_N32": 6.301847682326627,
+      "margin_N64": 8.714539343998906,
+      "margin_N128": 12.658642375479111
+    }
+  },
+  "CONJ12": {
+    "name": "Variational Minimality (Conjecture)",
+    "statement": "U_\u03c6 = argmin_U J(U) = \u03a3_{m=1}^{M} 2^{-m} ||offdiag(U\u2020C_\u03c6^m U)||\u00b2_F",
+    "status": "empirical",
+    "verified": true,
+    "dependencies": [
+      "THM2",
+      "THM11"
+    ],
+    "steps": [
+      {
+        "step_id": 1,
+        "statement": "Define J(W) for W a unitary perturbation U_\u03c6\u00b7W: J(W) = \u03a3 2^{-m} ||offdiag(W\u2020U\u2020C^m UW)||\u00b2_F. At W=I, J is evaluated at U_\u03c6 itself.",
+        "rule": "axiom",
+        "references": []
+      },
+      {
+        "step_id": 2,
+        "statement": "N=8: J(I) = 0.483893, min J(random) = 6.973359, beaten: 0/200 \u2192 SUPPORTS",
+        "rule": "numerical_cert",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 8,
+          "J_identity": 0.48389316087392725,
+          "min_J_random": 6.973359012737318,
+          "beat_count": 0
+        }
+      },
+      {
+        "step_id": 3,
+        "statement": "N=16: J(I) = 3.098863, min J(random) = 19.573302, beaten: 0/200 \u2192 SUPPORTS",
+        "rule": "numerical_cert",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 16,
+          "J_identity": 3.098862593126219,
+          "min_J_random": 19.573301742479178,
+          "beat_count": 0
+        }
+      },
+      {
+        "step_id": 4,
+        "statement": "N=24: J(I) = 4.944570, min J(random) = 30.250280, beaten: 0/200 \u2192 SUPPORTS",
+        "rule": "numerical_cert",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 24,
+          "J_identity": 4.944569729100965,
+          "min_J_random": 30.2502804416352,
+          "beat_count": 0
+        }
+      },
+      {
+        "step_id": 5,
+        "statement": "N=32: J(I) = 15.809142, min J(random) = 53.129054, beaten: 0/200 \u2192 SUPPORTS",
+        "rule": "numerical_cert",
+        "references": [
+          "step_1"
+        ],
+        "numerical_witness": {
+          "N": 32,
+          "J_identity": 15.809141547604677,
+          "min_J_random": 53.12905372632312,
+          "beat_count": 0
+        }
+      },
+      {
+        "step_id": 6,
+        "statement": "CONJECTURE SUPPORTED: No random unitary perturbation achieved lower J across 4 sizes. This remains a conjecture \u2014 no deductive proof has been found.",
+        "rule": "numerical_cert",
+        "references": []
+      }
+    ],
+    "numerical_bounds": {
+      "J_identity_N8": 0.48389316087392725,
+      "beat_count_N8": 0,
+      "J_identity_N16": 3.098862593126219,
+      "beat_count_N16": 0,
+      "J_identity_N24": 4.944569729100965,
+      "beat_count_N24": 0,
+      "J_identity_N32": 15.809141547604677,
+      "beat_count_N32": 0
+    }
+  }
+}

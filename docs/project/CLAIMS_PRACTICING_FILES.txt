@@ -11,6 +11,8 @@
 # Filing Date: April 3, 2025
 # First Named Inventor: Luis Michael Minier
 #
+# Last Updated: February 9, 2026 (comprehensive audit — 340+ files)
+#
 # ============================================================================
 # PATENT CLAIMS SUMMARY
 # ============================================================================
@@ -56,18 +58,37 @@
 # ============================================================================
 
 # ============================================================================
-# SECTION A: CANONICAL IMPLEMENTATIONS (Claims 1-4)
+# SECTION A: CORE RFT IMPLEMENTATIONS (Claim 1)
 # ============================================================================
-# These are the primary implementations of patented methods
+# Primary implementations of the Resonant Fourier Transform
 
-# --- Primary RFT Implementation (Claim 1) ---
+# --- Primary RFT Implementation ---
 algorithms/rft/core/resonant_fourier_transform.py
 algorithms/rft/core/canonical_true_rft.py
+algorithms/rft/core/gram_utils.py
+
+# --- Core Mathematical Modules ---
+algorithms/rft/core/absolute_novelty.py
+algorithms/rft/core/bloom_filter.py
+algorithms/rft/core/continuous_compute.py
+algorithms/rft/core/diophantine_rft_extension.py
+algorithms/rft/core/fibonacci_fast_rft.py
+algorithms/rft/core/geometric_container.py
+algorithms/rft/core/golden_reservoir.py
+algorithms/rft/core/kernel_truncation.py
+algorithms/rft/core/oscillator.py
+algorithms/rft/core/rft_phi_legacy.py
+algorithms/rft/core/shard.py
+algorithms/rft/core/symbolic_wave_computer.py
+algorithms/rft/core/true_wave_compute.py
+algorithms/rft/core/unified_continuous.py
+algorithms/rft/core/vibrational_engine.py
 
 # --- Theorem Implementations (Claim 1) ---
 algorithms/rft/core/transform_theorems.py
 algorithms/rft/core/golden_uncertainty_principle.py
 algorithms/rft/core/maassen_uffink_uncertainty.py
+algorithms/rft/core/sharp_coherence_bounds.py
 algorithms/rft/core/theorem8_bootstrap_verification.py
 
 # --- Package Exports ---
@@ -75,18 +96,43 @@ algorithms/rft/__init__.py
 algorithms/rft/core/__init__.py
 
 # ============================================================================
-# SECTION B: CRYPTOGRAPHIC IMPLEMENTATIONS (Claims 2, 3)
+# SECTION B: FORMAL PROOF ENGINE (Claim 1)
+# ============================================================================
+# Constructive + computational proofs of RFT theorems
+
+algorithms/rft/theory/__init__.py
+algorithms/rft/theory/formal_framework.py
+algorithms/rft/theory/proof_engine.py
+algorithms/rft/theory/theorem8_formal_proof.py
+algorithms/rft/theory/theoretical_analysis.py
+algorithms/rft/theorems/__init__.py
+
+# ============================================================================
+# SECTION C: CRYPTOGRAPHIC IMPLEMENTATIONS (Claims 2, 3)
 # ============================================================================
 
 # --- RFT-SIS Hash (Claim 2) ---
+algorithms/rft/crypto/rft_sis_hash.py
+algorithms/rft/crypto/enhanced_cipher.py
+algorithms/rft/crypto/theorem_verification.py
+algorithms/rft/crypto/__init__.py
+algorithms/rft/crypto/primitives/__init__.py
+algorithms/rft/crypto/primitives/quantum_prng.py
+
+# --- Crypto Benchmarks (Claim 2) ---
+algorithms/rft/crypto/benchmarks/__init__.py
+algorithms/rft/crypto/benchmarks/avalanche_analysis.py
+algorithms/rft/crypto/benchmarks/cipher_validation.py
+algorithms/rft/crypto/benchmarks/comprehensive_crypto_suite.py
+algorithms/rft/crypto/benchmarks/performance_benchmarks.py
+algorithms/rft/crypto/benchmarks/rft_sis/__init__.py
 algorithms/rft/crypto/benchmarks/rft_sis/rft_sis_hash_v31.py
 algorithms/rft/crypto/benchmarks/rft_sis/rft_sis_v31_validation_suite.py
-algorithms/rft/crypto/enhanced_cipher.py
-algorithms/rft/crypto/primitives/quantum_prng.py
 
 # --- Geometric Hashing (Claim 3) ---
 algorithms/rft/quantum/geometric_waveform_hash.py
 algorithms/rft/quantum/geometric_hashing.py
+algorithms/rft/quantum/theorem_verification.py
 
 # --- Low-level Crypto Engines (Claims 2, 3) ---
 algorithms/rft/kernels/engines/crypto/src/feistel_round48.c
@@ -97,26 +143,44 @@ algorithms/rft/kernels/engines/crypto/src/sha256_portable.c
 algorithms/rft/kernels/engines/crypto/include/sha256_portable.h
 
 # ============================================================================
-# SECTION C: COMPRESSION & HYBRID CODECS (Claim 4)
+# SECTION D: COMPRESSION & HYBRID CODECS (Claim 4)
 # ============================================================================
 
 # --- Compression Implementations ---
-algorithms/rft/compression/rft_vertex_codec.py
+algorithms/rft/compression/__init__.py
+algorithms/rft/compression/ans.py
+algorithms/rft/compression/entropy.py
+algorithms/rft/compression/lossless/__init__.py
+algorithms/rft/compression/lossless/rans_stream.py
+algorithms/rft/compression/rft_binary_codec.py
 algorithms/rft/compression/rft_quantum_sim.py
+algorithms/rft/compression/rft_vertex_codec.py
 
 # --- Hybrid Codecs (Zero-Coherence Routing) ---
-algorithms/rft/hybrids/hybrid_residual_predictor.py
-algorithms/rft/hybrids/rft_hybrid_codec.py
+algorithms/rft/hybrids/__init__.py
+algorithms/rft/hybrids/cascade_hybrids.py
 algorithms/rft/hybrids/h3_arft_cascade.py
+algorithms/rft/hybrids/hybrid_residual_predictor.py
 algorithms/rft/hybrids/legacy_mca.py
+algorithms/rft/hybrids/rft_hybrid_codec.py
+algorithms/rft/hybrids/rft_wavelet_medical.py
+algorithms/rft/hybrids/rft_wavelet_medical_v2.py
+algorithms/rft/hybrids/theoretic_hybrid_decomposition.py
 
 # --- Compression Tools ---
 tools/compression/rft_lossless_model_compressor.py
 tools/compression/rft_sparse_compressor.py
 tools/compression/compress_tinyllama.py
 
+# --- Signal Routing ---
+algorithms/rft/routing.py
+algorithms/rft/routing/__init__.py
+algorithms/rft/routing/signal_classifier.py
+algorithms/rft/unified_transform_scheduler.py
+algorithms/rft/rft_status.py
+
 # ============================================================================
-# SECTION D: NATIVE IMPLEMENTATIONS (Claims 1, 5)
+# SECTION E: NATIVE IMPLEMENTATIONS (Claims 1, 5)
 # ============================================================================
 
 # --- C++/SIMD RFT Kernels (includes Hybrid FFT/RFT - Claim 5) ---
@@ -124,29 +188,48 @@ src/rftmw_native/rftmw_core.hpp
 src/rftmw_native/rft_fused_kernel.hpp
 src/rftmw_native/rftmw_python.cpp
 
-# --- Compiled Native Module (Claim 5 implementation) ---
-# Note: .so is built from above sources; claims apply to source
-# Key functions: forward_hybrid(), inverse_hybrid(), apply_phase_rotation_avx2()
-
 # --- Assembly Kernels ---
 algorithms/rft/kernels/engines/orchestrator/asm/rft_transform.asm
 
-# --- Operator-based Kernels ---
+# --- Kernel Implementations ---
+algorithms/rft/kernels/__init__.py
+algorithms/rft/kernels/arft_kernel.py
 algorithms/rft/kernels/operator_arft_kernel.py
 algorithms/rft/kernels/operator_eigenbasis_rft.py
+algorithms/rft/kernels/phase_arft_kernel.py
+algorithms/rft/kernels/quantonium_os.py
+
+# --- Python Bindings ---
+algorithms/rft/kernels/python_bindings/__init__.py
+algorithms/rft/kernels/python_bindings/optimized_rft.py
+algorithms/rft/kernels/python_bindings/quantum_symbolic_engine.py
+algorithms/rft/kernels/python_bindings/unitary_rft.py
+algorithms/rft/kernels/python_bindings/vertex_quantum_rft.py
+algorithms/rft/kernels/unified/python_bindings/__init__.py
+algorithms/rft/kernels/unified/python_bindings/unified_orchestrator.py
 
 # ============================================================================
-# SECTION E: VARIANT IMPLEMENTATIONS (Claim 1)
+# SECTION F: VARIANT IMPLEMENTATIONS (Claim 1)
 # ============================================================================
 
-# --- Unitary Algorithm Variants ---
-algorithms/rft/variants/golden_ratio_unitary.py
-algorithms/rft/variants/symbolic_unitary.py
-algorithms/rft/variants/entropic_unitary.py
 algorithms/rft/variants/__init__.py
+algorithms/rft/variants/entropic_unitary.py
+algorithms/rft/variants/golden_ratio_unitary.py
+algorithms/rft/variants/manifest.py
+algorithms/rft/variants/operator_variants.py
+algorithms/rft/variants/patent_variants.py
+algorithms/rft/variants/registry.py
+algorithms/rft/variants/symbolic_unitary.py
+
+# --- Fast RFT Implementations ---
+algorithms/rft/fast/__init__.py
+algorithms/rft/fast/cached_basis.py
+algorithms/rft/fast/fast_rft_exploration.py
+algorithms/rft/fast/fast_rft_structured.py
+algorithms/rft/fast/lowrank_rft.py
 
 # ============================================================================
-# SECTION F: QUANTUM-INSPIRED MODULES (Claims 1, 3)
+# SECTION G: QUANTUM-INSPIRED MODULES (Claims 1, 3)
 # ============================================================================
 
 algorithms/rft/quantum/quantum_kernel_implementation.py
@@ -154,33 +237,259 @@ algorithms/rft/quantum/topological_quantum_kernel.py
 algorithms/rft/quantum/enhanced_topological_qubit.py
 algorithms/rft/quantum/quantum_gates.py
 
-# ============================================================================
-# SECTION G: LEGACY/DEPRECATED (Still claim-bearing)
-# ============================================================================
-# These files are superseded but still practice patent claims
+# --- quantum_inspired subpackage ---
+algorithms/rft/quantum_inspired/__init__.py
+algorithms/rft/quantum_inspired/enhanced_topological_qubit.py
+algorithms/rft/quantum_inspired/geometric_hashing.py
+algorithms/rft/quantum_inspired/geometric_waveform_hash.py
+algorithms/rft/quantum_inspired/quantum_gates.py
+algorithms/rft/quantum_inspired/quantum_kernel_implementation.py
+algorithms/rft/quantum_inspired/quantum_search.py
+algorithms/rft/quantum_inspired/surface_topology.py
+algorithms/rft/quantum_inspired/symbolic_amplitude.py
+algorithms/rft/quantum_inspired/topological_quantum_kernel.py
 
-algorithms/rft/core/rft_phi_legacy.py
+# ============================================================================
+# SECTION H: APPLICATIONS & EXPERIMENTS (Claims 1-4)
+# ============================================================================
+
+algorithms/rft/applications/__init__.py
+algorithms/rft/applications/compression/__init__.py
+algorithms/rft/applications/crypto/__init__.py
+algorithms/rft/applications/crypto/rft_sis_hash.py
+algorithms/rft/applications/debug_rft.py
+algorithms/rft/applications/focused_benchmark.py
+algorithms/rft/benchmarks/__init__.py
+algorithms/rft/experiments/__init__.py
+algorithms/rft/experiments/exp_basis_quality.py
+algorithms/rft/experiments/exp_classifier_calibration.py
+algorithms/rft/experiments/exp_cross_class.py
+algorithms/rft/experiments/exp_fast_projection.py
+algorithms/rft/experiments/exp_fft_correction_rank.py
+algorithms/rft/experiments/exp_manifold_deep.py
+algorithms/rft/experiments/exp_patent_discovery.py
+algorithms/rft/experiments/exp_router_vs_oracle.py
+algorithms/rft/transform_core/__init__.py
 
 # ============================================================================
-# SECTION H: TEST & VALIDATION FILES (Claim verification)
+# SECTION I: TEST & VALIDATION FILES (Claim verification)
 # ============================================================================
 # These files validate patent claims and are included for completeness
 
-tests/rft/test_canonical_rft.py
-tests/crypto/test_rft_sis_hash.py
+# --- Proof Tests ---
 tests/proofs/test_rft_transform_theorems.py
 tests/proofs/test_golden_uncertainty_principle.py
 tests/proofs/test_maassen_uffink_uncertainty.py
+tests/proofs/test_formal_proofs.py
+tests/proofs/test_theorem8_formal_proof.py
+tests/proofs/test_theorem_8_eigen_tail_from_truncation.py
+tests/proofs/test_theorem_8_rank_truncation.py
+tests/proofs/test_diophantine_rft_extension.py
+tests/proofs/test_fibonacci_fast_rft.py
+tests/proofs/test_sharp_coherence_bounds.py
+tests/proofs/test_wave_space_soft_logic.py
+
+# --- Core RFT Tests ---
+tests/rft/test_canonical_rft.py
+tests/rft/test_rft_vs_fft.py
+tests/rft/test_rft_advantages.py
+tests/rft/test_rft_comprehensive_comparison.py
+tests/rft/test_dft_correlation.py
+tests/rft/test_lct_nonequiv.py
+tests/rft/prove_lct_nonmembership.py
+tests/rft/test_psihf_entropy.py
+tests/rft/test_quantization.py
+tests/rft/test_geometric_rft.py
+tests/rft/test_variant_unitarity.py
+tests/rft/test_boundary_effects.py
+tests/rft/test_hybrid_basis.py
+tests/rft/test_hybrids_integration.py
+
+# --- Transform Tests ---
+tests/transforms/test_rft_correctness.py
+
+# --- Crypto Tests ---
+tests/crypto/test_rft_sis_hash.py
+tests/crypto/test_rft_sis_hash_avalanche.py
+tests/crypto/test_avalanche.py
+tests/crypto/test_feistel_roundtrip.py
+tests/crypto/test_property_encryption.py
+tests/crypto/scripts/ind_cpa_proof.py
+
+# --- Compression Tests ---
+tests/compression/test_compression_engineering.py
+tests/codec_tests/test_ans_codec.py
+tests/codec_tests/test_vertex_codec.py
+tests/test_ans_integration.py
+tests/test_codecs_updated.py
+tests/test_codec_comprehensive.py
+tests/algo_tests/test_rans_roundtrip.py
+
+# --- Validation Tests ---
+tests/validation/test_rft_unitarity.py
+tests/validation/test_rft_invariants.py
+tests/validation/test_rft_vertex_codec_roundtrip.py
+tests/validation/test_rft_hybrid_codec_e2e.py
+tests/validation/test_transform_absolute_novelty.py
+tests/validation/test_arft_novelty.py
+tests/validation/test_assembly_variants.py
+tests/validation/test_assembly_rft_vs_classical_transforms.py
+tests/validation/test_assembly_vs_python_comprehensive.py
+tests/validation/test_bell_violations.py
+tests/validation/test_mixing_quality.py
+tests/validation/test_phi_frame_normalization.py
+tests/validation/test_statistical_properties.py
+tests/validation/test_unified_scheduler.py
+tests/validation/diagnose_assembly_rft.py
+
+# --- Integration & Medical Tests ---
+tests/integration/test_rft_stack_verification.py
+tests/medical/conftest.py
+tests/medical/test_biosignal_compression.py
+tests/medical/test_edge_wearable.py
+tests/medical/test_genomics_transforms.py
+tests/medical/test_imaging_reconstruction.py
+tests/medical/test_medical_security.py
+tests/medical/test_rft_variants_wavelet.py
+tests/medical/test_rft_wavelet_hybrid.py
+tests/native/test_native_correctness_gate.py
+tests/native/test_rftmw_theorems_bindings.py
+tests/test_patent_variants.py
+
+# --- Benchmark Tests ---
+tests/benchmarks/benchmark_rft_vs_fft.py
+tests/benchmarks/diy_cryptanalysis_suite.py
+tests/benchmarks/downstream_performance.py
+tests/benchmarks/full_rft_variant_benchmark.py
+tests/benchmarks/honest_rft_benchmark.py
+tests/benchmarks/nist_randomness_tests.py
+tests/benchmarks/proven_assembly_integration.py
+tests/benchmarks/quantum_compression_benchmark.py
+tests/benchmarks/rft_sota_comparison.py
+tests/benchmarks/side_channel_analysis.py
+tests/benchmarks/test_coherence.py
+tests/benchmarks/twisted_convolution_benchmark.py
+
+# --- Research Tests ---
+tests/research/generate_comparison_tables.py
+tests/research/generate_publication_figures.py
+tests/research/gram_eigenstructure_analysis.py
+tests/research/test_h3_hybrid_benchmark.py
+tests/research/test_rft_signal_niche.py
+tests/research/wave_domain_computation_benchmark.py
 
 # ============================================================================
-# SECTION I: BENCHMARKS (Claim validation)
+# SECTION J: BENCHMARKS (Claim validation)
 # ============================================================================
 
+benchmarks/benchmark_h3_arft.py
+benchmarks/chirp_benchmark_rft_vs_dct_fft.py
 benchmarks/class_a_quantum_simulation.py
+benchmarks/class_b_hybrid_quick.py
+benchmarks/class_f_resilience.py
+benchmarks/codec_pipeline_benchmark.py
+benchmarks/rft_medical_benchmark_v2.py
+benchmarks/rft_multiscale_benchmark.py
+benchmarks/rft_phi_frame_benchmark.py
 benchmarks/rft_realworld_benchmark.py
+benchmarks/rft_wavelet_real_data_benchmark.py
+benchmarks/test_all_hybrids.py
+benchmarks/test_cascade_integration.py
+benchmarks/variant_benchmark_harness.py
+benchmarks/verify_quantum_simulation_fidelity.py
 
 # ============================================================================
-# SECTION J: DOCUMENTATION (Claim descriptions)
+# SECTION K: SCRIPTS & TOOLS (Claim-practicing utilities)
+# ============================================================================
+
+# --- Verification Scripts ---
+scripts/verify_hw_sw_alignment.py
+scripts/verify_paper_claims.py
+scripts/verify_braided_comprehensive.py
+scripts/verify_soft_vs_hard_braiding.py
+scripts/verify_hybrid_mca_recovery.py
+scripts/verify_ascii_bottleneck.py
+scripts/verify_rate_distortion.py
+scripts/irrevocable_truths.py
+scripts/run_proofs.py
+scripts/test_rft_quick.py
+scripts/test_real_data.py
+scripts/quantonium_boot.py
+scripts/run_research_suite.py
+scripts/run_nist_sts.py
+
+# --- Benchmark Scripts ---
+scripts/benchmark_adaptive_rft.py
+scripts/benchmark_downstream_diagnostic.py
+scripts/benchmark_hybrid_vs_dct.py
+scripts/benchmark_transforms_real_data.py
+
+# --- Figure/Visualization Scripts ---
+scripts/generate_all_theorem_figures.py
+scripts/generate_rft_gifs.py
+scripts/generate_rft_gifs_simple.py
+scripts/generate_rft_hardware_gifs.py
+scripts/generate_zenodo_figures.py
+scripts/figures/generate_rft8x8_lut.py
+scripts/plot_psihf.py
+scripts/visualize_rft_analysis.py
+
+# --- Archive & Crypto Scripts ---
+scripts/archive_crypto_tests.py
+scripts/archive_rft_stability.py
+scripts/load_ai_with_weights.py
+
+# --- Validation Scripts ---
+scripts/validation/test_imports.py
+scripts/validation/validate_system.py
+
+# --- Tools ---
+tools/benchmarking/rft_vs_fft_benchmark.py
+tools/optimization/optimize_arft.py
+tools/optimization/optimize_operator_arft.py
+tools/optimization/optimize_phase_arft.py
+tools/rft_quick_reference.py
+tools/sts/run_sts.py
+
+# ============================================================================
+# SECTION L: DEMOS (Claim 1 examples)
+# ============================================================================
+
+demos/demo_rft_integration.py
+demos/demo_rft_power.py
+
+# ============================================================================
+# SECTION M: EXPERIMENTS (Claims 1-4)
+# ============================================================================
+
+experiments/ascii_wall/ascii_wall_all_variants.py
+experiments/ascii_wall/ascii_wall_h11_h20.py
+experiments/ascii_wall/ascii_wall_paper.py
+experiments/ascii_wall/ascii_wall_through_codec.py
+experiments/ascii_wall/ascii_wall_vertex_codec.py
+experiments/competitors/benchmark_compression_vs_codecs.py
+experiments/competitors/benchmark_crypto_throughput.py
+experiments/competitors/benchmark_transforms_vs_fft.py
+experiments/entropy/benchmark_entropy_gap.py
+experiments/fibonacci/fibonacci_tilt_hypotheses.py
+experiments/formal_proof_experiments.py
+experiments/h3_ai_compression_experiment.py
+experiments/hypothesis_testing/hybrid_mca_fixes.py
+experiments/hypothesis_testing/verify_h11_claims.py
+experiments/rft_quantization_hybrid.py
+experiments/runtime/benchmark_transforms.py
+experiments/sota_benchmarks/sota_compression_benchmark.py
+
+# ============================================================================
+# SECTION N: PAPERS (Figure generation, verification)
+# ============================================================================
+
+papers/generate_ieee_figures.py
+papers/generate_tetc_figures_verified.py
+run_formal_verification.py
+
+# ============================================================================
+# SECTION O: DOCUMENTATION (Claim descriptions)
 # ============================================================================
 
 docs/patent/USPTO_ALGORITHM_SPECIFICATIONS.md
@@ -190,15 +499,137 @@ algorithms/rft/README_RFT.md
 THEOREMS_RFT_IRONCLAD.md
 
 # ============================================================================
-# SECTION K: HARDWARE RTL (Claim 1 - RFTPU Architecture)
+# SECTION P: HARDWARE RTL (Claim 1 - RFTPU Architecture)
 # ============================================================================
 # Hardware implementations of RFT are also covered
 
+# --- Core Architecture ---
 hardware/rftpu_architecture.tlv
 hardware/rftpu_architecture.sv
+hardware/rftpu_architecture_gen.sv
+hardware/rftpu_architecture_gen_gen.sv
 hardware/rtl/phi_rft_core.sv
 hardware/rtl/rftpu_tile_shell.sv
+hardware/rft_middleware_engine.sv
+
+# --- FPGA Top-level ---
+hardware/fpga_top.sv
+hardware/fpga_top_minimal.sv
+hardware/fpga_top_tb.v
+hardware/fpga_top_webfpga.v
+hardware/testbench.v
+hardware/full_coverage_tb.v
+hardware/tb_rft_middleware.sv
+
+# --- Systolic Array (RFT accelerator) ---
+hardware/rtl/systolic_array.sv
+hardware/rtl/systolic_array_v2.sv
+hardware/rtl/systolic_array_v21.sv
+hardware/rtl/systolic_array_v22.sv
+hardware/rtl/systolic_array_v23.sv
+hardware/rtl/systolic_array_v23_simple.sv
+hardware/rtl/systolic_array_v23_streaming.sv
+
+# --- Synthesis ---
+hardware/synth/rft_kernel_synth.sv
+hardware/synth/rft_kernel_v2005.v
+hardware/synth/systolic_array_synth.v
+
+# --- OpenLane ASIC ---
+hardware/openlane/rftpu_4x4/src/rftpu_4x4_top.sv
+
+# --- Testbenches ---
+hardware/tb/rft_test_vectors.hex
+hardware/tb/rft_test_vectors.svh
+hardware/tb/rftpu_formal_props.sv
+hardware/tb/tb_canonical_rft_crossval.sv
+hardware/tb/tb_phi_rft_core_enhanced.sv
+hardware/tb/tb_rftpu_accelerator.sv
+hardware/tb/tb_theorem8_energy_dump.sv
+hardware/tb/systolic_array_benchmark_tb.sv
+hardware/tb/systolic_v21_16x16_tb.sv
+hardware/tb/systolic_v21_scale_benchmark_tb.sv
+hardware/tb/systolic_v2_simple_tb.sv
+hardware/tb/systolic_v2_tb.sv
+hardware/tb/v23_scale_test.sv
+
+# --- Theorem 8 Hardware Verification ---
 hardware/theorem8_concentration_test.py
+hardware/tb/rftpu_test_vectors.py
+hardware/tb/theorem8_kernel_uconj_q15.py
+hardware/tb/theorem8_vectors_q15.py
+hardware/tb/verify_rtl_vs_python.py
+hardware/tb/verify_theorem8_option_a.py
+hardware/hardware_test_vectors/theorem8/theorem8_tb_N8.sv
+hardware/hardware_test_vectors/theorem8/theorem8_tb_N16.sv
+hardware/hardware_test_vectors/theorem8/theorem8_tb_N32.sv
+hardware/hardware_test_vectors/theorem8/theorem8_tb_N64.sv
+
+# --- Hardware Verification Scripts ---
+hardware/run_full_verification.py
+hardware/generate_hardware_test_vectors.py
+hardware/scripts/regenerate_kernel_rom.py
+
+# ============================================================================
+# SECTION Q: PAPERS/HARDWARE (Mirror of hardware — Claim 1)
+# ============================================================================
+# papers/hardware/ is a copy of hardware/ included in paper submissions
+
+papers/hardware/rftpu_architecture.sv
+papers/hardware/rftpu_architecture_gen.sv
+papers/hardware/rftpu_architecture_gen_gen.sv
+papers/hardware/rft_middleware_engine.sv
+papers/hardware/fpga_top.sv
+papers/hardware/fpga_top_minimal.sv
+papers/hardware/fpga_top_tb.v
+papers/hardware/fpga_top_webfpga.v
+papers/hardware/full_coverage_tb.v
+papers/hardware/testbench.v
+papers/hardware/tb_rft_middleware.sv
+papers/hardware/rtl/systolic_array.sv
+papers/hardware/rtl/systolic_array_v2.sv
+papers/hardware/rtl/systolic_array_v21.sv
+papers/hardware/rtl/systolic_array_v22.sv
+papers/hardware/rtl/systolic_array_v23.sv
+papers/hardware/rtl/systolic_array_v23_simple.sv
+papers/hardware/rtl/systolic_array_v23_streaming.sv
+papers/hardware/synth/rft_kernel_synth.sv
+papers/hardware/synth/rft_kernel_v2005.v
+papers/hardware/synth/systolic_array_synth.sv
+papers/hardware/synth/systolic_array_synth.v
+papers/hardware/openlane/rftpu_4x4/src/rftpu_4x4_top.sv
+papers/hardware/tb/rftpu_formal_props.sv
+papers/hardware/tb/tb_canonical_rft_crossval.sv
+papers/hardware/tb/tb_phi_rft_core_enhanced.sv
+papers/hardware/tb/tb_rftpu_accelerator.sv
+papers/hardware/tb/tb_theorem8_energy_dump.sv
+papers/hardware/tb/systolic_array_benchmark_tb.sv
+papers/hardware/tb/systolic_v21_16x16_tb.sv
+papers/hardware/tb/systolic_v21_scale_benchmark_tb.sv
+papers/hardware/tb/systolic_v2_simple_tb.sv
+papers/hardware/tb/systolic_v2_tb.sv
+papers/hardware/tb/v23_scale_test.sv
+papers/hardware/hardware_test_vectors/theorem8/theorem8_tb_N8.sv
+papers/hardware/hardware_test_vectors/theorem8/theorem8_tb_N16.sv
+papers/hardware/hardware_test_vectors/theorem8/theorem8_tb_N32.sv
+papers/hardware/hardware_test_vectors/theorem8/theorem8_tb_N64.sv
+
+# --- Papers Hardware Python Scripts ---
+papers/hardware/generate_hardware_test_vectors.py
+papers/hardware/run_capabilities_test.py
+papers/hardware/run_full_verification.py
+papers/hardware/scripts/generate_4x4_variant.py
+papers/hardware/scripts/quick_synthesis.py
+papers/hardware/scripts/regenerate_kernel_rom.py
+papers/hardware/theorem8_concentration_test.py
+papers/hardware/visualize_hardware_results.py
+papers/hardware/visualize_sw_hw_comparison.py
+papers/hardware/tb/rftpu_test_vectors.py
+papers/hardware/tb/theorem8_kernel_uconj_q15.py
+papers/hardware/tb/theorem8_vectors_q15.py
+papers/hardware/tb/verify_rtl_vs_python.py
+papers/hardware/tb/verify_theorem8_option_a.py
+papers/hardware/tb/verify_vcd_digests.py
 
 # ============================================================================
 # END OF CLAIMS-PRACTICING FILES REGISTRY
