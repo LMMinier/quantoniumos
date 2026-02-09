@@ -177,7 +177,7 @@ def benchmark_rft_latency(signal_length: int,
         Latency statistics
     """
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import (
+        from algorithms.rft.kernels.operator_eigenbasis_rft import (
             rft_forward,
             rft_inverse,
         )
@@ -418,7 +418,7 @@ def rft_compress_for_transmission(signal: np.ndarray,
         Compressed bytes
     """
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import rft_forward
+        from algorithms.rft.kernels.operator_eigenbasis_rft import rft_forward
     except ImportError:
         pytest.skip("RFT not available")
     
@@ -450,7 +450,7 @@ def rft_decompress_from_transmission(data: bytes) -> np.ndarray:
         Reconstructed signal
     """
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import rft_inverse
+        from algorithms.rft.kernels.operator_eigenbasis_rft import rft_inverse
     except ImportError:
         pytest.skip("RFT not available")
     
@@ -514,7 +514,7 @@ class StreamingRFTProcessor:
             List of processed chunks (may be empty if not enough data)
         """
         try:
-            from algorithms.rft.kernels.resonant_fourier_transform import (
+            from algorithms.rft.kernels.operator_eigenbasis_rft import (
                 rft_forward,
                 rft_inverse,
             )
@@ -555,7 +555,7 @@ class StreamingRFTProcessor:
             chunk[:self.buffer_fill] = self.buffer[:self.buffer_fill]
             
             try:
-                from algorithms.rft.kernels.resonant_fourier_transform import (
+                from algorithms.rft.kernels.operator_eigenbasis_rft import (
                     rft_forward,
                     rft_inverse,
                 )

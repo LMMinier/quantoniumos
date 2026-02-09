@@ -178,7 +178,7 @@ def transform_kmer_spectrum(spectrum: np.ndarray,
     """
     if transform == 'rft':
         try:
-            from algorithms.rft.kernels.resonant_fourier_transform import rft_forward
+            from algorithms.rft.kernels.operator_eigenbasis_rft import rft_forward
             return rft_forward(spectrum.astype(np.complex128))
         except ImportError:
             pytest.skip("RFT not available")
@@ -263,7 +263,7 @@ def compress_contact_map_rft(contact_map: np.ndarray,
         (reconstructed_map, stats)
     """
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import (
+        from algorithms.rft.kernels.operator_eigenbasis_rft import (
             rft_forward,
             rft_inverse,
         )
@@ -331,7 +331,7 @@ def compress_sequence_rft(sequence: str,
         (reconstructed_sequence, stats)
     """
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import (
+        from algorithms.rft.kernels.operator_eigenbasis_rft import (
             rft_forward,
             rft_inverse,
         )

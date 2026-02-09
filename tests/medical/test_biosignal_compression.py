@@ -279,7 +279,7 @@ def rft_compress_signal(signal: np.ndarray,
         (reconstructed_signal, stats_dict)
     """
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import (
+        from algorithms.rft.kernels.operator_eigenbasis_rft import (
             rft_forward,
             rft_inverse,
         )

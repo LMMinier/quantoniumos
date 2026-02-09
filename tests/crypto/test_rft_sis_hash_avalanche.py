@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Test RFT-SIS Hash Avalanche Effect"""
-from algorithms.rft.core.resonant_fourier_transform import RFTSISHash
+from algorithms.rft.crypto.rft_sis_hash import RFTSISHash
 import numpy as np
 
 def hamming_distance(h1: bytes, h2: bytes) -> int:

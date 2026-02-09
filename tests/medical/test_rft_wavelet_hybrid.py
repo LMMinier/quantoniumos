@@ -128,7 +128,7 @@ def wavelet_denoise_2d(noisy_image: np.ndarray, threshold_ratio: float = 0.1) ->
 def rft_denoise_2d(noisy_image: np.ndarray, threshold_ratio: float = 0.1) -> np.ndarray:
     """RFT-based 2D denoising."""
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import rft_forward, rft_inverse
+        from algorithms.rft.kernels.operator_eigenbasis_rft import rft_forward, rft_inverse
     except ImportError:
         print("RFT not available, using FFT")
         rft_forward = np.fft.fft

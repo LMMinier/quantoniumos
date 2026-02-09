@@ -220,7 +220,7 @@ def rft_denoise_2d(noisy_image: np.ndarray,
     """
     try:
         # Canonical operator-based RFT (resonance eigenbasis)
-        from algorithms.rft.kernels.resonant_fourier_transform import (
+        from algorithms.rft.kernels.operator_eigenbasis_rft import (
             rft_forward,
             rft_inverse,
         )

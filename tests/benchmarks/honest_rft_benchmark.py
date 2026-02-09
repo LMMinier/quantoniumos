@@ -19,7 +19,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-from algorithms.rft.kernels.resonant_fourier_transform import (
+from algorithms.rft.kernels.operator_eigenbasis_rft import (
     build_rft_kernel, rft_forward, rft_inverse,
     generate_golden_quasiperiodic, generate_fibonacci_modulated, generate_phyllotaxis_signal,
     PHI

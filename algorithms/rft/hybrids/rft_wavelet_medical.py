@@ -154,7 +154,7 @@ def _rft_filter_subband(subband: np.ndarray, noise_var: float) -> np.ndarray:
     
     # Fallback implementation
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import (
+        from algorithms.rft.kernels.operator_eigenbasis_rft import (
             rft_forward,
             rft_inverse,
         )
@@ -205,7 +205,7 @@ def _rft_edge_enhance(subband: np.ndarray, strength: float = 0.3) -> np.ndarray:
     (tissue boundaries, vessel walls). RFT can detect and preserve these.
     """
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import (
+        from algorithms.rft.kernels.operator_eigenbasis_rft import (
             rft_forward,
             rft_inverse,
         )

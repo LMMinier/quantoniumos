@@ -70,7 +70,7 @@ def inverse_anscombe_exact(transformed: np.ndarray) -> np.ndarray:
 def _get_rft_matrix(n: int) -> np.ndarray:
     """Get cached RFT transformation matrix for size n."""
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import build_rft_kernel
+        from algorithms.rft.kernels.operator_eigenbasis_rft import build_rft_kernel
         return build_rft_kernel(n)
     except ImportError:
         # Fallback: use DFT matrix

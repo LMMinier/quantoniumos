@@ -215,7 +215,7 @@ This is a **minor variation** on well-known OFDM, not a paradigm shift.
 ### 7.1 Core Module
 
 ```python
-from algorithms.rft.kernels.resonant_fourier_transform import (
+from algorithms.rft.kernels.operator_eigenbasis_rft import (
   PHI,
   build_rft_kernel,
   rft_forward,
@@ -228,7 +228,7 @@ from algorithms.rft import BinaryRFT
 
 ```python
 import numpy as np
-from algorithms.rft.kernels.resonant_fourier_transform import build_rft_kernel, rft_forward, rft_inverse
+from algorithms.rft.kernels.operator_eigenbasis_rft import build_rft_kernel, rft_forward, rft_inverse
 from algorithms.rft import BinaryRFT
 
 N = 256

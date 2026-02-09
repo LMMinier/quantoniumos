@@ -54,7 +54,7 @@ def rft_waveform_hash(waveform: np.ndarray,
         Hash bytes
     """
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import rft_forward
+        from algorithms.rft.kernels.operator_eigenbasis_rft import rft_forward
     except ImportError:
         pytest.skip("RFT core not available")
     
@@ -250,7 +250,7 @@ def federated_aggregate_rft_filter(gradients: List[np.ndarray],
     based on coefficient distribution.
     """
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import rft_forward
+        from algorithms.rft.kernels.operator_eigenbasis_rft import rft_forward
     except ImportError:
         # Fallback to FFT
         rft_forward = np.fft.fft
@@ -310,7 +310,7 @@ def secure_waveform_comparison(waveform1: np.ndarray,
         Comparison metrics
     """
     try:
-        from algorithms.rft.kernels.resonant_fourier_transform import rft_forward
+        from algorithms.rft.kernels.operator_eigenbasis_rft import rft_forward
     except ImportError:
         pytest.skip("RFT not available")
     

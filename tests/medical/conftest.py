@@ -4,7 +4,7 @@ import os
 import pytest
 
 from algorithms.rft.variants.operator_variants import list_operator_variants
-import algorithms.rft.kernels.resonant_fourier_transform as rftk
+import algorithms.rft.kernels.operator_eigenbasis_rft as rftk
 
 
 # -----------------------------------------------------------------------------
