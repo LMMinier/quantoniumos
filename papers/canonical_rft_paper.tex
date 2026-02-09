@@ -625,7 +625,7 @@ The repository contains 2,308 automated tests.  Key verification gates:
 
 Dependency lock: \texttt{requirements-lock-core.txt} (77~packages,
 generated from \texttt{pip freeze}).
-Verification commands in \texttt{VERIFY.md} (Appendix~\ref{app:repro}).
+Verification commands in \texttt{docs/VERIFY.md} (Appendix~\ref{app:repro}).
 
 % Hardware section moved to Appendix C to keep the main body focused on
 % the transform definition, proofs, and experiments.
@@ -684,7 +684,7 @@ strictly better concentration than any DFT-derived basis.
 
 \section{Reproducibility Checklist}\label{app:repro}
 
-All commands assume a Unix shell.  See \texttt{VERIFY.md} in the repository
+All commands assume a Unix shell.  See \texttt{docs/VERIFY.md} in the repository
 for the full, copy-pasteable verification script.
 
 \subsection{Installation}
@@ -715,7 +715,7 @@ for the full, copy-pasteable verification script.
 \end{quote}
 
 \noindent Copy-pasteable inline scripts for both checks are in
-\texttt{VERIFY.md} at the repository root.
+\texttt{docs/VERIFY.md} at the repository root.
 
 \section{Hardware Architecture (Simulation Only)}\label{app:hardware}
 
@@ -763,7 +763,7 @@ C1 & Canonical definition & \S\ref{sec:definition} & \texttt{resonant\_fourier\_
 C2 & Unitarity & \S\ref{sec:proofs} & \texttt{gram\_utils.py} & \texttt{test\_rft\_vs\_fft.py} & $\norm{\PhiTilde^H\PhiTilde-I}_F < 10^{-12}$ \\
 C3 & Non-equiv.\ to DFT & \S\ref{sec:proofs} & \texttt{resonant\_fourier\_transform.py} & \texttt{prove\_lct\_nonmembership.py} & 4 tests pass \\
 C4 & Spectral behavior & \S\ref{sec:experiments} & \texttt{test\_mixing\_quality.py} & \texttt{test\_energy\_spread\_threshold} & 3 signal classes pass \\
-C5 & Reproducibility & App.\,\ref{app:repro} & \texttt{VERIFY.md}, lockfile & \texttt{pytest tests/} & 2308 tests pass \\
+C5 & Reproducibility & App.\,\ref{app:repro} & \texttt{docs/VERIFY.md}, lockfile & \texttt{pytest tests/} & 2308 tests pass \\
 -- & SIMD correctness & \S\ref{sec:verification} & \texttt{rft\_fused\_kernel.hpp} & \texttt{test\_simd\_scalar\_regression.py} & 22 tests, $\Delta=0$ \\
 -- & Feistel correctness & \S\ref{sec:verification} & \texttt{enhanced\_cipher.py} & \texttt{test\_feistel\_roundtrip.py} & 24 tests pass \\
 \bottomrule
