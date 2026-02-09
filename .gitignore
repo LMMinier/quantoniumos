@@ -171,3 +171,7 @@ hardware_test_vectors/**/*.hex
 
 # Auto-generated SBOM (regenerate with cyclonedx-py)
 sbom.json
+
+# Experiment result artifacts (regenerate by running experiments)
+experiments/**/*_results.json
+experiments/**/*_results.txt
