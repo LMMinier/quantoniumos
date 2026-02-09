@@ -175,3 +175,14 @@ sbom.json
 # Experiment result artifacts (regenerate by running experiments)
 experiments/**/*_results.json
 experiments/**/*_results.txt
+
+# Compiled / generated PDFs (regenerate from .tex sources)
+papers/*.pdf
+docs/textbook/*.pdf
+
+# GIFs (too large for git — host externally if needed)
+figures/gifs/*.gif
+
+# Build artifacts
+*.egg-info/
+src/rftmw_native/build/
