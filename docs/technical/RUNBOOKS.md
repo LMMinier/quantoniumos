@@ -184,7 +184,7 @@ cd $DEPLOY_DIR
 git clone https://github.com/mandcony/quantoniumos.git .
 
 # 3. Install Python dependencies
-pip3 install -r requirements.txt
+pip3 install -e .
 
 # 4. Compile assembly engines
 cd ASSEMBLY
@@ -224,7 +224,7 @@ COPY . /opt/quantoniumos
 WORKDIR /opt/quantoniumos
 
 # Install Python dependencies
-RUN pip3 install -r requirements.txt
+RUN pip3 install -e .
 
 # Compile assembly engines
 RUN cd ASSEMBLY && make clean all
@@ -271,7 +271,7 @@ git checkout main
 git pull origin main
 
 # 3. Update dependencies
-pip3 install -r requirements.txt --upgrade
+pip3 install -e . --upgrade
 
 # 4. Recompile assembly if needed
 if [ -f "ASSEMBLY/Makefile" ]; then

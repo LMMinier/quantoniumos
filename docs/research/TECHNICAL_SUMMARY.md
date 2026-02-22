@@ -64,7 +64,7 @@ The orphaned DistilGPT‑2 chunk that previously lived under `encoded_models/dis
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -e .
 make -C src/assembly all
 pytest tests/tests/test_rft_vertex_codec.py
 pytest tests/apps/test_compressed_model_router.py

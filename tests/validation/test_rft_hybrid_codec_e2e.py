@@ -29,7 +29,9 @@ def test_hybrid_roundtrip_low_error() -> None:
 
 def test_hybrid_roundtrip_large_tensor() -> None:
     rng = np.random.default_rng(12345)
-    tensor = rng.standard_normal((1_048_576,), dtype=np.float32)  # ~1 MB
+    # N=4096 is the largest practical size for O(N²) basis construction
+    # (N=1M would require an 8 TiB basis matrix).
+    tensor = rng.standard_normal((4096,), dtype=np.float32)
 
     result = encode_tensor_hybrid(
         tensor,

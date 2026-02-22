@@ -6,15 +6,18 @@ Resonant Fourier Transform (RFT) - Algorithms Package
 
 USPTO Patent 19/169,399: "Hybrid Computational Framework for Quantum and Resonance Simulation"
 
-The RFT is a transform that maps discrete data into a continuous waveform domain
-using golden-ratio (φ) frequency and phase structure:
+CANONICAL RFT DEFINITION:
+    Φ_{n,k} = (1/√N) exp(j 2π frac((k+1)·φ) · n)
+    Φ̃ = Φ (Φᴴ Φ)^{-1/2}    (Gram / Löwdin normalization)
 
-    Ψₖ(t) = exp(2πi × fₖ × t + i × θₖ)
-    
-    where:
-        fₖ = (k+1) × φ       (Resonant Frequency)
-        θₖ = 2π × k / φ      (Golden Phase)
-        φ = (1+√5)/2         (Golden Ratio)
+    Forward:  X = Φ̃ᴴ x
+    Inverse:  x = Φ̃  X
+
+    where φ = (1+√5)/2 (golden ratio), frac(·) = fractional part.
+
+⚠ The older waveform formulation (f_k = (k+1)×φ, θ_k = 2πk/φ, no Gram
+normalization) is preserved for backward compatibility in rft_phi_legacy.py
+but is NOT "the RFT."
 
 See algorithms/rft/core/resonant_fourier_transform.py for the canonical implementation.
 """

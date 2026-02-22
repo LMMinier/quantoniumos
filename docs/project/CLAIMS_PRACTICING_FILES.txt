@@ -634,5 +634,25 @@ papers/hardware/tb/verify_theorem8_option_a.py
 papers/hardware/tb/verify_vcd_digests.py
 
 # ============================================================================
+# SECTION R: RFTMW MEMORY MIDDLEWARE ENGINE (Claims 1, 4)
+# ============================================================================
+# Novel spectral-entropy-based routing middleware for LLM weight and
+# KV-cache compression.  Practices Claim 1 (RFT transform) and
+# Claim 4 (hybrid routing / adaptive basis selection).
+#
+# The two engine files implement the patented spectral-entropy router,
+# group-wise INT8 quantization integration, and φ-grid RFT compression.
+# Tests, demos, and benchmarks are AGPL — open for research.
+
+# --- Core middleware (Claims-NC) ---
+quantonium_os_src/engine/rftmw_memory.py
+quantonium_os_src/engine/rftmw_inference.py
+
+# --- Open for research (AGPL-3.0-or-later, NOT listed as claims-practicing) ---
+# tests/test_rftmw_memory.py          — unit tests
+# examples/rftmw_llm_demo.py          — reproducibility demo
+# benchmarks/rft_compression_sweet_spot.py — honest benchmark
+
+# ============================================================================
 # END OF CLAIMS-PRACTICING FILES REGISTRY
 # ============================================================================

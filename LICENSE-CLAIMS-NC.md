@@ -84,7 +84,24 @@ Commercial practice of the claimed methods **requires a separate written patent 
 
 ### 3.3 Trademark Restrictions
 
-The names "QuantoniumOS," "RFTPU," "Φ-RFT," and associated logos are trademarks of Luis M. Minier and are **NOT licensed** under this agreement.
+The names "QuantoniumOS," "RFTPU," "Φ-RFT," "RFTMW," and associated logos are trademarks of Luis M. Minier and are **NOT licensed** under this agreement.
+
+### 3.4 RFTMW Memory Middleware (Claims 1, 4)
+
+The following files implement the novel **Spectral-Entropy-Routed Memory Middleware** (RFTMW) for LLM weight and KV-cache compression:
+
+| File | IP Component | Claim |
+|------|-------------|-------|
+| `quantonium_os_src/engine/rftmw_memory.py` | Spectral-entropy router, φ-grid RFT compression, group-wise INT8 integration, KV-cache middleware | Claims 1, 4 |
+| `quantonium_os_src/engine/rftmw_inference.py` | Compressed inference engine with on-demand decompression, cryptographic provenance chain | Claims 1, 4 |
+
+**Open for research** (AGPL-3.0-or-later, NOT patent-practicing):
+
+| File | Purpose |
+|------|---------|
+| `tests/test_rftmw_memory.py` | Unit tests — validates claims, reproducibility |
+| `examples/rftmw_llm_demo.py` | Demo — reproduces published results |
+| `benchmarks/rft_compression_sweet_spot.py` | Honest benchmark — evaluates RFT vs DCT |
 
 ---
 

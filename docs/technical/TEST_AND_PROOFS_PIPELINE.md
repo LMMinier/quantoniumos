@@ -498,7 +498,7 @@ echo "🚀 QuantoniumOS Continuous Integration"
 make -C ASSEMBLY clean all
 
 # 2. Python environment setup  
-pip install -r requirements.txt
+pip install -e .
 
 # 3. Core validation
 python validation/tests/crypto_performance_test.py

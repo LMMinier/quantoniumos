@@ -178,8 +178,8 @@ def encode(data: bytes, block_size: int = 256, prune_ratio: float = 0.0,
     if n == 0:
         raise ValueError("Cannot compress empty data")
     
-    # Convert to float signal
-    signal = np.array([float(b) for b in data], dtype=np.float64)
+    # Convert to float signal (vectorized, not per-byte Python loop)
+    signal = np.frombuffer(data, dtype=np.uint8).astype(np.float64)
     
     # Pad to block boundary
     pad_len = (block_size - (n % block_size)) % block_size
@@ -223,10 +223,11 @@ def encode(data: bytes, block_size: int = 256, prune_ratio: float = 0.0,
         scale_q = int(np.clip(mag_max, 0, 65535))
         all_symbols.append(scale_q)
         
-        # Interleave mag/phase for better entropy
-        for m, p in zip(mags_q, phases_q):
-            all_symbols.append(int(m))
-            all_symbols.append(int(p))
+        # Interleave mag/phase for better entropy (vectorized)
+        interleaved = np.empty(2 * len(mags_q), dtype=np.int64)
+        interleaved[0::2] = mags_q
+        interleaved[1::2] = phases_q
+        all_symbols.extend(interleaved.tolist())
     
     # ANS encode all symbols
     encoded_arr, freq_data = ans_encode(all_symbols, precision=RANS_PRECISION_DEFAULT)
@@ -424,8 +425,8 @@ def roundtrip_test(data: bytes, **kwargs) -> Tuple[bool, CodecStats, float]:
     lossless = (data == decoded)
     
     # Calculate PSNR
-    orig = np.array([float(b) for b in data])
-    recon = np.array([float(b) for b in decoded])
+    orig = np.frombuffer(data, dtype=np.uint8).astype(np.float64)
+    recon = np.frombuffer(decoded, dtype=np.uint8).astype(np.float64)
     
     mse = np.mean((orig - recon) ** 2)
     if mse < 1e-10:

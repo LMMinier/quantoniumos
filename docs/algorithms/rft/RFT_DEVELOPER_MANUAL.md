@@ -36,7 +36,7 @@ git clone https://github.com/mandcony/quantoniumos.git
 cd quantoniumos
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\\Scripts\\activate
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ### 0.2 Quick Smoke Tests
@@ -48,7 +48,7 @@ python scripts/irrevocable_truths.py
 ### 0.3 Minimal API Usage
 ```python
 import numpy as np
-from algorithms.rft.core.closed_form_rft import ClosedFormRFT
+from algorithms.rft.core.resonant_fourier_transform import rft_forward_square, rft_inverse_square
 
 N = 128
 rft = ClosedFormRFT(N)          # Constructs unitary Φ-based matrix directly
@@ -92,6 +92,8 @@ RFT (Resonance Field Transform) is a family of transforms using irrational phase
 | Concept | Code | Validation |
 | :-- | :-- | :-- |
 | Φ-RFT Core | `algorithms/rft/core/closed_form_rft.py` | `tests/rft/test_rft_vs_fft.py` |
+
+> **Note:** Throughout this manual, "Φ-RFT" refers to the **canonical** Gram-normalized $\text{frac}((k{+}1)\phi)$ basis unless explicitly labeled "legacy" or "variant".
 | Canonical Unitary | `algorithms/rft/core/canonical_true_rft.py` | `scripts/irrevocable_truths.py` |
 | Hybrid Codec | `algorithms/rft/compression/rft_hybrid_codec.py` | `scripts/verify_rate_distortion.py` |
 | RFT-SIS Lattice | `algorithms/rft/crypto/rft_sis/rft_sis_hash_v31.py` | `algorithms/rft/crypto/rft_sis/rft_sis_v31_validation_suite.py` |
@@ -189,7 +191,9 @@ The **Unified Orchestrator** is a C-level supervisor that manages the flow of da
 
 ## 3. Mathematical Appendix: The 10 Irrevocable Theorems
 
-This section summarizes the 10 fundamental theorems that establish the Φ-RFT framework. Full proofs and validation data are available in `docs/validation/RFT_THEOREMS.md`.
+This section summarizes the 10 fundamental theorems that establish the RFT framework. Full proofs and validation data are available in `docs/validation/RFT_THEOREMS.md`.
+
+> **Note on naming:** These theorems were originally stated for the "Fast Φ-RFT" factorization ($\Psi = D_\phi C_\sigma F$), which is a **legacy formulation**, not the canonical RFT. The canonical RFT is defined as the Gram-normalized $\text{frac}((k{+}1)\phi)$ basis. See `README.md` for the canonical definition.
 
 ### 3.1 Core Theorems (Unitary & Structural)
 
@@ -199,7 +203,8 @@ This section summarizes the 10 fundamental theorems that establish the Φ-RFT fr
 > *   **The Gap:** We do not yet have a formal proof that the Fast Form is a limit of the Canonical Form. They are currently distinct mathematical objects sharing the same phase philosophy. A legacy QR resonance-matrix basis exists for historical comparison only.
 
 #### Theorem 1: Unitarity (PROVEN - Fast Form)
-**Statement:** The Fast Φ-RFT factorization $\Psi = D_\phi C_\sigma F$ is exactly unitary: $\Psi^\dagger \Psi = I$.
+**Statement:** The legacy Fast Φ-RFT factorization $\Psi = D_\phi C_\sigma F$ is exactly unitary: $\Psi^\dagger \Psi = I$.
+**Note:** This applies to the deprecated fast form. The canonical RFT achieves unitarity via Gram normalization of the $\text{frac}((k{+}1)\phi)$ basis.
 **Validation:** Frobenius error < 10^{-14}$ across $N \in \{32, \dots, 512\}$.
 **Implication:** Perfect information preservation and energy conservation.
 
@@ -212,11 +217,11 @@ This section summarizes the 10 fundamental theorems that establish the Φ-RFT fr
 **Validation:** Empirical sparsity reaches **98.63% at $N=512$** (exceeds theory).
 
 #### Theorem 4: Non-Equivalence (PROVEN - Canonical Form)
-**Statement:** For $\beta \notin \mathbb{Z}$, the Canonical Φ-RFT is not a linear canonical transform (LCT/FrFT).
+**Statement:** For $\beta \notin \mathbb{Z}$, the Canonical RFT is not a linear canonical transform (LCT/FrFT).
 **Validation:** Quadratic residual > 0.3 rad; distinct from metaplectic group.
 
 #### Theorem 5: Quantum Chaos (VALIDATED - Canonical Form)
-**Statement:** Canonical Φ-RFT eigenvalue spacing exhibits level repulsion (Wigner-Dyson statistics).
+**Statement:** Canonical RFT eigenvalue spacing exhibits level repulsion (Wigner-Dyson statistics).
 **Implication:** Acts as a **mixer/scrambler** (critical for crypto/hashing).
 
 #### Theorem 6: Crypto-Agility (VALIDATED - Canonical Form)
@@ -227,7 +232,7 @@ This section summarizes the 10 fundamental theorems that establish the Φ-RFT fr
 
 #### Theorem 8: $O(N \log N)$ Complexity (PROVEN - Fast Form)
 **Statement:** The Fast variants admit $O(N \log N)$ implementations via FFT factorization.
-**Note:** This complexity applies to the `phi_phase_fft_optimized.py` implementation, not the canonical Gram-normalized basis.
+**Note:** This complexity applies to the fast variant (`rft_forward`/`rft_inverse` in `resonant_fourier_transform.py`), not the canonical Gram-normalized basis.
 
 #### Theorem 9: Twisted Convolution Algebra (PROVEN - Fast Form)
 **Statement:** $\Psi(x \star_{\phi,\sigma} h) = (\Psi x) \odot (\Psi h)$ (commutative/associative).
@@ -245,11 +250,14 @@ This section summarizes the 10 fundamental theorems that establish the Φ-RFT fr
 | **Mixed** | 56% | 52% | **35% [OK]** | **Hybrid** |
 
 **Corollaries:**
-*   **10.1 Log-Periodic Φ-RFT:** Log-frequency warped phase improves symbol statistics.
-*   **10.2 Convex Mixed Φ-RFT:** Interpolates between standard and log-periodic phases.
+*   **10.1 Log-Periodic RFT Variant:** Log-frequency warped phase improves symbol statistics.
+*   **10.2 Convex Mixed RFT Variant:** Interpolates between standard and log-periodic phases.
 
-### 3.3 Closed-Form Fast Φ-RFT (Implementation Note)
-The fast Φ-RFT implementation lives in `algorithms/rft/core/phi_phase_fft_optimized.py` and implements:
+### 3.3 Closed-Form Fast Φ-RFT (Legacy Implementation Note)
+
+> **⚠ LEGACY:** The factorization below ($\Psi = D_\phi C_\sigma F$) is the **old fast form**, not the canonical RFT. The canonical RFT uses $f_k = \text{frac}((k{+}1)\phi)$ with Gram normalization. See `README.md`.
+
+The legacy fast RFT implementation used:
 
 $$ \Psi = D_\phi C_\sigma F $$
 
@@ -257,7 +265,7 @@ where $F$ is the unitary FFT matrix (NumPy `norm="ortho"`), and $D_\phi, C_\sigm
 
 $$ \Psi^\dagger \Psi = F^\dagger C_\sigma^\dagger D_\phi^\dagger D_\phi C_\sigma F = F^\dagger I F = I $$
 
-The script `scripts/irrevocable_truths.py` verifies this numerically by checking $\max|\Psi^\dagger \Psi - I| < 10^{-15}$ for representative sizes $N$. This closed-form fast variant is the one used in benchmarks and hardware tests; it is distinct from the canonical Gram-normalized Φ-RFT, which serves as the mathematical reference but is not used in the performance path.
+The script `scripts/irrevocable_truths.py` verifies this numerically by checking $\max|\Psi^\dagger \Psi - I| < 10^{-15}$ for representative sizes $N$. This closed-form fast variant was historically used in benchmarks and hardware tests; it is distinct from the **canonical Gram-normalized RFT**, which is the authoritative definition in `README.md` and `algorithms/rft/core/resonant_fourier_transform.py`.
 
 ### 3.4 Comparison Table
 
@@ -336,7 +344,7 @@ The hybrid codec combines RFTs with classical compression techniques.
 ### 5.5 Summary Tables
 Representative sample (from `data/scaling_results.json`):
 
-| N | Sparsity (fraction zeros) | Max Unitarity Deviation (Original Φ-RFT) |
+| N | Sparsity (fraction zeros) | Max Unitarity Deviation (Legacy Standard Variant) |
 | :-- | :-- | :-- |
 | 32  | 0.8125 | 3.45e-15 |
 | 64  | 0.8906 | 6.46e-15 |
@@ -353,7 +361,7 @@ Notes: Unitarity deviation is max(|U†U−I|); sparsity refers to proportion of
 The high-performance backend (`libquantum_symbolic.so`) implements the RFT variants in C with Assembly optimizations.
 
 **Implemented Variants:**
-1.  **Standard (Original Φ-RFT):** Uses $\Phi^{-k}$ phase decay.
+1.  **Standard (Legacy φ-Phase):** Uses $\Phi^{-k}$ phase decay. Not the canonical RFT.
 2.  **Harmonic:** Uses cubic phase term $(kn)^3$.
 3.  **Fibonacci:** Uses Fibonacci sequence lattice.
 4.  **Chaotic:** Uses seeded random phase generation.

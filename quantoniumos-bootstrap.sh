@@ -422,7 +422,7 @@ Quick Start Commands:
   • Hardware sim:   cd hardware && bash verify_fixes.sh
 
 Next Steps:
-  1. Review the documentation: docs/DOCS_INDEX.md
+  1. Review the documentation: docs/INDEX.md
     2. Run the benchmark suite: python benchmarks/run_all_benchmarks.py
     3. Explore examples: experiments/README.md
     4. Read validation reports: docs/validation/RFT_THEOREMS.md

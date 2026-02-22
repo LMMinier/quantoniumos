@@ -10,16 +10,16 @@
 
 **Answer: No.**
 
-| Aspect | Windowed FFT | Φ-RFT |
-|--------|--------------|-------|
-| Basis | Sinusoids × window | Eigenvectors of autocorrelation operator |
-| Phase | Linear (2πkn/N) | Non-quadratic (φ-modulated) |
-| Construction | Multiplication | Eigendecomposition |
+| Aspect | Windowed FFT | RFT |
+|--------|--------------|-----|
+| Basis | Sinusoids × window | Gram-normalized φ-grid exponentials |
+| Phase | Linear (2πkn/N) | Irrational (frac((k+1)φ)) |
+| Construction | Multiplication | Gram normalization |
 | Magnitude spectrum | |Wx|_k = |w * x|_k | Different from FFT |
 
-The windowed FFT applies a multiplicative window to the signal before FFT. Φ-RFT uses an entirely different basis derived from the eigenvectors of a Toeplitz matrix encoding golden-ratio frequency pairs.
+The windowed FFT applies a multiplicative window to the signal before FFT. The RFT uses an entirely different basis derived from golden-ratio frequency spacing with Gram normalization for exact unitarity.
 
-**Mathematical proof:** The eigenvalues of the Φ-RFT operator K are not uniformly distributed, unlike the FFT's implicit circulant eigenvalues. See `algorithms/rft/theory/` for formal derivation.
+**Mathematical proof:** The eigenvalues of the RFT operator K are not uniformly distributed, unlike the FFT's implicit circulant eigenvalues. See `algorithms/rft/theory/` for formal derivation.
 
 ---
 
@@ -30,8 +30,8 @@ The windowed FFT applies a multiplicative window to the signal before FFT. Φ-RF
 | Transform | Complexity | Reason |
 |-----------|------------|--------|
 | FFT | O(N log N) | Exploits circulant structure |
-| Φ-RFT (naive) | O(N²) | General eigendecomposition |
-| Φ-RFT (fast) | O(N log N) | Exploits Toeplitz structure |
+| RFT (canonical) | O(N²) | Dense Gram-normalized basis |
+| RFT (hybrid) | O(N log N) | FFT + φ-phase modulation |
 
 **Why this is acceptable:**
 1. Basis can be precomputed once and reused
@@ -46,7 +46,7 @@ The windowed FFT applies a multiplicative window to the signal before FFT. Φ-RF
 
 **Answer: We explicitly show failure cases.**
 
-| Signal Class | Φ-RFT Win Rate | Comment |
+| Signal Class | RFT Win Rate | Comment |
 |--------------|----------------|---------|
 | Golden-ratio quasi-periodic | See ledger | In-family (expected to win) |
 | White noise | 0% | No structure (expected to lose) |
@@ -65,11 +65,11 @@ See [BENCHMARK_PROTOCOL.md](../BENCHMARK_PROTOCOL.md) for methodology.
 
 **Answer: Sparsity matters more than speed for specific applications.**
 
-**Use cases where Φ-RFT is appropriate:**
+**Use cases where the RFT is appropriate:**
 1. **Compression:** Fewer coefficients = smaller files, even if transform is slower
 2. **Denoising:** Better sparsity = better threshold-based denoising
 3. **Feature extraction:** Compact representation = better downstream ML
-4. **Biosignal analysis:** Quasi-periodic signals (EEG, ECG) match Φ-RFT structure
+4. **Biosignal analysis:** Quasi-periodic signals (EEG, ECG) match RFT structure
 
 **Use cases where FFT is better:**
 1. Real-time spectral analysis
@@ -83,14 +83,14 @@ See [BENCHMARK_PROTOCOL.md](../BENCHMARK_PROTOCOL.md) for methodology.
 
 **Answer:**
 
-| Aspect | Wavelets (DWT) | Φ-RFT |
-|--------|----------------|-------|
+| Aspect | Wavelets (DWT) | RFT |
+|--------|----------------|-----|
 | Localization | Time-frequency | Frequency only |
-| Basis | Mother wavelet + scaling | Autocorrelation eigenvectors |
+| Basis | Mother wavelet + scaling | Gram-normalized φ-grid |
 | Structure | Multi-resolution | Single resolution |
 | Best for | Transients, edges | Quasi-periodic signals |
 
-Wavelets excel at time-localized features. Φ-RFT excels at stationary quasi-periodic signals with golden-ratio frequency structure.
+Wavelets excel at time-localized features. The RFT excels at stationary quasi-periodic signals with golden-ratio frequency structure.
 
 **They are complementary, not competing.**
 
@@ -148,7 +148,7 @@ All hardware code is explicitly marked as "FEASIBILITY STUDY" in [CANONICAL.md](
 # Clone and setup
 git clone https://github.com/mandcony/quantoniumos.git
 cd quantoniumos
-pip install -r requirements.txt
+pip install -e .
 
 # Run canonical benchmarks
 python benchmarks/rft_realworld_benchmark.py --config standard
@@ -215,6 +215,11 @@ The hypothesis testing results (BPP 0.808, PSNR 52 dB) measured **coefficient sp
 - A production compression codec
 - A replacement for entropy coders
 - Better than existing compression standards
+
+**UPDATE (Feb 2026) — Real image R-D benchmark confirms this:**
+Run `python benchmarks/codec_rd_curve_real.py --max-images 4` on Kodak images.
+At 3.5 BPP, RFT achieves 19.0 dB PSNR vs JPEG's 37.6 dB — an **18.6 dB gap**.
+Full results: `results/rd_curves/rd_results.json`. See `docs/NOVEL_ALGORITHMS.md` § 5.5.
 
 **Validation:** `python algorithms/rft/compression/rft_binary_codec.py`
 

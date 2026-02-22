@@ -23,7 +23,7 @@
     • CONCLUSION: rank(C) = K = O(log N) for all tested N.  All tail eigenvalues < 1e-10.  QED.
 
 ─── Lemma 8.3b (Vandermonde Conditioning) [CONSTRUCTIVE] [✓] ────────────────────
-  The signal basis V has κ(V) → 1 as N → ∞ via Weyl equidistribution.
+  The signal basis V has V†V → I as N → ∞; κ(V) bounded and improving with N (Weyl equidistribution).
   Time: 0.003s
   Proof steps:
     • AXIOM: Weyl equidistribution — Σ exp(i2πnα)/N → 0 for irrational α.

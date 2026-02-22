@@ -79,7 +79,7 @@ class TestLemma83a:
 # ─── Lemma 8.3b: Vandermonde Conditioning ──────────────────────────────────────
 
 class TestLemma83b:
-    """Condition number κ(V) → 1 as N → ∞."""
+    """V†V → I as N → ∞; κ(V) bounded and improving."""
 
     def test_verified(self):
         result = prove_lemma_8_3b(SMALL_SIZES)

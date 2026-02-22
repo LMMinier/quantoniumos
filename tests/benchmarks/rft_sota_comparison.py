@@ -71,7 +71,7 @@ _here = _P(__file__).resolve()
 _candidates = [_here.parents[i] for i in range(1, min(6, len(_here.parents)))]
 _added = False
 for cand in _candidates:
-    if (cand / "algorithms" / "rft" / "core" / "closed_form_rft.py").exists():
+    if (cand / "algorithms" / "rft" / "core" / "resonant_fourier_transform.py").exists():
         if str(cand) not in sys.path:
             sys.path.insert(0, str(cand))
             _added = True
@@ -87,7 +87,7 @@ try:
     from algorithms.rft.core.resonant_fourier_transform import rft_forward_square as rft_forward, rft_inverse_square as rft_inverse
 except ModuleNotFoundError as e:
     raise SystemExit(
-        "Import failure: cannot locate 'algorithms.rft.core.closed_form_rft'. "
+        "Import failure: cannot locate 'algorithms.rft.core.resonant_fourier_transform'. "
         "Ensure you run from repository root and that __init__.py files exist. "
         f"Checked candidates: {[str(c) for c in _candidates]}"
     ) from e
@@ -130,8 +130,8 @@ def rft_encode(img_array: np.ndarray, mode: str, keep_fraction: float = 0.05) ->
       2. Compute magnitude, keep top-K coefficients (K = keep_fraction * N).
       3. Store (indices, complex values) with complex64 quantization.
 
-    This uses the verified closed-form Φ-RFT implementation from
-    algorithms.rft.core.closed_form_rft (rft_forward/rft_inverse).
+    This uses the canonical Φ-RFT implementation from
+    algorithms.rft.core.resonant_fourier_transform (rft_forward/rft_inverse).
     """
     h, w, c = img_array.shape
     artifact = {"shape": (h, w, c), "channels": []}
@@ -284,7 +284,7 @@ def write_outputs(results: List[Dict[str, Any]], args):
     with md_path.open("w") as f:
         f.write("# Experimental Compression Benchmark\n\n")
         f.write("Quality parameter: {}\n\n".format(args.quality))
-        f.write("NOTE: RFT figures use the verified Φ-RFT transform (closed_form_rft.py). ")
+        f.write("NOTE: RFT figures use the canonical Φ-RFT transform (resonant_fourier_transform.py). ")
         f.write("Results reflect real transform performance with top-K coefficient retention.\n\n")
         f.write("\n".join(lines) + "\n")
 

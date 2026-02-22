@@ -427,7 +427,7 @@ Theorem 8 applies when:
 | **Covariance structure** | ✅ PROVEN | Derives sinc·Bessel kernel from ensemble definition |
 | **Eigenfunction alignment** | ✅ PROVEN | Davis-Kahan sin(Θ) theorem |
 | **Finite-rank covariance (Lemma 8.3a)** | ✅ CONSTRUCTIVE | Vandermonde rank argument: rank(C) = K = O(log N) exactly |
-| **Vandermonde conditioning (Lemma 8.3b)** | ✅ CONSTRUCTIVE | κ(V) → 1 as N → ∞ via Weyl equidistribution |
+| **Vandermonde conditioning (Lemma 8.3b)** | ✅ CONSTRUCTIVE | V†V → I as N → ∞; κ(V) bounded (Weyl equidistribution) |
 | **Oracle concentration (Lemma 8.3c)** | ✅ CONSTRUCTIVE | rank-K oracle achieves K₀.₉₉ = K = O(log N) |
 | **DFT spectral leakage (Lemma 8.3d)** | ✅ ~~COMPUTATIONAL~~ → **DIOPHANTINE** | Upgraded: Hurwitz 1891 forces DFT-golden misalignment |
 | **RFT vs DFT gap (Lemma 8.3e)** | ✅ ~~COMPUTATIONAL~~ → **DIOPHANTINE** | Upgraded: RFT zero-mismatch vs Hurwitz-forced DFT leakage |
@@ -459,7 +459,7 @@ Theorem 8 applies when:
 
 **What the Diophantine proof establishes:**
 1. ✅ The ensemble covariance has EXACT rank K = O(log N) — the N−K tail eigenvalues are machine-zero.
-2. ✅ The signal basis condition number κ(V) → 1 quantitatively via Erdős-Turán discrepancy: off-diagonal Gram entries = O(log N / N).
+2. ✅ The signal basis satisfies V†V → I quantitatively via Erdős-Turán discrepancy: off-diagonal Gram entries = O(log N / N); κ(V) bounded and improving with N.
 3. ✅ An oracle O(log N)-dimensional basis captures 100% of ensemble energy.
 4. ✅ The DFT requires K₀.₉₉(F) > K because Hurwitz's theorem guarantees every golden harmonic is misaligned from every DFT bin (ε > 0).
 5. ✅ The sinc²(ε) < 1 leakage per harmonic forces the DFT to use O(K·w) bins where w ≥ 1 per harmonic.

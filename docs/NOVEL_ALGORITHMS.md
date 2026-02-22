@@ -47,57 +47,64 @@ Note: The "65+" figure previously stated was a rough upper bound. The **document
 
 > **EMPIRICALLY VERIFIED (archived)**: Gram-normalized RFT is unitary (energy=1.0) and perfectly invertible (rel_err=1e-14). See [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json).
 
-### 1.1 Formal Definition
+### 1.1 Canonical RFT Definition
 
-**Definition 1.1 (φ-Phase Function)**:
+The **canonical Resonant Fourier Transform (RFT)** is defined as the Gram-normalized irrational-frequency exponential basis:
+
 ```
-φ_phase(n, k, N) = (n · φ^k) / N + (k · φ · n²) / N²
+Φ_{n,k} = (1/√N) exp(j 2π frac((k+1)·φ) · n)
+
+Φ̃ = Φ (Φᴴ Φ)^{-1/2}     (Gram / Löwdin normalization)
+
+Forward:  X = Φ̃ᴴ x
+Inverse:  x = Φ̃  X
 
 where φ = (1 + √5) / 2 ≈ 1.618033988749895 (golden ratio)
+      frac(·) = fractional part, mapping frequencies to [0, 1)
 ```
 
-**Definition 1.2 (Resonant Fourier Transform)**:
-For input x ∈ ℂ^N, the RFT is defined as:
-```
-R[k] = Σ_{n=0}^{N-1} x[n] · exp(-2πi · φ_phase(n, k, N)),  k = 0, 1, ..., N-1
-```
+This definition (from `README.md` and `algorithms/rft/core/resonant_fourier_transform.py`) ensures exact unitarity at finite N while preserving golden-ratio resonance structure. It is the **only** definition that should be referred to as "the RFT" or "canonical RFT".
 
-**Definition 1.3 (Inverse RFT)**:
-```
-x[n] = (1/N) · Σ_{k=0}^{N-1} R[k] · exp(+2πi · φ_phase(n, k, N))
-```
+> **⚠ LEGACY WARNING — Old φ-Phase Formula (Do NOT use as "the RFT")**
+>
+> An earlier formulation used a different phase function:
+> ```
+> φ_phase(n, k, N) = (n · φ^k) / N + (k · φ · n²) / N²
+> ```
+> This **legacy φ-phase RFT** is NOT unitary (condition number κ ≈ 400 at N=256),
+> is NOT the canonical RFT, and should not be used except for historical comparison.
+> It is preserved in `algorithms/rft/core/rft_phi_legacy.py` for backward compatibility.
 
-### 1.2 Theorem Statements
+### 1.2 Theorem Statements (Canonical RFT)
 
-**Theorem 1.1 (Unitarity — CONDITIONAL)**:
-Let Ψ ∈ ℂ^{N×N} be the RFT matrix with Ψ_{kn} = exp(-2πi · φ_phase(n,k,N)).
+**Theorem 1.1 (Unitarity — PROVEN by construction)**:
+Let Φ̃ = Φ (Φᴴ Φ)^{-1/2} be the Gram-normalized canonical RFT basis.
 
-*Statement*: Ψ†Ψ = I_N (unitarity).
+*Statement*: Φ̃ᴴ Φ̃ = I_N (unitarity).
 
-*Status*: **NO FORMAL PROOF for raw φ-phase matrix.**
+*Status*: **PROVEN by Gram normalization of full-rank Φ.** Verified empirically at machine precision (energy_ratio = 1.0).
 
-*What IS constructed*: After QR orthonormalization Ψ_ortho = Q from QR decomposition of Ψ, we have Q†Q = I by construction. This is a tautology, not a theorem about φ-phase structure.
+*Note*: The legacy φ-phase matrix (Definition above) is NOT unitary without Gram normalization. Its raw condition number κ ≈ 400 at N=256.
 
-**Theorem 1.2 (Invertibility)**:
-*Statement*: If Ψ is full rank, then R⁻¹ exists.
+**Theorem 1.2 (Invertibility — PROVEN)**:
+*Statement*: The canonical Φ̃ is unitary, so Φ̃⁻¹ = Φ̃ᴴ.
 
-*Proof sketch*: det(Ψ) ≠ 0 is observed numerically for N ≤ 4096 (not archived). No closed-form proof.
+*Proof*: Direct consequence of Gram normalization of the full-rank Vandermonde-like Φ with irrational nodes (Theorem 2 in THEOREMS_RFT_IRONCLAD.md).
 
-*Status*: **OBSERVED (not archived); no formal proof.**
+*Status*: **PROVEN.** Verified: rel_l2_err ≈ 1e-14.
 
-**Theorem 1.3 (Stability Bound — OPEN)**:
+**Theorem 1.3 (Stability Bound — EMPIRICALLY VERIFIED)**:
 *Statement*: ‖R(x + ε)‖₂ ≤ (1 + δ) ‖R(x)‖₂ for ‖ε‖₂ < η.
 
-*Status*: **No formal bound.** Empirical condition number κ(Ψ) ≈ 400 at N=256 before orthonormalization suggests potential instability.
+*Status*: **Empirically verified.** Error grows as O(N·ε_mach) — well-conditioned.
 
 ### 1.3 Proof Status Summary
 
 | Property | Claimed | Status | Evidence |
 |----------|---------|--------|----------|
-| Unitarity (raw Ψ) | ❌ | OBSERVED (non-unitary) | Condition number ~400 |
-| Unitarity (gram-normalized) | ✅ | CONSTRUCTED + EMPIRICALLY VERIFIED (archived) | **energy_ratio = 1.0**; [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
-| Invertibility (default API) | ❌ | OBSERVED (mismatch) | Default `rft_forward/rft_inverse` are mismatched (waveform vs square) |
-| Invertibility (gram mode) | ✅ | CONSTRUCTED + EMPIRICALLY VERIFIED (archived) | **rel_l2_err = 1e-14**; [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
+| Unitarity (legacy φ-phase, raw) | ❌ | NOT UNITARY | Condition number ~400 — **this is NOT the canonical RFT** |
+| Unitarity (canonical, Gram-normalized) | ✅ | PROVEN + EMPIRICALLY VERIFIED | **energy_ratio = 1.0**; [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
+| Invertibility (canonical, Gram mode) | ✅ | PROVEN + EMPIRICALLY VERIFIED | **rel_l2_err = 1e-14**; [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
 | Stability bound | ✅ | EMPIRICALLY VERIFIED (archived) | Error grows as O(N·ε_mach); [data/artifacts/rft_stability/manifest.json](data/artifacts/rft_stability/manifest.json) |
 | O(N log N) algorithm | ❌ | OBSERVED (unavailable) | No factorization known |
 
@@ -159,7 +166,7 @@ data/artifacts/rft_stability/
 |-----------|------|-------------|------------|
 | **Resonant Fourier Transform** | [resonant_fourier_transform.py](../algorithms/rft/core/resonant_fourier_transform.py) | Core transform | O(N²) |
 | **CanonicalTrueRFT** | [canonical_true_rft.py](../algorithms/rft/core/canonical_true_rft.py) | With unitarity validation | O(N²) |
-| **φ-Phase FFT Optimized** | [phi_phase_fft_optimized.py](../algorithms/rft/core/phi_phase_fft_optimized.py) | Fused `D_φ C_σ F` | O(N²) |
+| **φ-Phase FFT (Deprecated)** | *(removed — use canonical RFT)* | Fused `D_φ C_σ F` | O(N²) |
 | **Golden Ratio Unitary** | [golden_ratio_unitary.py](../algorithms/rft/core/golden_ratio_unitary.py) | QR orthonormalization | **O(N³)** |
 | **Symbolic Wave Computer** | [symbolic_wave_computer.py](../algorithms/rft/core/symbolic_wave_computer.py) | Wave-domain logic | O(N×bits) |
 
@@ -272,25 +279,42 @@ data/codec_benchmark/
 | **FH4_Edge_Aware** | [hybrid_mca_fixes.py](../experiments/hypothesis_testing/hybrid_mca_fixes.py) | Edge-preserving cascade | 0.80 | η=0 | ❌ No |
 | **FH5_Entropy_Guided** ⭐ | [hybrid_mca_fixes.py](../experiments/hypothesis_testing/hybrid_mca_fixes.py) | Entropy-based selection | **0.41** | η=0 | ❌ No |
 
-### 5.5 Required Baseline Comparison
+### 5.5 Baseline Comparison — Real R-D Results (Kodak)
 
-Before claiming H3 or FH5 are "good", we must show:
+> **Benchmark run**: `python benchmarks/codec_rd_curve_real.py --max-images 4 --max-pixels 49152`
+> Kodak PhotoCD images 01-04, downscaled to ~264×176. Results in `results/rd_curves/`.
 
 | Codec | BPP Range | PSNR Range | SSIM Range | Status |
 |-------|-----------|------------|------------|--------|
-| JPEG (libjpeg-turbo) | 0.1–2.0 | 25–45 dB | 0.80–0.99 | ❌ Not run |
-| WebP | 0.1–2.0 | 28–48 dB | 0.85–0.99 | ❌ Not run |
-| AVIF | 0.05–1.5 | 30–50 dB | 0.88–0.99 | ❌ Not run |
-| DCT-only (8×8) | 0.2–2.0 | 24–42 dB | 0.78–0.98 | ✅ **Reproducible (synthetic)** |
-| Wavelet (db4) | 0.1–2.0 | 26–44 dB | 0.82–0.98 | ❌ Not run |
-| **H3** | 7.65 | 47.86 dB | ? | ✅ **Reproducible (synthetic)** |
-| **FH5** | 7.65 | 47.86 dB | ? | ✅ **Reproducible (synthetic)** |
+| JPEG (libjpeg-turbo) | 0.41–4.80 | 23.3–41.0 dB | 0.58–0.98 | ✅ **Real Kodak** |
+| WebP (libwebp) | 0.24–2.91 | 27.3–37.5 dB | 0.74–0.97 | ✅ **Real Kodak** |
+| AVIF (libaom) | 0.12–3.80 | 24.8–38.1 dB | 0.64–0.97 | ✅ **Real Kodak** |
+| **RFT-Binary** | 3.53–87.5 | 19.0–∞ dB | 0.36–1.00 | ✅ **Real Kodak** |
 
-**Evidence artifacts**: `data/artifacts/codec_benchmark/manifest.json` (commit: 3bbe550d94f8, seed: 42)
+#### Head-to-head at matched bitrate (~3.5 BPP)
 
-**⚠️ Limitation**: Current R-D curves are on **synthetic 256×256 gradients** only. Kodak/Tecnick validation still required.
+| Codec | BPP | PSNR (dB) | SSIM | Verdict |
+|-------|-----|-----------|------|---------|
+| RFT-Binary (prune=0.95) | **3.53** | **19.0** | **0.36** | |
+| JPEG (q=90) | 3.29 | 37.6 | 0.96 | **+18.6 dB better** |
+| WebP (q=95) | 2.91 | 37.5 | 0.97 | **+18.5 dB better** |
+| AVIF (q=90) | 2.87 | 37.7 | 0.97 | **+18.7 dB better** |
 
-**To validate on real images**: `python benchmarks/codec_rd_curve.py --dataset kodak --output data/codec_benchmark/`
+> **⚠️ CONCLUSION: The RFT codec does NOT compete with industry codecs for image compression.**
+>
+> At every comparable bitrate, JPEG/WebP/AVIF produce **15–19 dB higher PSNR**.
+> RFT's "lossless" mode (prune=0, 16-bit quant) requires **87.5 BPP** — almost
+> **11× the raw 8-bit RGB** (24 BPP) — because it encodes complex-valued
+> coefficients (magnitude + phase) with full precision.
+>
+> This is expected: the RFT φ-grid basis is NOT optimized for natural-image
+> energy compaction the way DCT (JPEG) or wavelet (AVIF/JPEG2000) bases are.
+> The RFT's value lies in spectral analysis and signal processing.
+
+**Evidence artifacts**: `results/rd_curves/rd_results.json`, `results/rd_curves/rd_summary.json`,
+`results/rd_curves/rd_plot_psnr.png`, `results/rd_curves/rd_plot_ssim.png`
+
+**To reproduce**: `python benchmarks/codec_rd_curve_real.py --max-images 24 --max-pixels 49152`
 
 ### 5.6 Medical Imaging Hybrids
 
@@ -522,11 +546,11 @@ The script generates CTR-mode and random-plaintext encryption streams suitable f
 | Transform | Naive | Fast Algorithm? | Status |
 |-----------|-------|-----------------|--------|
 | FFT | O(N²) | O(N log N) | **Established** (Cooley–Tukey) |
-| φ-RFT | O(N²) | O(N log N)? | **NO FORMAL PROOF** — no published factorization |
+| Canonical RFT | O(N²) | O(N log N)? | **NO FORMAL PROOF** — no published factorization |
 | QR-orthonormalized RFT | O(N³) | — | Inherent to dense QR |
 
-**Open problem**: Does φ-RFT admit a fast O(N log N) algorithm? This would require either:
-1. A sparse/structured factorization of the φ-phase matrix, or
+**Open problem**: Does the canonical RFT admit a fast O(N log N) algorithm? This would require either:
+1. A sparse/structured factorization of the φ-grid basis matrix, or
 2. A reduction to FFT + O(N) post-processing
 
 Neither has been demonstrated.

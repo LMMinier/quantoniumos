@@ -245,7 +245,7 @@ except FileNotFoundError:
 
 ```bash
 # Install Python dependencies
-pip install -r requirements.txt
+pip install -e .
 
 # Verify key imports
 python -c "
@@ -303,7 +303,7 @@ python tools/run_all_tests.py --quick
 If tests fail, check:
 
 1. **Import paths**: Ensure `PYTHONPATH` includes `src/` directories
-2. **Dependencies**: Verify `requirements.txt` packages installed
+2. **Dependencies**: Verify `pyproject.toml` packages installed (`pip install -e .`)
 3. **Disk space**: Ensure sufficient space in `results/` directory
 4. **Permissions**: Verify write access to output directories
 

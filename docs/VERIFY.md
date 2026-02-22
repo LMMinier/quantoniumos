@@ -6,7 +6,7 @@ Exact commands to verify the v2.0.1 release from a clean checkout.
 
 ```
 Python >= 3.11
-pip install -r requirements-core.txt
+pip install -e .
 ```
 
 ## 1. Core test suite (should show 0 failures)
@@ -30,21 +30,14 @@ pytest tests/validation/test_mixing_quality.py::TestSpectralFlatness::test_energ
 # Expected: 3 passed (impulse, sine, noise)
 ```
 
-## 4. Lock-file portability (no machine-specific paths)
+## 4. Canonical RFT import
 
 ```bash
-grep -cE 'file://|/workspaces/|/home/| -e ' requirements-lock-core.txt
-# Expected: 0 (grep exit code 1 = no matches)
+python -c "from algorithms.rft.core.canonical_true_rft import CanonicalTrueRFT; print('OK')"
+# Expected: OK
 ```
 
-## 5. Deprecation warning fires
-
-```bash
-python -W all -c "from algorithms.rft.core.phi_phase_fft_optimized import phi_phase_fft_optimized" 2>&1 | grep -c DeprecationWarning
-# Expected: 1
-```
-
-## 6. RFT unitarity (roundtrip error < 1e-14)
+## 5. RFT unitarity (roundtrip error < 1e-14)
 
 ```bash
 python -c "
@@ -59,7 +52,7 @@ assert err < 1e-14
 # Expected: Unitarity error: ~1e-16
 ```
 
-## 7. RFT ≠ FFT (non-equivalence)
+## 6. RFT ≠ FFT (non-equivalence)
 
 ```bash
 python -c "
@@ -92,7 +85,7 @@ assert corr < 0.5
 GitHub Actions CI (`.github/workflows/ci.yml`) runs on push to `main`/`develop`
 when paths under `src/`, `algorithms/`, `tests/`, `requirements*.txt`, or
 `pyproject.toml` change. CI installs a minimal set (numpy, scipy, sympy,
-matplotlib, pytest, brotli, zstandard) — **not** from `requirements.txt`. It
+matplotlib, pytest, brotli, zstandard) — **not** from requirements files. It
 runs:
 
 - RFT unitarity + non-equivalence inline checks

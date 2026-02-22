@@ -201,7 +201,7 @@ For golden quasi-periodic ensemble ℰ_φ with K = O(log N) harmonics:
 
 **Constructive Proof Structure (5 Lemmas — v2.0.2):**
 1. **Lemma 8.3a (Finite-Rank Covariance):** ✅ PROVEN — Ensemble covariance C = VV†/K has rank exactly K by Vandermonde algebra. The N−K eigenvalues are machine-zero (~10⁻¹⁷). No approximation.
-2. **Lemma 8.3b (Vandermonde Conditioning):** ✅ PROVEN — Vandermonde matrix V on φ-grid has full column rank with condition number κ(V) → 1, verified via Weyl perturbation bounds.
+2. **Lemma 8.3b (Vandermonde Conditioning):** ✅ PROVEN — Vandermonde matrix V on φ-grid has full column rank with V†V → I as N → ∞; κ(V) bounded and improving, verified via Weyl perturbation bounds.
 3. **Lemma 8.3c (Oracle Concentration):** ✅ PROVEN — K₀.₉₉ of the oracle RFT basis = K = O(log N) exactly, since the K-dim subspace captures 100% energy.
 4. **Lemma 8.3d (DFT Leakage Lower Bound):** ✅ ~~COMPUTATIONAL~~ → **DIOPHANTINE** — K₀.₉₉(DFT) ∝ N^0.75; Hurwitz 1891 forces DFT-golden misalignment.
 5. **Lemma 8.3e (RFT vs DFT Gap):** ✅ ~~COMPUTATIONAL~~ → **DIOPHANTINE** — Gap ΔK₀.₉₉ ∝ N^1.04; RFT zero-mismatch vs Hurwitz-forced DFT leakage.

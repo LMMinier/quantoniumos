@@ -201,7 +201,7 @@ class TestLemma84c:
             assert D < bound * 1.1, f"N={N}: D*={D} exceeds bound={bound}"
 
     def test_kappa_converging(self):
-        """κ(V) → 1 as N → ∞."""
+        """V†V → I as N → ∞ (κ(V) bounded, improving)."""
         result = prove_lemma_8_4c(FULL_SIZES)
         kappas = [result.certificates[f"N{N}_kappa_V"] for N in FULL_SIZES]
         assert kappas[-1] < 1.2, f"κ({FULL_SIZES[-1]}) = {kappas[-1]} not near 1"

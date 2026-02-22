@@ -17,7 +17,8 @@ LEMMA 8.3a  (Finite-Rank Covariance)
 
 LEMMA 8.3b  (Vandermonde Conditioning)
     The signal basis V ∈ ℂ^{N×K} is a Vandermonde matrix at golden-ratio
-    nodes with κ(V) → 1 as N → ∞ (Weyl equidistribution).
+    nodes with V†V → I as N → ∞; κ(V) is bounded and improves
+    with N under Weyl equidistribution / Erdős-Turán discrepancy bounds.
 
 LEMMA 8.3c  (Oracle Concentration Bound)
     There exists a rank-K = O(log N) unitary projection achieving
@@ -246,8 +247,8 @@ def prove_lemma_8_3b(sizes: List[int] = None) -> LemmaResult:
     LEMMA 8.3b (Vandermonde Conditioning — Weyl Equidistribution).
 
     STATEMENT:
-        The signal basis V ∈ ℂ^{N×K} with K = O(log N) has
-        condition number κ(V) → 1 as N → ∞.
+        The signal basis V ∈ ℂ^{N×K} with K = O(log N) satisfies
+        V†V → I as N → ∞; κ(V) is bounded and improves with N.
 
     PROOF:
         1. (V†V)_{ij} = (1/N) Σ_{n=0}^{N-1} exp(i2πn(j-i)φ).
@@ -255,7 +256,7 @@ def prove_lemma_8_3b(sizes: List[int] = None) -> LemmaResult:
            theorem (AX5), since (j-i)φ is irrational:
            (1/N) Σ exp(i2πn(j-i)φ)) → 0 as N → ∞.
         3. For i = j: the sum equals 1.
-        4. Therefore V†V/N → I_K, and κ(V) → 1.                        □
+        4. Therefore V†V/N → I_K; κ(V) is bounded, improving with N.    □
     """
     sizes = sizes or [32, 64, 128, 256, 512]
     t0 = time.time()
@@ -301,7 +302,7 @@ def prove_lemma_8_3b(sizes: List[int] = None) -> LemmaResult:
     return LemmaResult(
         name="Lemma 8.3b (Vandermonde Conditioning)",
         statement=(
-            "The signal basis V has κ(V) → 1 as N → ∞ via Weyl equidistribution."
+            "The signal basis V has V†V → I as N → ∞; κ(V) bounded and improving with N (Weyl equidistribution)."
         ),
         status="CONSTRUCTIVE",
         verified=verified,
@@ -644,7 +645,7 @@ def prove_theorem_8(sizes: List[int] = None, n_trials: int = 200) -> Theorem8Pro
         (i)   The ensemble covariance has EXACT rank K = O(log N).
               [Lemma 8.3a — CONSTRUCTIVE]
 
-        (ii)  The signal basis V has κ(V) → 1 as N → ∞.
+        (ii)  The signal basis V has V†V → I as N → ∞; κ(V) bounded.
               [Lemma 8.3b — CONSTRUCTIVE]
 
         (iii) The oracle basis achieves K₀.₉₉ = K = O(log N).

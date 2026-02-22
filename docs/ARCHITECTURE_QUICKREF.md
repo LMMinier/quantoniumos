@@ -1,6 +1,6 @@
-# QuantoniumOS Architecture Quick Reference
+# RFT Architecture Quick Reference
 
-**One-page cheat sheet for the multi-layer stack**
+**One-page cheat sheet for the implementation stack**
 
 ---
 

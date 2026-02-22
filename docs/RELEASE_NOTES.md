@@ -58,7 +58,7 @@ critical issues. All resolved in this patch:
 7. **README.md split** — From 1181 to 145 lines; technical detail in `docs/TECHNICAL_DETAILS.md`.
 8. **Mobile screens wired** — All 8 disconnected screens registered in AppNavigator.
 9. **Stale docs updated** — `STATE.md` and `RELEASE_NOTES.md` updated; Structural Distinctness marked proven (Theorem 6).
-10. **Dependency management restructured** — Added reproducible core lockfile (`requirements-lock-core.txt`) derived from CI/dev venv via `pip freeze`. Split requirements into core/dev/ml-extra. `requirements.txt` retains version ranges; lock captures exact installed versions only.
+10. **Dependency management restructured** — All dependencies consolidated into `pyproject.toml` with optional extras (`[dev]`, `[ai]`, `[benchmark]`, `[all]`). Install via `pip install -e '.[dev]'`.
 
 ### Canonical φ-Formula Alignment
 

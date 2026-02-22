@@ -20,60 +20,53 @@ Resonant Fourier Transform (RFT) - Canonical Definition
 
 USPTO Patent 19/169,399: "Hybrid Computational Framework for Quantum and Resonance Simulation"
 
-THE RESONANT FOURIER TRANSFORM (RFT)
-------------------------------------
-The RFT is a transform that maps discrete data into a continuous waveform domain
-using golden-ratio (φ) frequency and phase structure.
+CANONICAL RFT DEFINITION
+-------------------------
+The Resonant Fourier Transform (RFT) is the Gram-normalized irrational-frequency
+exponential basis using golden-ratio (φ) frequency spacing:
 
-MATHEMATICAL DEFINITION:
-=======================
+    Φ_{n,k} = (1/√N) exp(j 2π frac((k+1)·φ) · n)
+    Φ̃ = Φ (Φᴴ Φ)^{-1/2}    (Gram / Löwdin normalization)
 
-Forward RFT (Data → Wave):
-    RFT(x)[t] = Σₖ x[k] × Ψₖ(t)
+    Forward:  X = Φ̃ᴴ x
+    Inverse:  x = Φ̃  X
 
-where the RFT BASIS FUNCTIONS are:
+This ensures Φ̃ᴴ Φ̃ = I (exact unitarity at finite N).
+
+Key frequencies: f_k = frac((k+1)·φ) ∈ [0, 1), where φ = (1+√5)/2.
+
+LEGACY WAVEFORM MODE (not "the RFT")
+--------------------------------------
+This module also supports a legacy waveform synthesis mode that maps discrete
+data into a continuous waveform domain using:
+
     Ψₖ(t) = exp(2πi × fₖ × t + i × θₖ)
-    
-    fₖ = (k+1) × φ       (Resonant Frequency)
+    fₖ = (k+1) × φ       (Resonant Frequency — unwrapped)
     θₖ = 2π × k / φ      (Golden Phase)
-    φ = (1+√5)/2         (Golden Ratio ≈ 1.618034)
 
-FINITE-N CORRECTION (CANONICAL):
-===============================
-For finite discrete signals, the raw irrational basis Φ is not exactly unitary.
-The CANONICAL RFT applies Gram-matrix normalization (Loewdin orthogonalization):
+⚠ The legacy waveform mode (non-square, non-Gram-normalized) is NOT "the RFT".
+It is preserved for backward compatibility with existing benchmarks and demos.
+For the canonical RFT, use `rft_basis_matrix(N, N, use_gram_normalization=True)`.
 
-    Φ̃ = Φ (Φᴴ Φ)⁻¹/²
+See also: `rft_phi_legacy.py` for the even older locked legacy implementation.
 
-This ensures Φ̃ is exactly unitary (Φ̃ᴴ Φ̃ = I) while preserving the resonance structure.
-
-Inverse RFT (Wave → Data):
-    x[k] = ⟨W, Ψₖ⟩ = (1/T) ∫₀ᵀ W(t) × Ψₖ*(t) dt
+COMPARISON TO FFT:
+-----------------
+| Property        | FFT              | RFT (Canonical)           |
+|-----------------|------------------|---------------------------|
+| Frequencies     | fₖ = k/N         | fₖ = frac((k+1)·φ)       |
+| Periodicity     | Exactly periodic | Quasi-periodic            |
+| Basis           | e^(2πikn/N)      | Gram-normalized φ-grid    |
+| Unitarity       | Built-in         | Via Gram normalization    |
+| Computation     | O(N log N)       | O(N²) apply, O(N³) build |
 
 WHY "RESONANT":
 --------------
 The golden ratio creates RESONANCE because:
 1. φ² = φ + 1 (self-similar scaling - the ONLY number with this property)
-2. Consecutive frequencies fₖ, fₖ₊₁ have ratio → φ (Fibonacci-like growth)
-3. This creates quasi-periodic "beating" patterns that never exactly repeat
-4. The basis functions RESONATE with signals having golden-ratio structure
-
-COMPARISON TO FFT:
------------------
-| Property        | FFT              | RFT                    |
-|-----------------|------------------|------------------------|
-| Frequencies     | fₖ = k (integer) | fₖ = k×φ (irrational)  |
-| Periodicity     | Exactly periodic | Quasi-periodic         |
-| Aliasing        | At N boundaries  | No exact aliasing      |
-| Basis           | e^(2πikn/N)      | e^(2πi(k+1)φt + iθₖ)   |
-| Computation     | O(N log N)       | O(N²) naive, O(N) per coeff |
-
-KEY INNOVATION:
---------------
-The RFT enables COMPUTATION IN THE WAVE DOMAIN:
-- Binary data encodes as amplitude/phase
-- Logic operations work directly on waveforms
-- No need to decode back for intermediate results
+2. Irrational frequencies never align with integer DFT bins
+3. On golden quasi-periodic signals, RFT concentrates energy in O(log N) coefficients
+   vs O(N^0.75) for DFT (Theorem 8, grounded in Hurwitz 1891)
 """
 
 import numpy as np

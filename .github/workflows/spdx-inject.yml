@@ -31,8 +31,8 @@ jobs:
       - name: Add SPDX headers (AGPL vs Claims-NC)
         run: |
           python -V
-          python spdx_inject.py --dry-run || true
-          python spdx_inject.py
+          python scripts/infra/spdx_inject.py --dry-run || true
+          python scripts/infra/spdx_inject.py
       - name: Commit changes
         run: |
           set -e

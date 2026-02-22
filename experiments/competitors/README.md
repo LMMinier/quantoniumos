@@ -26,8 +26,8 @@ python experiments/competitors/run_all_benchmarks.py --benchmarks transforms,com
 ## Dependencies
 
 ```bash
-# Core dependencies (in requirements.txt)
-pip install numpy scipy
+# Core dependencies (in pyproject.toml)
+pip install -e .
 
 # Additional benchmark dependencies
 pip install brotli zstandard cryptography pywavelets psutil

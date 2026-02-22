@@ -486,7 +486,7 @@ def prove_lemma_8_4c(sizes: List[int] = None) -> DiophantineLemmaResult:
            most h, sin(πhφ) is bounded away from 0.
         4. Optimizing H and summing gives D*_N ≤ C log(N)/N.
         5. For the Gram matrix: |(V†V)_{ij}| = |(1/N)Σ e^{2πin(i-j)φ}|
-           ≤ D*_N + 1/N = O(log N / N), quantifying κ(V) → 1.          □
+           ≤ D*_N + 1/N = O(log N / N), quantifying V†V → I.           □
     """
     sizes = sizes or [32, 64, 128, 256, 512]
     t0 = time.time()
@@ -567,14 +567,14 @@ def prove_lemma_8_4c(sizes: List[int] = None) -> DiophantineLemmaResult:
 
     steps.append(
         f"CONCLUSION: D*_N decreasing as O(log N / N), off-diagonal "
-        f"Gram entries vanishing, κ(V) → 1.  Quantitative Weyl verified.  QED."
+        f"Gram entries vanishing, V†V → I (κ(V) bounded).  Quantitative Weyl verified.  QED."
     )
 
     return DiophantineLemmaResult(
         name="Lemma 8.4c (Quantitative Weyl Discrepancy)",
         statement=(
             "D*_N({kφ mod 1}) ≤ C·log(N)/N with C = 1/(2 log φ). "
-            "Gram off-diagonals decay as O(log N / N), giving κ(V) → 1."
+            "Gram off-diagonals decay as O(log N / N), giving V†V → I (κ(V) bounded)."
         ),
         classical_reference="Weyl 1916 / Erdős-Turán 1948 / Ostrowski 1922",
         status="CLASSICAL",
@@ -1045,8 +1045,8 @@ def prove_theorem_8_diophantine(
         (i)   The ensemble covariance has EXACT rank K = O(log N).
               [Lemma 8.3a — CONSTRUCTIVE: Vandermonde]
 
-        (ii)  The signal basis V has κ(V) → 1 as N → ∞, with
-              convergence rate O(log N / N) from the Erdős-Turán
+        (ii)  The signal basis V has V†V → I as N → ∞; κ(V) bounded
+              and improving at rate O(log N / N) from the Erdős-Turán
               discrepancy bound for φ.
               [Lemma 8.3b + 8.4c — DIOPHANTINE: quantitative Weyl]
 

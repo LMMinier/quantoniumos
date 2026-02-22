@@ -12,6 +12,8 @@
 **Confirmation No.:** 6802  
 **Status:** Pending
 
+> **Clarification:** "Quantum" in the patent title refers to mathematical structure — unitarity, phase coherence, entropic uncertainty — not quantum computing hardware or qubits. All claimed implementations are classical signal processing.
+
 ---
 
 ## Patent Claims Summary

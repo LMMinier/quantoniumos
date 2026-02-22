@@ -3,22 +3,24 @@
 """
 Core RFT implementation subpackage.
 
-CANONICAL DEFINITION (December 2025):
-=====================================
-The Resonant Fourier Transform (RFT) is a multi-carrier transform using
-golden-ratio frequency and phase spacing:
+CANONICAL DEFINITION (v2.0.0+):
+================================
+The Resonant Fourier Transform (RFT) is defined as the Gram-normalized
+irrational-frequency exponential basis:
 
-    Ψₖ(t) = exp(2πi × fₖ × t + i × θₖ)
-    
-    where:
-        fₖ = (k+1) × φ       (Resonant Frequency)
-        θₖ = 2π × k / φ      (Golden Phase)  
-        φ = (1+√5)/2         (Golden Ratio ≈ 1.618)
+    Φ_{n,k} = (1/√N) exp(j 2π frac((k+1)·φ) · n)
+    Φ̃ = Φ (Φᴴ Φ)^{-1/2}    (Gram / Löwdin normalization)
 
-This enables:
-1. Binary → Wave encoding (BPSK on resonant carriers)
-2. Logic operations IN THE WAVE DOMAIN (XOR, AND, OR, NOT)
-3. Computation without decoding intermediate results
+    Forward:  X = Φ̃ᴴ x
+    Inverse:  x = Φ̃  X
+
+    where φ = (1+√5)/2 ≈ 1.618 (golden ratio)
+
+This ensures exact unitarity (Φ̃ᴴ Φ̃ = I) at finite N.
+
+⚠ LEGACY NOTE: An older waveform formulation using f_k = (k+1)×φ and
+θ_k = 2πk/φ (without Gram normalization or frac() wrapping) is preserved
+in rft_phi_legacy.py for backward compatibility. That is NOT "the RFT."
 
 See: algorithms/rft/core/resonant_fourier_transform.py
 """

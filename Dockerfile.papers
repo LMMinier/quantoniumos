@@ -40,8 +40,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Create working directory
 WORKDIR /quantoniumos
 
-# Copy only requirements first (for layer caching)
-COPY requirements.txt pyproject.toml ./
+# Copy project metadata (for pip install -e .)
+COPY pyproject.toml ./
 
 # Install Python dependencies (minimal set for paper validation)
 RUN pip install --upgrade pip && \
@@ -58,7 +58,6 @@ COPY scripts/ ./scripts/
 COPY tests/ ./tests/
 COPY docs/ ./docs/
 COPY experiments/ ./experiments/
-COPY papers/ ./papers/
 
 # Install package in development mode
 RUN pip install -e .
@@ -110,4 +109,4 @@ CMD ["/bin/bash", "/quantoniumos/run_all_validations.sh"]
 # Alternative entrypoints (use with docker run):
 # docker run --rm quantoniumos-papers python scripts/irrevocable_truths.py
 # docker run --rm quantoniumos-papers pytest tests/rft/ -v
-# docker run --rm quantoniumos-papers python -c "from algorithms.rft import closed_form_rft; print('OK')"
+# docker run --rm quantoniumos-papers python -c "from algorithms.rft.core.resonant_fourier_transform import rft_forward_square; print('OK')"

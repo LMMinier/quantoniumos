@@ -1,63 +1,26 @@
-# QuantoniumOS Technical Details
+# RFT Technical Details
 
-> Moved from [README.md](../README.md) to keep the top-level summary concise.
-> See also [DOCS_INDEX.md](DOCS_INDEX.md) for the full documentation tree.
+> Detailed variant reference, benchmarks, and API documentation.
+> For the core novelty, start with the [README](../README.md).
+> For formal proofs, see [THEOREMS_RFT_IRONCLAD.md](THEOREMS_RFT_IRONCLAD.md).
 
 ---
 
-## RFT Definition Update (December 2025)
-
-**Breaking Change:** The definition of "RFT" (Resonant Fourier Transform) has been corrected.
-
-### What Changed
-
-| Term | OLD (Legacy/Alternative) | NEW (Canonical) |
-|------|--------------------------|-----------------|
-| **RFT** | Eigenbasis of resonance operator $K$ | Gram-normalized φ-grid exponential basis $\widetilde{\Phi}$ |
-| **Sparsity** | None vs FFT | **+15-20 dB PSNR** on target signals |
-| **Novelty** | Trivially equivalent to phased DFT | Genuine operator-eigenbasis transform |
-
-### The Canonical RFT Definition
+## Canonical RFT Definition
 
 $$
-\widetilde{\Phi} = \Phi\,(\Phi^H\Phi)^{-1/2},\quad \text{RFT}(x)=\widetilde{\Phi}^H x
-$$
-
-- **Unitary:** $\widetilde{\Phi}^H\widetilde{\Phi}=I$ (proofs in [THEOREMS_RFT_IRONCLAD.md](../THEOREMS_RFT_IRONCLAD.md))
-- **Target regime:** golden quasi‑periodic / Fibonacci‑structured signals
-- **Honest losses:** FFT/DCT outperform on non‑target families
-
-$$
-\Phi_{n,k} = \frac{1}{\sqrt{N}} \exp\left(j 2\pi f_k n\right), \quad f_k = \operatorname{frac}((k+1)\phi)
+\Phi_{n,k} = \frac{1}{\sqrt{N}} \exp\!\bigl(j\,2\pi\,\text{frac}((k{+}1)\,\phi)\,n\bigr), \qquad
+\widetilde{\Phi} = \Phi\,(\Phi^H\Phi)^{-1/2}
 $$
 
 $$
-\widetilde{\Phi} = \Phi\,(\Phi^H\Phi)^{-1/2}, \quad \text{RFT}(x) = \widetilde{\Phi}^H x
+\text{RFT}(x) = \widetilde{\Phi}^H\,x, \qquad x = \widetilde{\Phi}\,\hat{x}
 $$
 
-### The φ-Phase FFT (Deprecated)
-
-The old formula Ψ = D_φ C_σ F is now called **φ-phase FFT** or **phase-tilted FFT**:
-- Has property: |(Ψx)_k| = |(Fx)_k| for all x
-- **No sparsity advantage** over standard FFT
-- Preserved for backwards compatibility only
-
-### File Changes
-
-| Old File | New File | Notes |
-|----------|----------|-------|
-| `closed_form_rft.py` | `phi_phase_fft_optimized.py` | Deprecated φ-phase FFT |
-| `rft_optimized.py` | `phi_phase_fft_optimized.py` | Deprecated optimized version |
-| (new) | `resonant_fourier_transform.py` | **Canonical RFT kernel** |
-| (new) | `README_RFT.md` | Authoritative RFT definition |
-
-### Validated Results
-
-| Benchmark | RFT Wins | Condition |
-|-----------|----------|-----------|
-| In-Family (Golden QP) | **82%** | N >= 256 |
-| Out-of-Family | 25% | Expected (domain-specific) |
-| PSNR Gain | **+15-20 dB** | At 10% coefficient retention |
+- **Unitary:** $\widetilde{\Phi}^H\widetilde{\Phi}=I$ — proven in [Theorem 2](THEOREMS_RFT_IRONCLAD.md)
+- **Target regime:** golden quasi-periodic / Fibonacci-structured signals
+- **Honest losses:** FFT/DCT outperform on non-target families
+- **Complexity:** O(N²) canonical, O(N log N) hybrid variant
 
 ---
 
@@ -94,21 +57,21 @@ The old formula Ψ = D_φ C_σ F is now called **φ-phase FFT** or **phase-tilte
 
 | # | RFT Variant | Innovation | Use Case | Kernel ID |
 |---|---------|-----------|----------|----------|
-| 1 | Original Φ-RFT | Golden-ratio phase | Exact diagonalization | `RFT_VARIANT_STANDARD` |
-| 2 | Harmonic Φ-RFT | Cubic phase (curved time) | Nonlinear filtering | `RFT_VARIANT_HARMONIC` |
-| 3 | Fibonacci RFT | Integer Fibonacci progression | Lattice structures | `RFT_VARIANT_FIBONACCI` |
-| 4 | Chaotic Φ-RFT | Lyapunov / Haar scrambling | Diffusion / crypto mixing | `RFT_VARIANT_CHAOTIC` |
-| 5 | Geometric Φ-RFT | φ-powered lattice | Optical / analog computing | `RFT_VARIANT_GEOMETRIC` |
-| 6 | Φ-Chaotic RFT Hybrid | Structure + disorder blend | Resilient codecs | `RFT_VARIANT_PHI_CHAOTIC` |
-| 7 | Hyperbolic Φ-RFT | tanh-based phase warp | Phase-space embeddings | `RFT_VARIANT_HYPERBOLIC` |
+| 1 | Standard (Legacy φ-Phase) | Legacy golden-ratio phase (not the canonical RFT) | Exact diagonalization | `RFT_VARIANT_STANDARD` |
+| 2 | Harmonic Variant | Cubic phase (curved time) | Nonlinear filtering | `RFT_VARIANT_HARMONIC` |
+| 3 | Fibonacci Variant | Integer Fibonacci progression | Lattice structures | `RFT_VARIANT_FIBONACCI` |
+| 4 | Chaotic Variant | Lyapunov / Haar scrambling | Diffusion / crypto mixing | `RFT_VARIANT_CHAOTIC` |
+| 5 | Geometric Variant | φ-powered lattice | Optical / analog computing | `RFT_VARIANT_GEOMETRIC` |
+| 6 | φ-Chaotic Hybrid | Structure + disorder blend | Resilient codecs | `RFT_VARIANT_PHI_CHAOTIC` |
+| 7 | Hyperbolic Variant | tanh-based phase warp | Phase-space embeddings | `RFT_VARIANT_HYPERBOLIC` |
 
 **Group B – Hybrid / Cascade Variants**
 
 | # | RFT Hybrid | Innovation | Use Case | Kernel ID |
 |---|---------|-----------|----------|----------|
-| 8 | Log-Periodic Φ-RFT | Log-frequency phase warp | Symbol compression | _Python (research)_ |
-| 9 | Convex Mixed Φ-RFT | Log/standard phase blend | Adaptive textures | _Python (research)_ |
-|10 | Exact Golden Ratio Φ-RFT | Full resonance lattice | Theorem validation | _Python (research)_ |
+| 8 | Log-Periodic Variant | Log-frequency phase warp | Symbol compression | _Python (research)_ |
+| 9 | Convex Mixed Variant | Log/standard phase blend | Adaptive textures | _Python (research)_ |
+|10 | Exact Golden Ratio Variant | Full resonance lattice | Theorem validation | _Python (research)_ |
 |11 | H3 RFT Cascade | Zero-coherence routing | Universal compression (0.673 BPP) | `RFT_VARIANT_CASCADE` |
 |12 | FH2 Adaptive RFT Split | Variance-based DCT/RFT split | Structure vs texture | `RFT_VARIANT_ADAPTIVE_SPLIT` |
 |13 | FH5 Entropy-Guided RFT Cascade | Entropy routing | Edge-dominated signals (0.406 BPP) | `RFT_VARIANT_ENTROPY_GUIDED` |
@@ -128,7 +91,7 @@ Honest Results:
 
 - **Exact Unitarity:** Round-trip error < 1e-14 across all 13 working variants.
 - **Coherence Elimination:** All cascade hybrids achieve η=0 coherence.
-- **Transform Speed:** Φ-RFT is 1.6-4.9× slower than FFT (expected for O(n²) vs O(n log n)).
+- **Transform Speed:** The canonical RFT is 1.6-4.9× slower than FFT (expected for O(n²) vs O(n log n)).
 - **Avalanche Effect:** RFT-SIS achieves 50.0% avalanche.
 - **Hybrid Status:** 14/16 hybrids working (H2, H10 have minor bugs).
 
@@ -208,15 +171,15 @@ Full report: [docs/reports/RFT_MEDICAL_BENCHMARK_REPORT.md](reports/RFT_MEDICAL_
 
 ---
 
-## QuantSoundDesign: Φ-RFT Sound Design Studio
+## QuantSoundDesign: RFT Sound Design Studio
 
-Professional-grade sound design studio built on Φ-RFT. Unlike traditional DAWs (FFT/DCT), QuantSoundDesign uses 7 unitary Φ-RFT variants for synthesis, analysis, and effects.
+Professional-grade sound design studio built on the RFT. Unlike traditional DAWs (FFT/DCT), QuantSoundDesign uses 7 unitary RFT variants for synthesis, analysis, and effects.
 
 | File | Purpose |
 |------|---------|
 | `gui.py` | Main UI (FL Studio/Ableton-inspired, 3200+ LOC) |
 | `engine.py` | Track/clip management, RFT processing pipeline |
-| `synth_engine.py` | Polyphonic synth with Φ-RFT additive synthesis |
+| `synth_engine.py` | Polyphonic synth with RFT additive synthesis |
 | `pattern_editor.py` | 16-step drum sequencer with RFT drum synthesis |
 | `piano_roll.py` | MIDI editor with computer keyboard input |
 
@@ -228,7 +191,7 @@ python quantonium_os_src/frontend/quantonium_desktop.py
 
 ## RFTPU: Hardware Accelerator Architecture
 
-64-tile hardware accelerator implementing Φ-RFT in silicon (TL-Verilog for Makerchip). **N7FF is a design‑target spec only; no tape‑out or silicon is claimed.**
+64-tile hardware accelerator implementing the RFT in silicon (TL-Verilog for Makerchip). **N7FF is a design‑target spec only; no tape‑out or silicon is claimed.**
 
 | Parameter | Value |
 |-----------|-------|
@@ -243,7 +206,7 @@ python quantonium_os_src/frontend/quantonium_desktop.py
 
 | Module | File | Description |
 |--------|------|-------------|
-| `phi_rft_core` | `rftpu_architecture.tlv` | 8-point Φ-RFT with Q1.15 kernel ROM |
+| `phi_rft_core` | `rftpu_architecture.tlv` | 8-point RFT with Q1.15 kernel ROM |
 | `rftpu_noc_fabric` | `rftpu_architecture.tlv` | Cycle-accurate 8×8 mesh NoC |
 | `rftpu_accelerator` | `rftpu_architecture.tlv` | Top-level 64-tile instantiation |
 
@@ -256,7 +219,7 @@ cd hardware/rftpu-3d-viewer && npm install && npm run dev
 
 ---
 
-## Φ-RFT Reference API
+## RFT Reference API
 
 ### Canonical (Recommended)
 
@@ -269,14 +232,13 @@ X = rft_forward_frame(signal, Phi)
 rec = rft_inverse_frame(X, Phi)
 ```
 
-### Legacy Optimized (Deprecated)
+### Canonical RFT
 
 ```python
-from algorithms.rft.core.phi_phase_fft_optimized import (
-    rft_forward_optimized, rft_inverse_optimized, OptimizedRFTEngine,
-)
-Y = rft_forward_optimized(x)
-x_rec = rft_inverse_optimized(Y)
+from algorithms.rft.core.canonical_true_rft import CanonicalTrueRFT
+rft = CanonicalTrueRFT(N=256)
+X = rft.forward_transform(signal)
+recovered = rft.inverse_transform(X)
 ```
 
 ### Performance Comparison

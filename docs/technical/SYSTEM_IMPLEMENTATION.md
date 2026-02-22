@@ -21,7 +21,7 @@ QuantoniumOS is a **signal processing framework** built on PyQt5 with integrated
 - **Complexity**: O(N log N) time, O(N) space
 
 ### 2. Application Layer
-- **QuantSoundDesign**: `src/apps/quantsounddesign/` - Audio processing with Φ-RFT
+- **QuantSoundDesign**: `src/apps/quantsounddesign/` - Audio processing with the RFT
 - **Q-Notes**: `src/apps/q_notes/` - Note-taking application
 - **Q-Vault**: `src/apps/q_vault/` - Encrypted storage (experimental crypto)
 
@@ -52,7 +52,7 @@ QuantoniumOS Implementation:
 
 ## Key Features
 
-### Signal Processing (Φ-RFT)
+### Signal Processing (RFT)
 - **Transform**: Unitary with golden ratio parameterization
 - **Complexity**: O(N log N) time, O(N) space
 - **Applications**: Audio processing, compression, spectral analysis
@@ -102,7 +102,7 @@ QuantoniumOS Implementation:
 ### System Integration
 - **Dependencies**: Standard Python libraries (PyQt5, NumPy, etc.)
 - **Compatibility**: Cross-platform (Windows, Linux, macOS)
-- **Deployment**: Single repository with requirements.txt
+- **Deployment**: Single repository with pyproject.toml
 
 ### Known Limitations
 - **Crypto**: No formal security proofs - experimental only

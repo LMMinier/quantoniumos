@@ -4,6 +4,8 @@
 
 **USPTO Patent 19/169,399: "Hybrid Computational Framework for Quantum and Resonance Simulation"**
 
+> **Clarification:** "Quantum" in the patent title refers to mathematical structure (unitarity, phase coherence), not quantum computing. All implementations are classical signal processing.
+
 ---
 
 ## RFT Family Overview

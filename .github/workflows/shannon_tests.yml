@@ -7,7 +7,7 @@ on:
       - 'algorithms/**'
       - 'experiments/**'
       - 'tests/**'
-      - 'scripts/run_shannon_tests.py'
+      - 'scripts/crypto/run_shannon_tests.py'
   pull_request:
     branches: [main]
     paths:
@@ -164,7 +164,7 @@ jobs:
       
       - name: Run full Shannon test suite
         run: |
-          python scripts/run_shannon_tests.py --verbose --output-dir results/shannon_tests
+          python scripts/crypto/run_shannon_tests.py --verbose --output-dir results/shannon_tests
       
       - name: Upload test report
         uses: actions/upload-artifact@v4

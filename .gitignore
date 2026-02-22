@@ -28,6 +28,10 @@ output.log
 # Ignore Personal AI directory
 personalAi/
 
+# Papers and figures (archived on Zenodo, not needed in repo)
+papers/
+figures/
+
 # QuantoniumOS hygiene: ignore large model assets and generated outputs
 results/
 logs/
@@ -76,6 +80,7 @@ celerybeat-schedule
 # Environments
 .env
 .venv
+.venv-*
 env/
 venv/
 ENV/

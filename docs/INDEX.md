@@ -1,203 +1,39 @@
-# Φ-RFT Research Framework - Documentation Index
+# RFT Research Framework — Documentation Index
 
-**Generated:** December 14, 2025 | **Updated:** January 27, 2026  
-**Purpose:** Master index for all system documentation
-
----
-
-## ⚠️ Critical Reading (Start Here)
-
-| Doc | Purpose | Priority |
-|-----|---------|----------|
-| **[NON_CLAIMS.md](NON_CLAIMS.md)** | What Φ-RFT does NOT do | **REQUIRED** |
-| **[GLOSSARY.md](GLOSSARY.md)** | Precise term definitions | **REQUIRED** |
-| **[LIMITATIONS_AND_REVIEWER_CONCERNS.md](LIMITATIONS_AND_REVIEWER_CONCERNS.md)** | Pre-answered criticisms | **REQUIRED** |
-| **[../CANONICAL.md](../CANONICAL.md)** | Which code is claim-bearing | **REQUIRED** |
-| **[../BENCHMARK_PROTOCOL.md](../BENCHMARK_PROTOCOL.md)** | Benchmark methodology | **REQUIRED** |
-| **[research/RESEARCH_SOURCES_AND_ANALYSIS_GUIDE.md](research/RESEARCH_SOURCES_AND_ANALYSIS_GUIDE.md)** | External validation sources | **RECOMMENDED** |
+**Updated:** February 2026
+**Purpose:** Navigate the project documentation, starting from the core novelty.
 
 ---
 
-## 🔒 Security & Compliance (New)
+## Core Science (Read First)
 
-| Doc | Purpose | Status |
-|-----|---------|--------|
-| **[reports/PHASE5_COMPLIANCE_REPORT.md](reports/PHASE5_COMPLIANCE_REPORT.md)** | Standards compliance audit | ✅ Complete |
-| **[../experiments/crypto_prototypes/README.md](../experiments/crypto_prototypes/README.md)** | Crypto experimental warnings | ⚠️ Read before using crypto |
+| Doc | Purpose |
+|-----|---------|
+| **[THEOREMS_RFT_IRONCLAD.md](THEOREMS_RFT_IRONCLAD.md)** | Formal proofs — Theorems 1–11 (unitarity, non-equivalence to DFT, golden spectral concentration) |
+| **[MATHEMATICAL_CLAIMS_INVENTORY.md](MATHEMATICAL_CLAIMS_INVENTORY.md)** | Complete claims inventory with proof status for every theorem, lemma, and conjecture |
+| **[NON_CLAIMS.md](NON_CLAIMS.md)** | What RFT does NOT claim — required reading |
+| **[LIMITATIONS_AND_REVIEWER_CONCERNS.md](LIMITATIONS_AND_REVIEWER_CONCERNS.md)** | Pre-answered reviewer questions |
+| **[GLOSSARY.md](GLOSSARY.md)** | Precise term definitions |
 
----
+## RFT Variants & Algorithms
 
-## Start Here (Onboarding Path)
+| Doc | Purpose |
+|-----|---------|
+| **[NOVEL_ALGORITHMS.md](NOVEL_ALGORITHMS.md)** | Full algorithm inventory (36 distinct implementations) |
+| **[../algorithms/rft/README_RFT.md](../algorithms/rft/README_RFT.md)** | Canonical RFT definition + 14 variants |
+| **[HYBRID_FFT_RFT_ALGORITHM.md](HYBRID_FFT_RFT_ALGORITHM.md)** | O(N log N) hybrid factorization |
+| **[../docs/project/CANONICAL.md](../docs/project/CANONICAL.md)** | Which code is claim-bearing vs exploratory |
 
-| Step | Doc | Purpose |
-| --- | --- | --- |
-| 1 | **[README.md](README.md)** | Project summary, RFT update, quick install |
-| 2 | **[GETTING_STARTED.md](GETTING_STARTED.md)** | First run, examples, learning path |
-| 3 | **[SETUP_GUIDE.md](SETUP_GUIDE.md)** | Installation, native builds, troubleshooting |
-| 4 | **[DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** | Doc tree, task-based navigation (this file) |
-| 5 | **[REPO_ORGANIZATION.md](REPO_ORGANIZATION.md)** | Repo structure map — source of truth |
-| 6 | **[COMPONENT_INVENTORY.md](COMPONENT_INVENTORY.md)** | Per-path purpose & routes table |
-| 7 | **[LICENSE_SPLIT.md](LICENSE_SPLIT.md)** | Licensing dual-structure summary |
+## Validation & Benchmarks
 
----
-
-## Scientific Partition (Recommended Reading Order)
-
-These folders exist to keep scientific claims, empirical evaluation, exploratory work, and demos clearly separated.
-
-| Section | Path | What it is |
-| --- | --- | --- |
-| Core Science (PRIMARY ASSET) | **[rft-core/README.md](rft-core/README.md)** | Canonical definitions, operator spec, proofs, invariant tests, fairness-noted benchmarks |
-| Validation & Benchmarks (SUPPORT) | **[rft-validation/README.md](rft-validation/README.md)** | Reproducible empirical evaluation, sweeps, negative results, dataset citations |
-| Experimental Variants (NON-CANONICAL) | **[rft-experiments/README.md](rft-experiments/README.md)** | Exploratory variants with explicit disclaimer |
-| Demonstrations (UI/OS/Mobile) | **[demos/README.md](demos/README.md)** | Technology demos only; not scientific claims |
+| Doc | Purpose |
+|-----|---------|
+| **[../BENCHMARK_PROTOCOL.md](../BENCHMARK_PROTOCOL.md)** | Benchmark methodology |
+| **[research/RESEARCH_SOURCES_AND_ANALYSIS_GUIDE.md](research/RESEARCH_SOURCES_AND_ANALYSIS_GUIDE.md)** | External validation sources |
 
 ---
 
-## Navigation Guide
-
-This comprehensive documentation scan resulted in 4 new master documents. Use this index to find what you need quickly.
-
----
-
-## New Master Documents (This Scan)
-
-### 1. [SYSTEM_ARCHITECTURE_MAP.md](SYSTEM_ARCHITECTURE_MAP.md)
-**The Complete System Reference**
-
-**Use this for:**
-- Understanding the entire codebase structure
-- Finding specific implementations
-- Checking what's active vs deprecated
-- Understanding component relationships
-- Technical deep dive into all subsystems
-
-**Key Sections:**
-- Directory structure with size analysis
-- All 14 Φ-RFT variants documented
-- All 17 hybrid architectures detailed
-- Benchmark class specifications
-- Hardware implementation status
-- Application suite overview
-- Test infrastructure mapping
-- Duplication analysis
-- Cleanup recommendations
-
-**Who should read:** Everyone, especially new contributors
-
----
-
-### 2. [CLEANUP_ACTION_PLAN.md](CLEANUP_ACTION_PLAN.md)
-**Step-by-Step Organization Guide**
-
-**Use this for:**
-- Removing deprecated files safely
-- Consolidating duplicate code
-- Archiving completed work
-- Improving test coverage
-- Organizing the repository
-
-**Phases:**
-1. Safe deletions (cache, artifacts)
-2. Code consolidation (duplicates)
-3. Archive deprecated code
-4. Test coverage improvement
-5. Documentation updates
-6. Performance optimization
-7. Benchmarking & validation
-8. UI/UX improvements
-9. Security & compliance
-
-**Who should read:** Maintainers, contributors doing cleanup
-
----
-
-### 3. [SYSTEM_STATUS_SUMMARY.md](SYSTEM_STATUS_SUMMARY.md)
-**Quick Reference Status**
-
-**Use this for:**
-- Quick statistics and metrics
-- What's working vs broken
-- Known issues at a glance
-- Immediate next steps
-- Performance summaries
-
-**Key Information:**
-- 7,585 Python files scanned
-- 14 variants validated (13/14 unitary)
-- 17 hybrids tested (14 working)
-- Benchmark results summary
-- Test status overview
-- Cleanup opportunities (~500-700 MB)
-
-**Who should read:** Everyone needing a quick status check
-
----
-
-### 4. [CLEANUP_COMMANDS.md](CLEANUP_COMMANDS.md)
-**Copy-Paste Command Reference**
-
-**Use this for:**
-- Running cleanup scripts
-- Testing the system
-- Building native modules
-- Generating documentation
-- Security audits
-- Release preparation
-
-**Categories:**
-- Safe cleanup commands
-- Analysis commands
-- Testing commands
-- Build commands
-- Documentation generation
-- Security audits
-- Emergency rollback
-
-**Who should read:** Developers actively working on the codebase
-
----
-
-## Existing Core Documentation
-
-### Getting Started
-
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| [README.md](README.md) | Main project overview | Everyone |
-| [GETTING_STARTED.md](GETTING_STARTED.md) | First steps, examples | New users |
-| [SETUP_GUIDE.md](SETUP_GUIDE.md) | Installation & troubleshooting | Users setting up |
-| [QUICK_REFERENCE.md](QUICK_REFERENCE.md) | Developer commands | Active developers |
-
-### Technical Documentation
-
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Technical deep dive | Developers |
-| [docs/ARCHITECTURE_QUICKREF.md](docs/ARCHITECTURE_QUICKREF.md) | One-page cheat sheet | Everyone |
-| [docs/medical/README.md](docs/medical/README.md) | Medical applications guide | Medical researchers |
-| [ARCHITECTURE_VERIFICATION.md](ARCHITECTURE_VERIFICATION.md) | Architecture validation | Researchers |
-| [docs/validation/RFT_THEOREMS.md](docs/validation/RFT_THEOREMS.md) | Mathematical proofs | Researchers |
-
-### Results & Benchmarks
-
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| [COMPETITIVE_BENCHMARK_RESULTS.md](COMPETITIVE_BENCHMARK_RESULTS.md) | Industry comparison | Evaluators |
-| [TEST_RESULTS.md](TEST_RESULTS.md) | Test execution status | Developers |
-| [REPRODUCING_RESULTS.md](REPRODUCING_RESULTS.md) | Reproducibility guide | Researchers |
-| [hardware/HW_TEST_RESULTS.md](hardware/HW_TEST_RESULTS.md) | Hardware validation | Hardware engineers |
-
-### Project Management
-
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| [PROJECT_ORGANIZATION.md](PROJECT_ORGANIZATION.md) | Organization summary | Contributors |
-| [ROUTING_IMPLEMENTATION_SUMMARY.md](ROUTING_IMPLEMENTATION_SUMMARY.md) | Routing system docs | Developers |
-| [VARIANT_EXPOSURE_INTEGRATION.md](VARIANT_EXPOSURE_INTEGRATION.md) | Variant integration | Developers |
-| [HYBRID_INTEGRATION_PLAN.md](HYBRID_INTEGRATION_PLAN.md) | Hybrid integration | Developers |
-
-### Legal & Compliance
+## Supporting Documentation
 
 | Document | Purpose | Audience |
 |----------|---------|----------|

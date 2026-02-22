@@ -227,7 +227,7 @@ pip install numpy scipy sympy numba
 #### Standard Installation (Recommended)
 Includes visualization, testing, and development tools:
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
 #### Full Installation (All Features)
